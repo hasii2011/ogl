@@ -6,3 +6,4 @@ build/
 dist/
 pyutgraphicalmodel.egg-info
 /pyenv-3.9.1/
+.envrc
