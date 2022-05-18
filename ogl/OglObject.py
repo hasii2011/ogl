@@ -17,13 +17,13 @@ from wx import FONTWEIGHT_NORMAL
 from miniogl.RectangleShape import RectangleShape
 from miniogl import ShapeEventHandler
 
-from org.pyut.ogl.OglLink import OglLink
-from org.pyut.ogl.OglUtils import OglUtils
+from ogl.OglLink import OglLink
+from ogl.OglUtils import OglUtils
 
-from org.pyut.ogl.events.OglEventType import OglEventType
-from org.pyut.ogl.events.OglEventEngine import OglEventEngine
+from ogl.events.OglEventType import OglEventType
+from ogl.events.OglEventEngine import OglEventEngine
 
-from org.pyut.ogl.preferences.OglPreferences import OglPreferences
+from ogl.preferences.OglPreferences import OglPreferences
 
 from pyutmodel.PyutObject import PyutObject
 

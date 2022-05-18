@@ -8,8 +8,8 @@ from miniogl.Shape import Shape
 
 from pyutmodel.PyutLink import PyutLink
 
-from org.pyut.ogl.OglClass import OglClass
-from org.pyut.ogl.OglLink import OglLink
+from ogl.OglClass import OglClass
+from ogl.OglLink import OglLink
 
 
 class OglInheritance(OglLink):

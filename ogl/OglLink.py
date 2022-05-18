@@ -27,11 +27,11 @@ from miniogl.LineShape import LineShape
 from miniogl import ShapeEventHandler
 from miniogl.AttachmentLocation import AttachmentLocation
 
-from org.pyut.ogl.OglPosition import OglPosition
+from ogl.OglPosition import OglPosition
 
-from org.pyut.ogl.IllegalOperationException import IllegalOperationException
+from ogl.IllegalOperationException import IllegalOperationException
 
-from org.pyut.ogl.OglUtils import OglUtils
+from ogl.OglUtils import OglUtils
 
 [
     MENU_ADD_BEND,

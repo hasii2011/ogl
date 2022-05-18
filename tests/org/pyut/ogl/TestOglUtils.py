@@ -7,9 +7,9 @@ from logging import getLogger
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from org.pyut.ogl.OglPosition import OglPosition
+from ogl import OglPosition
 
-from org.pyut.ogl.OglUtils import OglUtils
+from ogl.OglUtils import OglUtils
 
 from tests.TestBase import TestBase
 

@@ -15,8 +15,8 @@ from configparser import ConfigParser
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
 
-from org.pyut.ogl.OglDimensions import OglDimensions
-from org.pyut.ogl.OglTextFontFamily import OglTextFontFamily
+from ogl.OglDimensions import OglDimensions
+from ogl.OglTextFontFamily import OglTextFontFamily
 
 from pyutgraphicalmodel.Singleton import Singleton
 

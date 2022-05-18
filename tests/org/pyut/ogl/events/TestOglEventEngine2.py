@@ -16,13 +16,13 @@ from miniogl.AttachmentLocation import AttachmentLocation
 from miniogl.DiagramFrame import DiagramFrame
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
-from org.pyut.ogl.OglClass import OglClass
+from ogl import OglClass
 
 from tests.TestBase import TestBase
 
-from org.pyut.ogl.events.OglEventEngine import OglEventEngine
-from org.pyut.ogl.events.OglEventType import OglEventType
-from org.pyut.ogl.events.InvalidKeywordException import InvalidKeywordException
+from ogl.events import OglEventEngine
+from ogl.events import OglEventType
+from ogl.events import InvalidKeywordException
 
 from tests.org.pyut.miniogl.TestMiniOglCommon import Point
 
