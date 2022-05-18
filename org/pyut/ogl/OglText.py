@@ -25,7 +25,7 @@ from wx import MouseEvent
 from wx import RED_PEN
 
 
-from org.pyut.miniogl.DiagramFrame import DiagramFrame
+from miniogl.DiagramFrame import DiagramFrame
 
 from org.pyut.ogl.OglObject import OglObject
 

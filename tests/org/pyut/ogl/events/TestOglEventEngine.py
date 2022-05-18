@@ -30,8 +30,8 @@ from wx.lib.sized_controls import SizedPanel
 
 from pyutmodel.PyutClass import PyutClass
 
-from org.pyut.miniogl.AttachmentLocation import AttachmentLocation
-from org.pyut.miniogl.SelectAnchorPoint import SelectAnchorPoint
+from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from org.pyut.ogl.OglClass import OglClass
 

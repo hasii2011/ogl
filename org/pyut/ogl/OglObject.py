@@ -14,8 +14,8 @@ from wx import FONTFAMILY_SWISS
 from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
 
-from org.pyut.miniogl.RectangleShape import RectangleShape
-from org.pyut.miniogl.ShapeEventHandler import ShapeEventHandler
+from miniogl.RectangleShape import RectangleShape
+from miniogl import ShapeEventHandler
 
 from org.pyut.ogl.OglLink import OglLink
 from org.pyut.ogl.OglUtils import OglUtils

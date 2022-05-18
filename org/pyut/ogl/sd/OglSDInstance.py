@@ -10,10 +10,10 @@ from wx import PENSTYLE_LONG_DASH
 from wx import Colour
 from wx import Pen
 
-from org.pyut.miniogl.AnchorPoint import AnchorPoint
-from org.pyut.miniogl.Diagram import Diagram
-from org.pyut.miniogl.LineShape import LineShape
-from org.pyut.miniogl.RectangleShape import RectangleShape
+from miniogl.AnchorPoint import AnchorPoint
+from miniogl.Diagram import Diagram
+from miniogl.LineShape import LineShape
+from miniogl.RectangleShape import RectangleShape
 
 from org.pyut.ogl.OglObject import OglObject
 

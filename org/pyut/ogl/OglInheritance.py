@@ -4,7 +4,7 @@ from logging import getLogger
 
 from wx import WHITE_BRUSH
 
-from org.pyut.miniogl.Shape import Shape
+from miniogl.Shape import Shape
 
 from pyutmodel.PyutLink import PyutLink
 

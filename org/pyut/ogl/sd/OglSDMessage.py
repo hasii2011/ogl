@@ -15,8 +15,8 @@ from wx import OK
 from wx import RED_PEN
 from wx import TextEntryDialog
 
-from org.pyut.miniogl.AnchorPoint import AnchorPoint
-from org.pyut.miniogl.TextShape import TextShape
+from miniogl.AnchorPoint import AnchorPoint
+from miniogl.TextShape import TextShape
 
 from org.pyut.ogl.OglPosition import OglPosition
 

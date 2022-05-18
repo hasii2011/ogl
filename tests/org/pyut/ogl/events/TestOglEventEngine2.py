@@ -12,9 +12,9 @@ from wx import App
 from wx import Frame
 from wx import ID_ANY
 
-from org.pyut.miniogl.AttachmentLocation import AttachmentLocation
-from org.pyut.miniogl.DiagramFrame import DiagramFrame
-from org.pyut.miniogl.SelectAnchorPoint import SelectAnchorPoint
+from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.DiagramFrame import DiagramFrame
+from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from org.pyut.ogl.OglClass import OglClass
 

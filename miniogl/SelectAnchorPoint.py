@@ -8,10 +8,10 @@ from wx import RED_PEN
 from wx import Pen
 from wx import MouseEvent
 
-from org.pyut.miniogl.AnchorPoint import AnchorPoint
-from org.pyut.miniogl.AttachmentLocation import AttachmentLocation
-from org.pyut.miniogl.Shape import Shape
-from org.pyut.miniogl.ShapeEventHandler import ShapeEventHandler
+from miniogl.AnchorPoint import AnchorPoint
+from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.Shape import Shape
+from miniogl.ShapeEventHandler import ShapeEventHandler
 
 
 class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):

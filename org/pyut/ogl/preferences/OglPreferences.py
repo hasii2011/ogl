@@ -12,8 +12,8 @@ from os import getenv as osGetEnv
 from configparser import ConfigParser
 
 
-from org.pyut.miniogl.MiniOglColorEnum import MiniOglColorEnum
-from org.pyut.miniogl.MiniOglPenStyle import MiniOglPenStyle
+from miniogl.MiniOglColorEnum import MiniOglColorEnum
+from miniogl.MiniOglPenStyle import MiniOglPenStyle
 
 from org.pyut.ogl.OglDimensions import OglDimensions
 from org.pyut.ogl.OglTextFontFamily import OglTextFontFamily

@@ -27,7 +27,7 @@ from pyutmodel.PyutObject import PyutObject
 from pyutmodel.PyutMethod import PyutMethod
 from pyutmodel.PyutDisplayParameters import PyutDisplayParameters
 
-from org.pyut.miniogl.SelectAnchorPoint import SelectAnchorPoint
+from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from org.pyut.ogl.OglObject import OglObject
 from org.pyut.ogl.OglObject import DEFAULT_FONT_SIZE
@@ -486,7 +486,7 @@ class OglClass(OglObject):
 
         Returns:  Data class with relevant information
         """
-        from org.pyut.miniogl.Shape import Shape
+        from miniogl.Shape import Shape
 
         selectData: ClickedOnSelectAnchorPointData = ClickedOnSelectAnchorPointData(clicked=False)
         anchors = self.GetAnchors()

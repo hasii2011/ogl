@@ -15,17 +15,17 @@ from wx import ScrolledWindow
 # noinspection PyProtectedMember
 from wx._core import BitmapType
 
-from org.pyut.miniogl.DiagramFrame import DiagramFrame
-from org.pyut.miniogl.Diagram import Diagram
-from org.pyut.miniogl.LollipopLine import LollipopLine
+from miniogl.DiagramFrame import DiagramFrame
+from miniogl.Diagram import Diagram
+from miniogl.LollipopLine import LollipopLine
 
-from org.pyut.miniogl.PointShape import PointShape
-from org.pyut.miniogl.RectangleShape import RectangleShape
-from org.pyut.miniogl.AnchorPoint import AnchorPoint
-from org.pyut.miniogl.LineShape import LineShape
-from org.pyut.miniogl.ControlPoint import ControlPoint
-from org.pyut.miniogl.SelectAnchorPoint import SelectAnchorPoint
-from org.pyut.miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.PointShape import PointShape
+from miniogl.RectangleShape import RectangleShape
+from miniogl.AnchorPoint import AnchorPoint
+from miniogl.LineShape import LineShape
+from miniogl.ControlPoint import ControlPoint
+from miniogl.SelectAnchorPoint import SelectAnchorPoint
+from miniogl.AttachmentLocation import AttachmentLocation
 
 
 class TestMiniOglApp(App):
