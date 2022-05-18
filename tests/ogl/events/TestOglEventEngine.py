@@ -33,10 +33,11 @@ from pyutmodel.PyutClass import PyutClass
 from miniogl.AttachmentLocation import AttachmentLocation
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
-from ogl import OglClass
+from ogl.OglClass import OglClass
 
-from ogl.events import OglEventEngine
-from ogl.events import OglEventType
+from ogl.events.OglEventEngine import OglEventEngine
+from ogl.events.OglEventType import OglEventType
+
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
 from ogl.events.OglEvents import CutOglClassEvent
 from ogl.events.OglEvents import EVT_CREATE_LOLLIPOP_INTERFACE

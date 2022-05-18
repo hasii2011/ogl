@@ -24,7 +24,7 @@ from ogl.events.OglEventType import OglEventType
 from ogl.events.InvalidKeywordException import InvalidKeywordException
 
 from tests.TestBase import TestBase
-from tests.org.pyut.miniogl.TestMiniOglCommon import Point
+from tests.miniogl.TestMiniOglCommon import Point
 
 
 class TestOglEventEngine2(TestBase):
