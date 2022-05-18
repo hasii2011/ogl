@@ -18,7 +18,7 @@ from miniogl.MiniOglPenStyle import MiniOglPenStyle
 from ogl.OglDimensions import OglDimensions
 from ogl.OglTextFontFamily import OglTextFontFamily
 
-from pyutgraphicalmodel.Singleton import Singleton
+from Singleton import Singleton
 
 OGL_PREFS_NAME_VALUES = Dict[str, str]
 

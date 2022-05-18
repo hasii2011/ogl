@@ -7,23 +7,23 @@ from logging import getLogger
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from pyutmodel.PyutClass import PyutClass
 from wx import App
 from wx import Frame
 from wx import ID_ANY
+
+from pyutmodel.PyutClass import PyutClass
 
 from miniogl.AttachmentLocation import AttachmentLocation
 from miniogl.DiagramFrame import DiagramFrame
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
-from ogl import OglClass
+from ogl.OglClass import OglClass
+
+from ogl.events.OglEventEngine import OglEventEngine
+from ogl.events.OglEventType import OglEventType
+from ogl.events.InvalidKeywordException import InvalidKeywordException
 
 from tests.TestBase import TestBase
-
-from ogl.events import OglEventEngine
-from ogl.events import OglEventType
-from ogl.events import InvalidKeywordException
-
 from tests.org.pyut.miniogl.TestMiniOglCommon import Point
 
 

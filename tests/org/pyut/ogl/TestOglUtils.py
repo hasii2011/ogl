@@ -7,7 +7,7 @@ from logging import getLogger
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from ogl import OglPosition
+from ogl.OglPosition import OglPosition
 
 from ogl.OglUtils import OglUtils
 

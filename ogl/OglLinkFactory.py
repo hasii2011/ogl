@@ -13,7 +13,7 @@ from ogl.OglNoteLink import OglNoteLink
 
 
 from ogl.sd.OglSDMessage import OglSDMessage
-from pyutgraphicalmodel.Singleton import Singleton
+from Singleton import Singleton
 
 
 def getOglLinkFactory():

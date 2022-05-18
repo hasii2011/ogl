@@ -15,7 +15,7 @@ from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
 
 from miniogl.RectangleShape import RectangleShape
-from miniogl import ShapeEventHandler
+from miniogl.ShapeEventHandler import ShapeEventHandler
 
 from ogl.OglLink import OglLink
 from ogl.OglUtils import OglUtils

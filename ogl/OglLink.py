@@ -24,7 +24,7 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
 from miniogl.LinePoint import LinePoint
 from miniogl.LineShape import LineShape
-from miniogl import ShapeEventHandler
+from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.AttachmentLocation import AttachmentLocation
 
 from ogl.OglPosition import OglPosition
