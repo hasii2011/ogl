@@ -4,6 +4,6 @@ __pycache__/
 /html/
 build/
 dist/
-pyutgraphicalmodel.egg-info
+ogl.egg-info
 /pyenv-3.9.1/
 .envrc

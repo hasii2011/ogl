@@ -6,7 +6,7 @@
 
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
-𝓟 𝓨 𝓤 𝓣 stands for Python UML Tool. This is the external graphical data model for Pyut
+𝓟 𝓨 𝓤 𝓣 stands for Python UML Tool. This is the external graphical shapes module for Pyut
 that allows for external plugin development;
 
-This depends on pyutmodel
+This project depends on pyutmodel and wxPython

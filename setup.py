@@ -8,21 +8,20 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 
 setup(
-    name="pyutgraphicalmodel",
+    name="ogl",
     version="0.5",
     author_email='Humberto.A.Sanchez.II@gmail.com',
-    description='External Pyut Graphical Data Model',
+    description='External Pyut Graphical Shapes',
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/hasii2011/pyutgraphicalmodel",
     packages=[
-        'org', 'org.pyut', 'org.pyut.miniogl',
-        'org.pyut.ogl',
-        'org.pyut.ogl.events',
-        'org.pyut.ogl.preferences',
-        'org.pyut.ogl.resources', 'org.pyut.ogl.resources.img', 'org.pyut.ogl.resources.img.textdetails',
-        'org.pyut.ogl.sd',
-        'pyutgraphicalmodel',
+        'miniogl',
+        'ogl',
+        'ogl.events',
+        'ogl.preferences',
+        'ogl.resources', 'ogl.resources.img', 'ogl.resources.img.textdetails',
+        'ogl.sd',
     ],
     install_requires=['Deprecated', 'pyutmodel', 'wxPython'],
 )

@@ -16,4 +16,4 @@ rm -rf dist build
 find . -type d -name '*'.egg-info -delete
 
 rm -rf .eggs
-rm -rfv pyutgraphicalmodel.egg-info
+rm -rfv ogl.egg-info
