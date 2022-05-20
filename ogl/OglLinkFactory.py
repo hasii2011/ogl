@@ -4,6 +4,7 @@ from logging import getLogger
 
 from pyutmodel.PyutLinkType import PyutLinkType
 
+from ogl.Singleton import Singleton
 from ogl.OglAssociation import OglAssociation
 from ogl.OglAggregation import OglAggregation
 from ogl.OglComposition import OglComposition
@@ -11,9 +12,7 @@ from ogl.OglInheritance import OglInheritance
 from ogl.OglInterface import OglInterface
 from ogl.OglNoteLink import OglNoteLink
 
-
 from ogl.sd.OglSDMessage import OglSDMessage
-from Singleton import Singleton
 
 
 def getOglLinkFactory():
