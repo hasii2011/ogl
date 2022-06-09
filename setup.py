@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     name="ogl",
-    version="0.51",
+    version="0.52",
     author_email='Humberto.A.Sanchez.II@gmail.com',
     description='External Pyut Graphical Shapes',
     long_description=README,

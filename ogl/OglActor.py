@@ -1,7 +1,7 @@
+
 from wx import DC
 
 from ogl.OglObject import OglObject
-
 from pyutmodel.PyutActor import PyutActor
 
 

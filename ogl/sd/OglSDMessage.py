@@ -4,7 +4,6 @@ from typing import Tuple
 from logging import Logger
 from logging import getLogger
 
-from pyutmodel.PyutSDMessage import PyutSDMessage
 from wx import BLACK_PEN
 
 from wx import CANCEL
@@ -15,11 +14,12 @@ from wx import OK
 from wx import RED_PEN
 from wx import TextEntryDialog
 
+from pyutmodel.PyutSDMessage import PyutSDMessage
+
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.TextShape import TextShape
 
 from ogl.OglPosition import OglPosition
-
 from ogl.sd.OglSDInstance import OglSDInstance
 from ogl.OglLink import OglLink
 

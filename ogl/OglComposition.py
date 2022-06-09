@@ -1,10 +1,8 @@
 
 from wx import DC
 
-from miniogl.Shape import Shape
-
+from miniogl import Shape
 from pyutmodel.PyutLink import PyutLink
-
 from ogl.OglAssociation import OglAssociation
 from ogl.OglClass import OglClass
 

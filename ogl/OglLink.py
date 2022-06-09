@@ -9,7 +9,6 @@ from math import sqrt
 
 # noinspection PyPackageRequirements
 from deprecated import deprecated
-from pyutmodel.PyutLink import PyutLink
 
 from wx import BLACK_PEN
 from wx import EVT_MENU
@@ -28,6 +27,8 @@ from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.AttachmentLocation import AttachmentLocation
 
 from ogl.OglPosition import OglPosition
+
+from pyutmodel.PyutLink import PyutLink
 
 from ogl.IllegalOperationException import IllegalOperationException
 
@@ -279,6 +280,10 @@ class OglLink(LineShape, ShapeEventHandler):
         Args:
             event:
         """
+        from ogl.sd.OglSDMessage import OglSDMessage
+
+        if isinstance(self, OglSDMessage) is True:
+            return
         menu: Menu = Menu()
         menu.Append(MENU_ADD_BEND,      'Add Bend',      'Add Bend at right click point')
         menu.Append(MENU_REMOVE_BEND,   'Remove Bend',   'Remove Bend closest to click point')

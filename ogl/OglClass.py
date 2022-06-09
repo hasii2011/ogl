@@ -22,12 +22,12 @@ from wx import MenuItem
 from wx import MouseEvent
 from wx import Point
 
-from pyutmodel.PyutClass import PyutClass
-from pyutmodel.PyutObject import PyutObject
-from pyutmodel.PyutMethod import PyutMethod
-from pyutmodel.PyutDisplayParameters import PyutDisplayParameters
-
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
+
+from pyutmodel.PyutDisplayParameters import PyutDisplayParameters
+from pyutmodel.PyutMethod import PyutMethod
+from pyutmodel.PyutObject import PyutObject
+from pyutmodel.PyutClass import PyutClass
 
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE

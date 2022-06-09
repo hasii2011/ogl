@@ -4,7 +4,6 @@ from typing import cast
 from logging import Logger
 from logging import getLogger
 
-from pyutmodel.PyutText import PyutText
 from wx import BLACK_PEN
 from wx import Colour
 from wx import ColourDatabase
@@ -28,8 +27,8 @@ from wx import RED_PEN
 from miniogl.DiagramFrame import DiagramFrame
 
 from ogl.OglObject import OglObject
-
 from ogl.OglTextFontFamily import OglTextFontFamily
+
 from ogl.OglUtils import OglUtils
 
 from ogl.preferences.OglPreferences import OglPreferences
@@ -37,6 +36,7 @@ from ogl.preferences.OglPreferences import OglPreferences
 from ogl.resources.img.textdetails.DecreaseTextSize import embeddedImage as DecreaseTextSize
 from ogl.resources.img.textdetails.IncreaseTextSize import embeddedImage as IncreaseTextSize
 
+from pyutmodel.PyutText import PyutText
 [
     ID_MENU_INCREASE_SIZE,
     ID_MENU_DECREASE_SIZE,

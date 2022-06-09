@@ -8,12 +8,11 @@ from wx import Brush
 from wx import Colour
 from wx import DC
 
-from pyutmodel.PyutNote import PyutNote
-
 from ogl.OglObject import OglObject
 
 from ogl.preferences.OglPreferences import OglPreferences
 
+from pyutmodel.PyutNote import PyutNote
 
 from ogl.OglUtils import OglUtils
 

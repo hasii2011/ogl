@@ -86,9 +86,9 @@ class OglSDInstance(OglObject):
 
     def getLifeLineShape(self):
         """
-        return the lifeline object
-        @author C.Dutoit
         Used by OGLSDMessage to use it as parent
+
+        Returns: The lifeline object
         """
         return self._lifeLineShape
 
