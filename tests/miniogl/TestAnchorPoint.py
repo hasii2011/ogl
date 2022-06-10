@@ -18,28 +18,26 @@ class TestAnchorPoint(TestBase):
     """
     """
     clsLogger: Logger = cast(Logger, None)
-    clsApp:    App    = None
 
     @classmethod
     def setUpClass(cls):
 
         TestBase.setUpLogging()
         TestAnchorPoint.clsLogger = getLogger(__name__)
-        TestAnchorPoint.clsApp    = App()
 
     @classmethod
     def tearDownClass(cls):
-        cls.clsApp.OnExit()
-        del cls.clsApp
+        pass
 
     def setUp(self):
         self.logger: Logger = TestAnchorPoint.clsLogger
-        self.app            = TestAnchorPoint.clsApp
+        self.app            = App()
 
         self.anchorPoint: AnchorPoint = AnchorPoint(x=93, y=276, parent=None)
 
     def tearDown(self):
-        pass
+        self.app.OnExit()
+        del self.app
 
     EXPECTED_X: int = 268
     EXPECTED_Y: int = 1044

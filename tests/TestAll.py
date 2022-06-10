@@ -25,7 +25,11 @@ class TestAll:
     """
     The class that can run our unit tests in various formats
     """
-    NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine', ]
+    #
+    NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine',
+                            # These are just independently run
+                            'miniogl/TestRectangleShape',
+                            ]
 
     VERBOSITY_QUIET:   int = 0  # Print the total numbers of tests executed and the global result
     VERBOSITY_DEFAULT: int = 1  # VERBOSITY_QUIET plus a dot for every successful test or a F for every failure
@@ -42,7 +46,7 @@ class TestAll:
 
     def runTextTestRunner(self) -> int:
 
-        runner: TextTestRunner = TextTestRunner(verbosity=TestAll.VERBOSITY_QUIET)
+        runner: TextTestRunner = TextTestRunner(verbosity=TestAll.VERBOSITY_DEFAULT)
         status: TestResult     = runner.run(self._testSuite)
         print(f"THE RESULTS ARE IN:")
         print(f"run: {status.testsRun} errors: {len(status.errors)} failures: {len(status.failures)} skipped: {len(status.skipped)}")
@@ -99,7 +103,10 @@ class TestAll:
         self.logger.debug(f'{allModules=}')
 
         for doNotTest in TestAll.NOT_TESTS:
-            allModules.remove(f'tests/{doNotTest}')
+            try:
+                allModules.remove(f'tests/{doNotTest}')
+            except ValueError as ve:
+                self.logger.error(f'{ve}')
 
         return allModules
 

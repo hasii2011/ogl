@@ -25,23 +25,12 @@ function checkStatus {
     fi
 }
 
-function manuallyRunSomeTests {
+function independentlyRunSomeTests {
 
-  python3 -m unittest tests.TestUmlFrame.TestUmlFrame.testClassCreation
+  python -m unittest -v tests.miniogl.TestRectangleShape
   status=$?
-  checkStatus ${status} testClassCreation
+  checkStatus ${status} TestRectangleShape
 
-  python3 -m unittest tests.TestUmlFrame.TestUmlFrame.testNoteCreation
-  status=$?
-  checkStatus ${status} testNoteCreation
-
-  python3 -m unittest tests.TestUmlFrame.TestUmlFrame.testActorCreation
-  status=$?
-  checkStatus ${status} testActorCreation
-
-  python3 -m unittest tests.TestUmlFrame.TestUmlFrame.testUseCaseCreation
-  status=$?
-  checkStatus ${status} testUseCaseCreation
 
 }
 changeToProjectRoot
@@ -50,7 +39,8 @@ echo "Travis Build directory: ${TRAVIS_BUILD_DIR}"
 
 python -m tests.TestAll
 
-# manuallyRunSomeTests
+echo "Independently run some tests"
+independentlyRunSomeTests
 
 
 cd -  > /dev/null 2>&1 || ! echo "No such directory"

@@ -8,10 +8,11 @@ from wx import RED_PEN
 from wx import Pen
 from wx import MouseEvent
 
-from miniogl.AnchorPoint import AnchorPoint
-from miniogl.AttachmentLocation import AttachmentLocation
 from miniogl.Shape import Shape
+from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ShapeEventHandler import ShapeEventHandler
+
+from miniogl.AttachmentLocation import AttachmentLocation
 
 
 class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):

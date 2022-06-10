@@ -19,25 +19,23 @@ class TestMiniOglColorEnum(TestBase):
     """
     """
     clsLogger: Logger = cast(Logger, None)
-    clsApp:    App    = None
 
     @classmethod
     def setUpClass(cls):
         TestBase.setUpLogging()
         TestMiniOglColorEnum.clsLogger = getLogger(__name__)
-        TestMiniOglColorEnum.clsApp    = App()
 
     @classmethod
     def tearDownClass(cls):
-        cls.clsApp.OnExit()
-        del cls.clsApp
+        pass
 
     def setUp(self):
         self.logger: Logger = TestMiniOglColorEnum.clsLogger
-        self.app            = TestMiniOglColorEnum.clsApp
+        self.app            = App()
 
     def tearDown(self):
-        pass
+        self.app.OnExit()
+        del self.app
 
     def testBlack(self):
         c: Colour = MiniOglColorEnum.toWxColor(MiniOglColorEnum.BLACK)
