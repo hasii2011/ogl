@@ -15,19 +15,17 @@ class OglAggregation(OglAssociation):
     the kind of link you want, OGL_AGGREGATION for an instance of this class.
     """
 
-    def __init__(self, srcShape, pyutLink, dstShape):
+    def __init__(self, srcShape, pyutLink, dstShape, srcPos=None, dstPos=None):
         """
-        Constructor.
 
-        @param OglClass srcShape : Source shape
-        @param PyutLink pyutLink : Conceptual links associated with the
-                                   graphical links.
-        @param OglClass dstShape : Destination shape
-
-        @since 1.0
-        @author Philippe Waelti <pwaelti@eivd.ch>
+        Args:
+            srcShape:   Source shape
+            pyutLink:   Conceptual links associated with the graphical links.
+            dstShape:   Destination shape
+            srcPos:     Position of source      Override location of input source
+            dstPos:     Position of destination Override location of input destination
         """
-        super().__init__(srcShape, pyutLink, dstShape)
+        super().__init__(srcShape, pyutLink, dstShape, dstPos=dstPos, srcPos=srcPos)
 
         self.logger: Logger = getLogger(__name__)
         self.SetDrawArrow(True)

@@ -30,16 +30,19 @@ class OglInterface(OglLink):
     This class provide the methods for drawing an interface link between
     two classes of an UML diagram. Add labels to an OglLink.
     """
-    def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass):
+    def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass, srcPos=None, dstPos=None):
 
         """
 
         Args:
             srcShape:  Source shape
             pyutLink:  Conceptual links associated with the graphical links.
-            dstShape: Destination shape
+            dstShape:  Destination shape
+            srcPos:    Position of source      Override location of input source
+            dstPos:    Position of destination Override location of input destination
+
         """
-        super().__init__(srcShape, pyutLink, dstShape)
+        super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
         self.SetPen(Pen("BLACK", 1, PENSTYLE_LONG_DASH))
         self.SetBrush(WHITE_BRUSH)

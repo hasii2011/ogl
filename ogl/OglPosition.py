@@ -22,4 +22,3 @@ class OglPosition:
         """
 
         return OglPosition(x=position[0], y=position[1])
-        return OglPosition(x=position[0], y=position[1])

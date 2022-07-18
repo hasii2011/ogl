@@ -37,15 +37,17 @@ class OglAssociation(OglLink):
     To get a new link,  use the `OglLinkFactory` and specify
     the link type.  .e.g. OGL_ASSOCIATION for an instance of this class.
     """
-    def __init__(self, srcShape, pyutLink, dstShape):
+    def __init__(self, srcShape, pyutLink, dstShape, srcPos=None, dstPos=None):
         """
 
         Args:
             srcShape:   Source shape
             pyutLink:   Conceptual links associated with the graphical links.
             dstShape:   Destination shape
+            srcPos:     Position of source      Override location of input source
+            dstPos:     Position of destination Override location of input destination
         """
-        super().__init__(srcShape, pyutLink, dstShape)
+        super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
         self._centerLabel:            OglAssociationLabel = OglAssociationLabel()
         self._sourceCardinality:      OglAssociationLabel = OglAssociationLabel()

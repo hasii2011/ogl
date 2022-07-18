@@ -14,16 +14,18 @@ class OglComposition(OglAssociation):
     the kind of link you want, OGL_COMPOSITION for an instance of this class.
     """
 
-    def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass):
+    def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass, srcPos=None, dstPos=None):
         """
 
         Args:
             srcShape:   Source shape
             pyutLink:   Conceptual link associated with the graphical links
             dstShape:    Destination shape
+            srcPos:     Position of source      Override location of input source
+            dstPos:     Position of destination Override location of input destination
         """
 
-        super().__init__(srcShape, pyutLink, dstShape)
+        super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
         self.SetDrawArrow(True)
 
     def Draw(self, dc: DC, withChildren: bool = False):

@@ -13,7 +13,7 @@ changeToProjectRoot
 
 clear
 
-python3 -m build --sdist --wheel
+python -m build --sdist --wheel
 
 # Check package
 twine check dist/*
