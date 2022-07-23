@@ -28,6 +28,7 @@ from pyutmodel.PyutDisplayParameters import PyutDisplayParameters
 from pyutmodel.PyutMethod import PyutMethod
 from pyutmodel.PyutObject import PyutObject
 from pyutmodel.PyutClass import PyutClass
+from pyutmodel.PyutStereotype import PyutStereotype
 
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE
@@ -112,7 +113,6 @@ class OglClass(OglObject):
         selectData: ClickedOnSelectAnchorPointData = self._didWeClickOnSelectAnchorPoint(clickPoint=clickPoint)
         if selectData.clicked is True:
             self.eventEngine.sendEvent(OglEventType.CreateLollipopInterface, implementor=self, attachmentPoint=selectData.selectAnchorPoint)
-            # self.eventEngine.sendCreateLollipopInterfaceEvent(implementor=self, attachmentPoint=selectData.selectAnchorPoint)
 
     def GetTextWidth(self, dc, text):
         width = dc.GetTextExtent(text)[0]
@@ -171,8 +171,8 @@ class OglClass(OglObject):
         # draw the stereotype if there's one
         pyutClass: PyutClass = self.pyutObject
         # stereo = self.getPyutObject().getStereotype()
-        stereo = pyutClass.getStereotype()
-        if stereo is not None and pyutClass.getShowStereotype() is True:
+        stereo: PyutStereotype = pyutClass.stereotype
+        if stereo is not None and stereo.name != '' and pyutClass.getShowStereotype() is True:
             name = str(stereo)
             nameWidth = self.GetTextWidth(dc, name)
             if draw:
