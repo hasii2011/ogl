@@ -113,7 +113,7 @@ class OglAssociation(OglLink):
         self._drawCenterLabel(dc=dc, sp=oglSp, dp=oglDp)
         self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
 
-    def drawLosange(self, dc: DC, filled: bool = False):
+    def drawDiamond(self, dc: DC, filled: bool = False):
         """
         Draw an arrow at the beginning of the line.
 
@@ -121,48 +121,11 @@ class OglAssociation(OglLink):
             dc:         The device context
             filled:     True if the losange must be filled, False otherwise
 
-        Note:  Losange is French for 'diamond'
         """
-        # pi_6 = pi / 6
         #
         line = self.GetSegments()
-        # x1, y1 = line[1]
-        # x2, y2 = line[0]
-        # a: int = x2 - x1
-        # b: int = y2 - y1
-        # if abs(a) < 0.01:  # vertical segment
-        #     if b > 0:
-        #         alpha: float = -pi / 2
-        #     else:
-        #         alpha = pi / 2
-        # else:
-        #     if a == 0:
-        #         if b > 0:
-        #             alpha = pi / 2
-        #         else:
-        #             alpha = 3 * pi / 2
-        #     else:
-        #         alpha = atan(b/a)
-        # if a > 0:
-        #     alpha += pi
-        # alpha1: float = alpha + pi_6
-        # alpha2: float = alpha - pi_6
-        # size:   int   = DIAMOND_SIZE
-        #
-        # # points: List[Tuple[int, int]] = [
-        # #     (x2 + size * cos(alpha1), y2 + size * sin(alpha1)), (x2, y2),
-        # #     (x2 + size * cos(alpha2)), y2 + size * sin(alpha2),
-        # #     (x2 + 2 * size * cos(alpha), y2 + 2 * size * sin(alpha))
-        #
-        # # noinspection PyListCreation
-        # points: List[Tuple[int, int]] = []
-        #
-        # points.append((x2 + size * cos(alpha1), y2 + size * sin(alpha1)))
-        # points.append((x2, y2))
-        # points.append((x2 + size * cos(alpha2), y2 + size * sin(alpha2)))
-        # points.append((x2 + 2 * size * cos(alpha),  y2 + 2 * size * sin(alpha)))
 
-        points: DiamondPoints = self.calculateDiamondPoints(lineSegments=line)
+        points: DiamondPoints = OglAssociation.calculateDiamondPoints(lineSegments=line)
         dc.SetPen(BLACK_PEN)
         if filled:
             dc.SetBrush(BLACK_BRUSH)
@@ -230,6 +193,14 @@ class OglAssociation(OglLink):
                                                                      text=destinationCardinalityText)
         dc.SetFont(saveFont)
 
+    def __updateAssociationLabel(self, associationLabel: OglAssociationLabel, x: int, y: int, text: str) -> OglAssociationLabel:
+
+        associationLabel.oglPosition.x = x
+        associationLabel.oglPosition.y = y
+        associationLabel.text          = text
+
+        return associationLabel
+
     @staticmethod
     def calculateDiamondPoints(lineSegments: SegmentPoints) -> DiamondPoints:
         """
@@ -277,14 +248,6 @@ class OglAssociation(OglLink):
         diamondPoints.append(dp3)
 
         return diamondPoints
-
-    def __updateAssociationLabel(self, associationLabel: OglAssociationLabel, x: int, y: int, text: str) -> OglAssociationLabel:
-
-        associationLabel.oglPosition.x = x
-        associationLabel.oglPosition.y = y
-        associationLabel.text          = text
-
-        return associationLabel
 
     @classmethod
     def calculateDiamondPoint0(cls, x2: float, y2: float, alpha1: float) -> DiamondPoint:

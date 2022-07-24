@@ -36,7 +36,7 @@ class OglComposition(OglAssociation):
             withChildren:   Draw the children or not
         """
         OglAssociation.Draw(self, dc)
-        self.drawLosange(dc, True)
+        self.drawDiamond(dc, True)
 
     def __repr__(self):
         srcShape: Shape = self.getSourceShape()

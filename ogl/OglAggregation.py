@@ -43,7 +43,7 @@ class OglAggregation(OglAssociation):
         super().Draw(dc, withChildren)
 
         # Draw losange
-        self.drawLosange(dc, False)
+        self.drawDiamond(dc, False)
 
     def __repr__(self):
 
