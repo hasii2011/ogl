@@ -32,7 +32,8 @@ install:
   - pip install Deprecated
   - pip install html-testRunner
   - pip install pyutmodel
-  - pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
+  # - pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
+  - pip install wxPyth==4.2.0
 
 
 # command to run tests
