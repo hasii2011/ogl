@@ -10,7 +10,7 @@ LICENSE = (HERE / 'LICENSE').read_text()
 
 setup(
     name="ogl",
-    version="0.54.7",
+    version="0.60.0",
     author='Humberto A. Sanchez II',
     author_email='Humberto.A.Sanchez.II@gmail.com',
     maintainer='Humberto A. Sanchez II',
@@ -18,7 +18,6 @@ setup(
     description='External Pyut Graphical Shapes',
     long_description=README,
     long_description_content_type="text/markdown",
-    license=LICENSE,
     url="https://github.com/hasii2011/ogl",
     package_data={
         'miniogl':         ['py.typed'],
@@ -37,5 +36,5 @@ setup(
         'ogl.resources', 'ogl.resources.img', 'ogl.resources.img.textdetails',
         'ogl.sd',
     ],
-    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.0.4', 'wxPython~=4.1.1'],
+    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.1.0', 'wxPython~=4.2.0'],
 )

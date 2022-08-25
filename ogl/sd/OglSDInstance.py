@@ -4,6 +4,8 @@ from typing import cast
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
+from pyutmodel.PyutSDInstance import PyutSDInstance
 from wx import BLACK_DASHED_PEN
 from wx import PENSTYLE_LONG_DASH
 
@@ -30,7 +32,7 @@ class OglSDInstance(OglObject):
     DEFAULT_WIDTH: int = 100
     DEFAULT_HEIGHT: int = 400
 
-    def __init__(self, pyutObject, parentFrame):
+    def __init__(self, pyutObject: PyutSDInstance, parentFrame):
         """
         """
         self._parentFrame = parentFrame
@@ -40,7 +42,6 @@ class OglSDInstance(OglObject):
 
         diagram: Diagram = self._parentFrame.GetDiagram()
 
-        # OglObject.__init__(self, pyutObject, DEFAULT_WIDTH, DEFAULT_HEIGHT)
         super().__init__(pyutObject, OglSDInstance.DEFAULT_WIDTH, OglSDInstance.DEFAULT_HEIGHT)
 
         diagram.AddShape(self)
@@ -49,41 +50,16 @@ class OglSDInstance(OglObject):
         self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
 
-        # Init lineShape
-        (srcX, srcY, dstX, dstY) = (OglSDInstance.DEFAULT_WIDTH // 2, 0,
-                                    OglSDInstance.DEFAULT_WIDTH // 2, OglSDInstance.DEFAULT_HEIGHT
-                                    )
-
-        (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
-        for el in [src, dst]:
-            el.SetVisible(False)
-            el.SetDraggable(False)
-        self._lifeLineShape: LineShape = LineShape(src, dst)
-        self.AppendChild(self._lifeLineShape)
-        self._lifeLineShape.SetParent(self)
-        self._lifeLineShape.SetDrawArrow(False)
-        self._lifeLineShape.SetDraggable(True)
-        self._lifeLineShape.SetPen(BLACK_DASHED_PEN)
-        self._lifeLineShape.SetVisible(True)
+        self._lifeLineShape: LineShape = self._createLifeLine()
         diagram.AddShape(self._lifeLineShape)
-        
-        # Instance box
-        self._instanceBox: RectangleShape = RectangleShape(0, 0, 100, 50)
-
-        self.AppendChild(self._instanceBox)
-        self._instanceBox.SetDraggable(False)
-        self._instanceBox.Resize = self.OnInstanceBoxResize
-        self._instanceBox.SetResizable(True)
-        self._instanceBox.SetParent(self)
+        self._instanceBox: RectangleShape = self._createInstanceBox()
         diagram.AddShape(self._instanceBox)
 
-        # Text of the instance box
-        text = self._pyutObject.instanceName
-        self._instanceBoxText: OglInstanceName = OglInstanceName(pyutObject, 0, 20, text, self._instanceBox)
-        self.AppendChild(self._instanceBoxText)
+        self._instanceBoxText: OglInstanceName = self._createInstanceBoxText(pyutSDInstance=pyutObject, instanceBox=self._instanceBox)
         diagram.AddShape(self._instanceBoxText)
         # TODO : set instance box size to the size of the text by invoking self._instanceBoxText.setSize()
 
+    @deprecated(reason="Use the property '.lifeline'")
     def getLifeLineShape(self):
         """
         Used by OGLSDMessage to use it as parent
@@ -92,6 +68,15 @@ class OglSDInstance(OglObject):
         """
         return self._lifeLineShape
 
+    @property
+    def lifeline(self) -> LineShape:
+        """
+        Used by OGLSDMessage to use it as parent and
+
+        Returns: The lifeline object
+        """
+        return self._lifeLineShape
+    
     def OnInstanceBoxResize(self, sizer, width: int, height: int):
         """
         Resize the instance box, so all instance
@@ -176,6 +161,61 @@ class OglSDInstance(OglObject):
         Callback for left clicks.
         """
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
+
+    def _createLifeLine(self) -> LineShape:
+        """
+
+        Returns:  The lifeline
+        """
+        (srcX, srcY, dstX, dstY) = (OglSDInstance.DEFAULT_WIDTH // 2, 0,
+                                    OglSDInstance.DEFAULT_WIDTH // 2, OglSDInstance.DEFAULT_HEIGHT
+                                    )
+
+        (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
+        for el in [src, dst]:
+            el.SetVisible(False)
+            el.SetDraggable(False)
+
+        lifeLineShape: LineShape = LineShape(src, dst)
+
+        lifeLineShape.SetParent(self)
+        lifeLineShape.SetDrawArrow(False)
+        lifeLineShape.SetDraggable(True)
+        lifeLineShape.SetPen(BLACK_DASHED_PEN)
+        lifeLineShape.SetVisible(True)
+
+        self.AppendChild(lifeLineShape)
+
+        return lifeLineShape
+
+    def _createInstanceBox(self) -> RectangleShape:
+        """
+
+        Returns:  The instance box
+        """
+        instanceBox: RectangleShape = RectangleShape(0, 0, 100, 50)
+
+        instanceBox.SetDraggable(False)
+        instanceBox.Resize = self.OnInstanceBoxResize   # type: ignore
+        instanceBox.SetResizable(True)
+        instanceBox.SetParent(self)
+
+        self.AppendChild(instanceBox)
+
+        return instanceBox
+
+    def _createInstanceBoxText(self, pyutSDInstance: PyutSDInstance, instanceBox: RectangleShape) -> OglInstanceName:
+        """
+
+        Returns:  An OglInstanceName
+        """
+        text: str = self._pyutObject.instanceName
+
+        instanceBoxText: OglInstanceName = OglInstanceName(pyutSDInstance, 0, 20, text, instanceBox)
+
+        self.AppendChild(instanceBoxText)
+
+        return instanceBoxText
 
     def __str__(self) -> str:
         instanceName: str = self._pyutObject.instanceName
