@@ -29,6 +29,7 @@ class TestAll:
     NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine',
                             # These are just independently run
                             'miniogl/TestRectangleShape',
+                            'ogl/TestOglInterface2'
                             ]
 
     VERBOSITY_QUIET:   int = 0  # Print the total numbers of tests executed and the global result
@@ -46,7 +47,7 @@ class TestAll:
 
     def runTextTestRunner(self) -> int:
 
-        runner: TextTestRunner = TextTestRunner(verbosity=TestAll.VERBOSITY_DEFAULT)
+        runner: TextTestRunner = TextTestRunner(verbosity=TestAll.VERBOSITY_VERBOSE)
         status: TestResult     = runner.run(self._testSuite)
         print(f"THE RESULTS ARE IN:")
         print(f"run: {status.testsRun} errors: {len(status.errors)} failures: {len(status.failures)} skipped: {len(status.skipped)}")

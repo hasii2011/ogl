@@ -13,7 +13,6 @@ from wx import Colour
 from wx import Pen
 
 from miniogl.AnchorPoint import AnchorPoint
-from miniogl.Diagram import Diagram
 from miniogl.LineShape import LineShape
 from miniogl.RectangleShape import RectangleShape
 
@@ -28,35 +27,28 @@ class OglSDInstance(OglObject):
     This class is an OGL object for class diagram instance (vertical line)
 
     Instantiated by UmlClassDiagramFrame
+    To actually place one of these on a UML Frame requires use of the SDHelper class
     """
-    DEFAULT_WIDTH: int = 100
+    DEFAULT_WIDTH:  int = 100
     DEFAULT_HEIGHT: int = 400
 
-    def __init__(self, pyutObject: PyutSDInstance, parentFrame):
+    def __init__(self, pyutObject: PyutSDInstance):
         """
         """
-        self._parentFrame = parentFrame
-        self._instanceYPosition: int = 50       # Start of instances position
-
         self.logger: Logger = getLogger(__name__)
-
-        diagram: Diagram = self._parentFrame.GetDiagram()
 
         super().__init__(pyutObject, OglSDInstance.DEFAULT_WIDTH, OglSDInstance.DEFAULT_HEIGHT)
 
-        diagram.AddShape(self)
+        self._instanceYPosition: int = 50       # Start of instances position
+
         self.SetDraggable(True)
         self.SetVisible(True)
         self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
 
-        self._lifeLineShape: LineShape = self._createLifeLine()
-        diagram.AddShape(self._lifeLineShape)
-        self._instanceBox: RectangleShape = self._createInstanceBox()
-        diagram.AddShape(self._instanceBox)
-
-        self._instanceBoxText: OglInstanceName = self._createInstanceBoxText(pyutSDInstance=pyutObject, instanceBox=self._instanceBox)
-        diagram.AddShape(self._instanceBoxText)
+        self._lifeLine:     LineShape       = self._createLifeLine()
+        self._instance:     RectangleShape  = self._createInstance()
+        self._instanceName: OglInstanceName = self._createInstanceName(pyutSDInstance=pyutObject, instanceBox=self._instance)
         # TODO : set instance box size to the size of the text by invoking self._instanceBoxText.setSize()
 
     @deprecated(reason="Use the property '.lifeline'")
@@ -66,7 +58,7 @@ class OglSDInstance(OglObject):
 
         Returns: The lifeline object
         """
-        return self._lifeLineShape
+        return self._lifeLine
 
     @property
     def lifeline(self) -> LineShape:
@@ -75,8 +67,16 @@ class OglSDInstance(OglObject):
 
         Returns: The lifeline object
         """
-        return self._lifeLineShape
-    
+        return self._lifeLine
+
+    @property
+    def instance(self) -> RectangleShape:
+        return self._instance
+
+    @property
+    def instanceName(self) -> OglInstanceName:
+        return self._instanceName
+
     def OnInstanceBoxResize(self, sizer, width: int, height: int):
         """
         Resize the instance box, so all instance
@@ -91,8 +91,8 @@ class OglSDInstance(OglObject):
 
         @param double x, y : position of the sizer
         """
-        RectangleShape.Resize(self._instanceBox, sizer, width, height)
-        size = self._instanceBox.GetSize()
+        RectangleShape.Resize(self._instance, sizer, width, height)
+        size = self._instance.GetSize()
         self.SetSize(size[0], self.GetSize()[1])
 
     def Resize(self, sizer, width: int, height: int):
@@ -113,8 +113,8 @@ class OglSDInstance(OglObject):
         # Set lifeline
         (myX, myY) = self.GetPosition()
         (w, h) = self.GetSize()
-        lineDst = self._lifeLineShape.GetDestination()
-        lineSrc = self._lifeLineShape.GetSource()
+        lineDst = self._lifeLine.GetDestination()
+        lineSrc = self._lifeLine.GetSource()
         lineSrc.SetDraggable(True)
         lineDst.SetDraggable(True)
         lineSrc.SetPosition(w // 2 + myX, 0 + myY)
@@ -131,7 +131,7 @@ class OglSDInstance(OglObject):
             except (ValueError, Exception) as e:
                 self.logger.error(f'Link update position error: {e}')
         # Set TextBox
-        RectangleShape.SetSize(self._instanceBox, width, self._instanceBox.GetSize()[1])
+        RectangleShape.SetSize(self._instance, width, self._instance.GetSize()[1])
 
     def SetPosition(self, x: int, y: int):
         """ 
@@ -140,20 +140,20 @@ class OglSDInstance(OglObject):
         y = self._instanceYPosition
         OglObject.SetPosition(self, x, y)
 
-    def Draw(self, dc, withChildren=False):
+    def Draw(self, dc, withChildren=True):
         """
-        Draw overload; update labels
+        Draw override
+        Args:
+            dc:
+            withChildren:  defaulted to True because of the child shapes
         """
         # Update labels
-        self._instanceBoxText.SetText(self._pyutObject.instanceName)
-
+        self._instanceName.SetText(self._pyutObject.instanceName)
         # Call parent's Draw method
         if self.IsSelected():
             self.SetVisible(True)
             self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
 
-        # Draw
-        # OglObject.Draw(self, dc, withChildren)
         super().Draw(dc=dc, withChildren=withChildren)
 
     def OnLeftUp(self, event):
@@ -188,7 +188,7 @@ class OglSDInstance(OglObject):
 
         return lifeLineShape
 
-    def _createInstanceBox(self) -> RectangleShape:
+    def _createInstance(self) -> RectangleShape:
         """
 
         Returns:  The instance box
@@ -204,18 +204,18 @@ class OglSDInstance(OglObject):
 
         return instanceBox
 
-    def _createInstanceBoxText(self, pyutSDInstance: PyutSDInstance, instanceBox: RectangleShape) -> OglInstanceName:
+    def _createInstanceName(self, pyutSDInstance: PyutSDInstance, instanceBox: RectangleShape) -> OglInstanceName:
         """
 
         Returns:  An OglInstanceName
         """
         text: str = self._pyutObject.instanceName
 
-        instanceBoxText: OglInstanceName = OglInstanceName(pyutSDInstance, 0, 20, text, instanceBox)
+        oglInstanceName: OglInstanceName = OglInstanceName(pyutSDInstance, 0, 20, text, instanceBox)
 
-        self.AppendChild(instanceBoxText)
+        self.AppendChild(oglInstanceName)
 
-        return instanceBoxText
+        return oglInstanceName
 
     def __str__(self) -> str:
         instanceName: str = self._pyutObject.instanceName

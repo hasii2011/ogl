@@ -31,20 +31,24 @@ function independentlyRunSomeTests {
   status=$?
   checkStatus ${status} TestRectangleShape
 
+  python3 -m unittest -v tests.ogl.TestOglInterface2
+  status=$?
+  checkStatus ${status} TestOglInterface2
 
 }
 changeToProjectRoot
 
 echo "Travis Build directory: ${TRAVIS_BUILD_DIR}"
 
-python3 -m tests.TestAll
 
 echo "Independently run some tests"
 independentlyRunSomeTests
 
+python3 -m tests.TestAll
+status=$?
 
 cd -  > /dev/null 2>&1 || ! echo "No such directory"
 
-echo "Exit with status: ${status}"
+checkStatus ${status} TestAll
 exit ${status}
 
