@@ -25,7 +25,7 @@ cache: pip
 before_install:
   - brew list
   - brew upgrade python
-  - brew install pip
+  - curl https://bootstrap.pypa.io/get-pip.py | python
   #  - sudo apt install libgtk-3-dev
 #  - sudo apt-get install python-wxgtk3.0
 #  - sudo apt-get install -y  libsdl2-dev
