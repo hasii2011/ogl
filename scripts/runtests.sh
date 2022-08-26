@@ -27,7 +27,7 @@ function checkStatus {
 
 function independentlyRunSomeTests {
 
-  python -m unittest -v tests.miniogl.TestRectangleShape
+  python3 -m unittest -v tests.miniogl.TestRectangleShape
   status=$?
   checkStatus ${status} TestRectangleShape
 
@@ -37,7 +37,7 @@ changeToProjectRoot
 
 echo "Travis Build directory: ${TRAVIS_BUILD_DIR}"
 
-python -m tests.TestAll
+python3 -m tests.TestAll
 
 echo "Independently run some tests"
 independentlyRunSomeTests
