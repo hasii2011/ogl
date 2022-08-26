@@ -19,8 +19,8 @@ cache: pip
 #services:
 #  - xvfb
 
-python:
-  - "3.10.0"
+#python:
+#  - "3.10.0"
 
 #before_install:
 #  - sudo apt install libgtk-3-dev
