@@ -96,4 +96,4 @@ class OglNote(OglObject):
         if pyutNote is None:
             return f'Anonymous Note'
         else:
-            return f'{pyutNote.name}'
+            return f'{pyutNote.content}'
