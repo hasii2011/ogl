@@ -20,10 +20,6 @@ before_install:
 # command to install dependencies
 install:
   - python3 --version
-  - pip install Deprecated
-  - pip install html-testRunner
-  - pip install pyutmodel
-  - pip install wxPython~=4.2.0
-
+  - pip install -r requirements.txt
 # command to run tests
 script: ${TRAVIS_BUILD_DIR}/scripts/runtests.sh

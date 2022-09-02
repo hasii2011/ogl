@@ -26,12 +26,12 @@
             "level": "INFO",
             "propagate": "False"
         },
-        "org": {
+        "miniogl": {
             "level":     "WARNING",
             "propagate": "False"
         },
-        "org.pyut": {
-            "level":     "WARNING",
+        "miniogl.LineShape": {
+            "level":     "DEBUG",
             "propagate": "False"
         }
     }

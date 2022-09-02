@@ -7,8 +7,6 @@ from logging import getLogger
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from wx import App
-
 from tests.TestBase import TestBase
 
 from miniogl.AnchorPoint import AnchorPoint
@@ -31,13 +29,12 @@ class TestAnchorPoint(TestBase):
 
     def setUp(self):
         self.logger: Logger = TestAnchorPoint.clsLogger
-        self.app            = App()
 
+        super().setUp()
         self.anchorPoint: AnchorPoint = AnchorPoint(x=93, y=276, parent=None)
 
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
+        super().tearDown()
 
     EXPECTED_X: int = 268
     EXPECTED_Y: int = 1044

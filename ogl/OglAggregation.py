@@ -32,17 +32,14 @@ class OglAggregation(OglAssociation):
 
     def Draw(self, dc: DC, withChildren: bool = False):
         """
-        Called for contents drawing of links.
-
-        @param  dc : Device context
-        @param withChildren
-
-        @since 1.0
-        @author Philippe Waelti <pwaelti@eivd.ch>
+        Called to draw link contents
+        Args:
+            dc:     The device context
+            withChildren:  Should we draw childrent
         """
         super().Draw(dc, withChildren)
 
-        # Draw losange
+        # Draw diamond
         self.drawDiamond(dc, False)
 
     def __repr__(self):

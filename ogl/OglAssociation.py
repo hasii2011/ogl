@@ -30,7 +30,7 @@ from ogl.OglUtils import OglUtils
 SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
 SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
 
-DiamondPoint  = NewType('DiamondPoint', Tuple[float, float])
+DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
 
 PI_6:         float = pi / 6
@@ -41,7 +41,6 @@ class OglAssociation(OglLink):
 
     TEXT_SHAPE_FONT_SIZE: int = 12
 
-    clsLogger: Logger = getLogger(__name__)
     """
     Graphical link representation of an association, (simple line, no arrow).
     To get a new link,  use the `OglLinkFactory` and specify
@@ -57,6 +56,8 @@ class OglAssociation(OglLink):
             srcPos:     Position of source      Override location of input source
             dstPos:     Position of destination Override location of input destination
         """
+        self.oglAssociationLogger: Logger = getLogger(__name__)
+
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
         self._centerLabel:            OglAssociationLabel = OglAssociationLabel()
@@ -119,13 +120,15 @@ class OglAssociation(OglLink):
 
         Args:
             dc:         The device context
-            filled:     True if the losange must be filled, False otherwise
-
+            filled:     True if the diamond must be filled, False otherwise
         """
         #
         line = self.GetSegments()
 
+        # self.oglAssociationLogger.debug(f'{line=}')
         points: DiamondPoints = OglAssociation.calculateDiamondPoints(lineSegments=line)
+        # self.oglAssociationLogger.debug(f'{points:}')
+
         dc.SetPen(BLACK_PEN)
         if filled:
             dc.SetBrush(BLACK_BRUSH)
@@ -155,7 +158,7 @@ class OglAssociation(OglLink):
         srcLblX: int = round((20 * dx / linkLength - dx * 5 / linkLength) + sp.x)
         srcLblY: int = round((20 * dy / linkLength + dy * 5 / linkLength) + sp.y)
 
-        if OglAssociation.clsLogger.isEnabledFor(INFO):
+        if self.oglAssociationLogger.isEnabledFor(INFO):
             info = (
                 f'{sp=} '
                 f'{dp=} '
@@ -165,7 +168,7 @@ class OglAssociation(OglLink):
                 f'srcLblX={srcLblX:.2f} '
                 f'srcLblY={srcLblY:.2f}'
             )
-            OglAssociation.clsLogger.info(info)
+            self.oglAssociationLogger.info(info)
         saveFont: Font = dc.GetFont()
         dc.SetFont(self._defaultFont)
 
@@ -254,7 +257,7 @@ class OglAssociation(OglLink):
         dpx0: float = x2 + DIAMOND_SIZE * cos(alpha1)
         dpy0: float = y2 + DIAMOND_SIZE * sin(alpha1)
 
-        return DiamondPoint((dpx0, dpy0))
+        return DiamondPoint((round(dpx0), round(dpy0)))
 
     @classmethod
     def calculateDiamondPoint2(cls, x2: float, y2: float, alpha2: float) -> DiamondPoint:
@@ -262,7 +265,7 @@ class OglAssociation(OglLink):
         dpx2: float = x2 + DIAMOND_SIZE * cos(alpha2)
         dpy2: float = y2 + DIAMOND_SIZE * sin(alpha2)
 
-        return DiamondPoint((dpx2, dpy2))
+        return DiamondPoint((round(dpx2), round(dpy2)))
 
     @classmethod
     def calculateDiamondPoint3(cls, x2: float, y2: float, alpha: float) -> DiamondPoint:
@@ -270,7 +273,7 @@ class OglAssociation(OglLink):
         dpx3: float = x2 + 2 * DIAMOND_SIZE * cos(alpha)
         dpy3: float = y2 + 2 * DIAMOND_SIZE * sin(alpha)
 
-        return DiamondPoint((dpx3, dpy3))
+        return DiamondPoint((round(dpx3), round(dpy3)))
 
     def __repr__(self):
         return f'OglAssociation - from: {self.getSourceShape()} to: {self.getDestinationShape()}'

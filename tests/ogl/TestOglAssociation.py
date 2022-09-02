@@ -49,17 +49,17 @@ class TestOglAssociation(TestBase):
 
         self.logger.debug(f'{diamondPoints}')
 
-        self.assertAlmostEqual(553, diamondPoints[0][0], places=1)
-        self.assertAlmostEqual(175.5, diamondPoints[0][1], places=1)
+        self.assertEqual(553, diamondPoints[0][0], '')
+        self.assertEqual(176, diamondPoints[0][1], '')
 
-        self.assertAlmostEqual(547, diamondPoints[1][0], places=1)
-        self.assertAlmostEqual(172, diamondPoints[1][1], places=1)
+        self.assertEqual(547, diamondPoints[1][0], '')
+        self.assertEqual(172, diamondPoints[1][1], '')
 
-        self.assertAlmostEqual(553.1, diamondPoints[2][0], places=1)
-        self.assertAlmostEqual(168.5, diamondPoints[2][1], places=1)
+        self.assertEqual(553, diamondPoints[2][0], '')
+        self.assertEqual(169, diamondPoints[2][1], '')
 
-        self.assertAlmostEqual(561, diamondPoints[3][0], places=1)
-        self.assertAlmostEqual(172.1, diamondPoints[3][1], places=1)
+        self.assertEqual(561, diamondPoints[3][0], '')
+        self.assertEqual(172, diamondPoints[3][1], '')
 
     def testCalculateDiamondPointsVerticalLine(self):
         segmentPoint0: SegmentPoint = SegmentPoint((505, 243))
@@ -71,17 +71,17 @@ class TestOglAssociation(TestBase):
 
         self.logger.debug(f'{diamondPoints}')
 
-        self.assertAlmostEqual(501.5, diamondPoints[0][0], places=1)
-        self.assertAlmostEqual(249.08, diamondPoints[0][1], places=1)
+        self.assertEqual(502., diamondPoints[0][0], '')
+        self.assertEqual(249, diamondPoints[0][1], '')
 
-        self.assertAlmostEqual(505, diamondPoints[1][0], places=1)
-        self.assertAlmostEqual(243, diamondPoints[1][1], places=1)
+        self.assertEqual(505, diamondPoints[1][0], '')
+        self.assertEqual(243, diamondPoints[1][1], '')
 
-        self.assertAlmostEqual(508.5, diamondPoints[2][0], places=1)
-        self.assertAlmostEqual(249, diamondPoints[2][1], places=1)
+        self.assertEqual(509, diamondPoints[2][0], '')
+        self.assertEqual(249, diamondPoints[2][1], '')
 
-        self.assertAlmostEqual(505.07, diamondPoints[3][0], places=1)
-        self.assertAlmostEqual(256.99, diamondPoints[3][1], places=1)
+        self.assertEqual(505, diamondPoints[3][0], '')
+        self.assertEqual(257, diamondPoints[3][1], '')
 
 
 def suite() -> TestSuite:

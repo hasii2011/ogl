@@ -28,7 +28,7 @@ class LineShape(Shape, Common):
     The line must begin and end with AnchorPoints, and can be guided by
     ControlPoints.
     """
-    clsLogger: Logger = getLogger(__name__)
+    lineShapeLogger: Logger = getLogger(__name__)
 
     def __init__(self, srcAnchor: AnchorPoint, dstAnchor: AnchorPoint):
         """
@@ -208,7 +208,7 @@ class LineShape(Shape, Common):
         """
         sp = self._srcAnchor.GetPosition()
         dp = self._dstAnchor.GetPosition()
-        # LineShape.clsLogger.debug(f'GetSegments --  sp: {sp} dp: {dp}')
+        # LineShape.lineShapeLogger.debug(f'GetSegments --  sp: {sp} dp: {dp}')
         retList = [sp] + list(map(lambda x: x.GetPosition(), self._controls)) + [dp]
         return retList
 

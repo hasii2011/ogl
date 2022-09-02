@@ -27,27 +27,23 @@ function checkStatus {
 
 function independentlyRunSomeTests {
 
-  python3 -m unittest -v tests.miniogl.TestRectangleShape
+  python3 -m unittest tests.miniogl.TestRectangleShape
   status=$?
   checkStatus ${status} TestRectangleShape
 
-  python3 -m unittest -v tests.ogl.TestOglInterface2
+  python3 -m unittest tests.ogl.TestOglInterface2
   status=$?
   checkStatus ${status} TestOglInterface2
-
 }
 changeToProjectRoot
 
 echo "Travis Build directory: ${TRAVIS_BUILD_DIR}"
 
-
-echo "Independently run some tests"
-independentlyRunSomeTests
-
 python3 -m tests.TestAll
 status=$?
 
-cd -  > /dev/null 2>&1 || ! echo "No such directory"
+echo "Independently run some tests"
+independentlyRunSomeTests
 
 checkStatus ${status} TestAll
 exit ${status}
