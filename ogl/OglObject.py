@@ -151,8 +151,6 @@ class OglObject(RectangleShape, ShapeEventHandler):
         if self._prefs.snapToGrid is True:
             snappedX, snappedY = OglUtils.snapCoordinatesToGrid(x=x, y=y, gridInterval=gridInterval)
             self.SetPosition(snappedX, snappedY)
-        else:
-            self.SetPosition(x, y)
 
     def autoResize(self):
         """
