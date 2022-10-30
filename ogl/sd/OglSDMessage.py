@@ -151,8 +151,8 @@ class OglSDMessage(OglLink):
         Returns:  A tuple of anchor points for the source and destination shapes
 
         """
-        srcY: int = pyutSDMessage.getSrcY() - srcShape.getLifeLineShape().GetPosition()[1]
-        dstY: int = pyutSDMessage.getDstY() - dstShape.getLifeLineShape().GetPosition()[1]
+        srcY: int = pyutSDMessage.getSrcY() - srcShape.lifeline.GetPosition()[1]
+        dstY: int = pyutSDMessage.getDstY() - dstShape.lifeline.GetPosition()[1]
 
         srcAnchor: AnchorPoint = srcShape.getLifeLineShape().AddAnchor(0, srcY)
         dstAnchor: AnchorPoint = dstShape.getLifeLineShape().AddAnchor(0, dstY)

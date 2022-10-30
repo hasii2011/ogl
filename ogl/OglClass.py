@@ -385,7 +385,8 @@ class OglClass(OglObject):
 
         menu.Append(MENU_TOGGLE_STEREOTYPE, "Toggle stereotype display", "Set stereotype display on or off", True)
         item = menu.FindItemById(MENU_TOGGLE_STEREOTYPE)
-        item.Check(pyutObject.getShowStereotype())
+        # item.Check(pyutObject.getShowStereotype())
+        item.Check(pyutObject.displayStereoType)
 
         menu.Append(MENU_TOGGLE_FIELDS, "Toggle fields display", "Set fields display on or off", True)
         item = menu.FindItemById(MENU_TOGGLE_FIELDS)
