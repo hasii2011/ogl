@@ -588,12 +588,12 @@ class Shape:
         # shape model (ShapeModel) given by the frame where the shape
         # is displayed.
         ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
-        dx = self.GetDiagram().GetPanel().GetXOffset()
-        dy = self.GetDiagram().GetPanel().GetYOffset()
+        dx: int = round(self.GetDiagram().GetPanel().GetXOffset())
+        dy: int = round(self.GetDiagram().GetPanel().GetYOffset())
 
         # calculation of the shape (view) coordinates in the light of the offsets and ratio
-        x = (ratio * mx) + dx
-        y = (ratio * my) + dy
+        x: int = round(ratio * mx) + dx
+        y: int = round(ratio * my) + dy
 
         # assign the new coordinates to the shape (view). DON'T USE SetPosition(),
         # because there is a call to UpdateModel() in that method.
@@ -630,8 +630,8 @@ class Shape:
 
         # calculation of the model coordinates in the light of the
         # offsets and ratio and assignment.
-        mx = round(x - dx) // ratio
-        my = round(y - dy) // ratio
+        mx = round((x - dx) // ratio)
+        my = round((y - dy) // ratio)
         model.SetPosition(mx, my)
 
         # change also the position of the model of the children,
@@ -639,8 +639,8 @@ class Shape:
         # and so their update model is not called
         for child in self._anchors:
             cx, cy = child.GetPosition()
-            cmx = (cx - dx) // ratio
-            cmy = (cy - dy) // ratio
+            cmx = round((cx - dx) // ratio)
+            cmy = round((cy - dy) // ratio)
             child.GetModel().SetPosition(cmx, cmy)
 
     def GetModel(self):

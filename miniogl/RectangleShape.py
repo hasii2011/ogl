@@ -302,7 +302,8 @@ class RectangleShape(Shape):
         ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
 
         # set the new size to the shape.
-        self._width, self._height = width * ratio, height * ratio
+        self._width  = round(width * ratio)
+        self._height = round(height * ratio)
 
     def UpdateModel(self):
         """
