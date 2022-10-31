@@ -6,6 +6,8 @@ from typing import List
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
+
 from wx import Colour
 from wx import Rect
 from wx import WHITE
@@ -67,6 +69,9 @@ from miniogl.DlgDebugDiagramFrame import DlgDebugDiagramFrame
 
 
 class DiagramFrame(ScrolledWindow):
+    """
+    TODO:  Deprecate all the Get/Set methods and make the properties
+    """
 
     diagramFrameLogger: Logger = getLogger(__name__)
 
@@ -205,7 +210,7 @@ class DiagramFrame(ScrolledWindow):
             shapes.remove(shape)
             if isinstance(shape, SizerShape):
                 # don't deselect the parent of a sizer
-                # or its sizer's would be detached
+                # or the parent sizer is detached
                 shapes.remove(shape.GetParent())
             elif isinstance(shape, ControlPoint):
                 # don't deselect the line of a control point
@@ -424,6 +429,7 @@ class DiagramFrame(ScrolledWindow):
             shape.SetMoving(False)
         self._selectedShapes = []
 
+    @deprecated(reason='This method is unreliable')
     def GetSelectedShapes(self):
         """
         Get the selected shapes.
@@ -434,6 +440,7 @@ class DiagramFrame(ScrolledWindow):
         """
         return self._selectedShapes
 
+    @deprecated(reason='This method is unreliable')
     def SetSelectedShapes(self, shapes: List[Shape]):
         """
         Set the list of selected shapes.
@@ -629,8 +636,7 @@ class DiagramFrame(ScrolledWindow):
 
     def GetCurrentZoom(self):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        @return the global current zoom factor.
+        Returns:  the global current zoom factor.
         """
         zoom = 1.0
         for z in self._zoomStack:
@@ -647,71 +653,75 @@ class DiagramFrame(ScrolledWindow):
 
     def GetYOffset(self):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        @return the y offset between the model and the view of the shapes (MVC)
+
+        Returns:    the y offset between the model and the view of the shapes (MVC)
         """
         return self._yOffset
 
     def SetXOffset(self, offset):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
         Set the x offset between the model and the view of the shapes (MVC)
+        Args:
+            offset:
         """
         self._xOffset = offset
 
     def SetYOffset(self, offset):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
         Set the y offset between the model and the view of the shapes (MVC)
+        Args:
+            offset:
         """
         self._yOffset = offset
 
     def SetDefaultZoomFactor(self, factor):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
         Set the default zoom factor (1 = 100%)
+
+        Args:
+            factor:
         """
         self._defaultZoomFactor = factor
 
     def SetMaxZoomFactor(self, factor):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        Set the maximal zoom factor that can be reached (1 = 100%)
+        Set the maximum zoom factor that can be reached (1 = 100%)
+        Args:
+            factor:
         """
         self._maxZoomFactor = factor
 
     def GetDefaultZoomFactor(self):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        @return the default zoom factor. (1 = 100%)
+        Returns:    the default zoom factor. (1 = 100%)
         """
         return self._defaultZoomFactor
 
     def GetMaxZoomFactor(self):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        @return the maximal zoom factor that can be reached. (1 = 100%)
+
+        Returns:    The maximum zoom factor that can be reached. (1 = 100%)
         """
         return self._maxZoomFactor
 
     def SetMinZoomFactor(self, factor):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        Set the minimal zoom factor that can be reached. (1 = 100%)
+        Set the minimum zoom factor that can be reached. (1 = 100%)
+
+        Args:
+            factor:
         """
         self._minLevelZoom = factor
 
     def GetMinZoomFactor(self):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-        @return the minimal zoom factor that can be reached. (1 = 100%)
+
+        Returns:  The minimum zoom factor that can be reached. (1 = 100%)
         """
         return self._minZoomFactor
 
     def DoZoomIn(self, ax, ay, width=0, height=0):
         """
-        added by P. Dabrowski <przemek.dabrowski@destroy-display.com> (11.11.2005)
-
         Do the "zoom in" fitted on the selected area or with a default factor
         and the clicked point as central point of the zoom.
         The maximal zoom that can be reached is :
@@ -721,17 +731,15 @@ class DiagramFrame(ScrolledWindow):
         If the maximal zoom level is reached, then the shapes are just centered
         on the selected area or on the clicked point.
 
-        @param ax        :  abscissa of the upper left corner of the selected
+
+        Args:
+            ax:     abscissa of the upper left corner of the selected
                             area or abscissa of the central point of the zoom
-
-        @param ay        :  ordinate of the upper left corner of the selected
+            ay:     ordinate of the upper left corner of the selected
                             area or ordinate of the central point of the zoom
-
-        @param width    :   width of the selected area for the zoom
-
-        @param height   :   height of the selected area for the zoom
+            width:  width of the selected area for the zoom
+            height: height of the selected area for the zoom
         """
-
         # number of pixels per unit of scrolling
         xUnit, yUnit = self.GetScrollPixelsPerUnit()
 
