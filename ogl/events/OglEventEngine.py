@@ -60,52 +60,38 @@ class OglEventEngine(IEventEngine):
             **kwargs:
 
         """
+        try:
+            match eventType:
+                case OglEventType.ProjectModified:
+                    self._sendProjectModifiedEvent()
+                case OglEventType.RequestLollipopLocation:
+                    self._sendRequestLollipopLocationEvent(**kwargs)
+                case OglEventType.CutOglClass:
+                    self._sendCutShapeEvent(**kwargs)
+                case OglEventType.ShapeSelected:
+                    self._sendSelectedShapeEvent(**kwargs)
+                case OglEventType.CreateLollipopInterface:
+                    self._sendCreateLollipopInterfaceEvent(**kwargs)
+                case _:
+                    self.logger.warning(f'Unknown Ogl Event Type: {eventType}')
+        except KeyError as ke:
+            eMsg: str = f'Invalid keyword parameter. `{ke}`'
+            raise InvalidKeywordException(eMsg)
 
-        if eventType == OglEventType.ProjectModified:
-            self._sendProjectModifiedEvent()
+    def _sendSelectedShapeEvent(self, **kwargs):
 
-        elif eventType == OglEventType.RequestLollipopLocation:
-            try:
-                requestShape: Shape = kwargs[REQUEST_LOLLIPOP_LOCATION_PARAMETER]
-                self._sendRequestLollipopLocationEvent(requestShape=requestShape)
-            except KeyError:
-                eMsg: str = f'Invalid keyword parameter.  Use `{REQUEST_LOLLIPOP_LOCATION_PARAMETER}`'
-                raise InvalidKeywordException(eMsg)
-
-        elif eventType == OglEventType.CutOglClass:
-            try:
-                shapeToCut = kwargs[CUT_OGL_CLASS_PARAMETER]
-                self._sendCutShapeEvent(shapeToCut=shapeToCut)
-            except KeyError:
-                eMsg2: str = f'Invalid keyword parameter.  Use `{CUT_OGL_CLASS_PARAMETER}`'
-                raise InvalidKeywordException(eMsg2)
-
-        elif eventType == OglEventType.ShapeSelected:
-            try:
-                shape:    Shape = kwargs[SELECTED_SHAPE_PARAMETER]
-                position: Point = kwargs[SELECTED_SHAPE_POSITION_PARAMETER]
-                self._sendSelectedShapeEvent(shape=shape, position=position)
-            except KeyError:
-                eMsg3: str = f'Invalid keywords requires `{SELECTED_SHAPE_PARAMETER}` and `{SELECTED_SHAPE_POSITION_PARAMETER}`'
-                raise InvalidKeywordException(eMsg3)
-
-        elif eventType == OglEventType.CreateLollipopInterface:
-            try:
-                implementor:     OglClass          = kwargs[CREATE_LOLLIPOP_IMPLEMENTOR_PARAMETER]
-                attachmentPoint: SelectAnchorPoint = kwargs[CREATE_LOLLIPOP_ATTACHMENT_POINT_PARAMETER]
-                self._sendCreateLollipopInterfaceEvent(implementor=implementor, attachmentPoint=attachmentPoint)
-            except KeyError:
-                eMsg4: str = f'Invalid keywords requires `{CREATE_LOLLIPOP_IMPLEMENTOR_PARAMETER}` and `{CREATE_LOLLIPOP_ATTACHMENT_POINT_PARAMETER}`'
-                raise InvalidKeywordException(eMsg4)
-
-    def _sendSelectedShapeEvent(self, shape: Shape, position: Point):
+        shape:    Shape = kwargs[SELECTED_SHAPE_PARAMETER]
+        position: Point = kwargs[SELECTED_SHAPE_POSITION_PARAMETER]
 
         eventData:     ShapeSelectedEventData = ShapeSelectedEventData(shape=shape, position=position)
         selectedEvent: ShapeSelectedEvent     = ShapeSelectedEvent(shapeSelectedData=eventData)
 
         PostEvent(dest=self._listeningWindow, event=selectedEvent)
 
-    def _sendCutShapeEvent(self, shapeToCut: Shape):
+    def _sendCutShapeEvent(self, **kwargs):
+
+        shapeToCut = kwargs[CUT_OGL_CLASS_PARAMETER]
+
         cutOglClassEvent: CutOglClassEvent = CutOglClassEvent(selectedShape=shapeToCut)
         PostEvent(dest=self._listeningWindow, event=cutOglClassEvent)
 
@@ -113,11 +99,16 @@ class OglEventEngine(IEventEngine):
         eventToPost: ProjectModifiedEvent = ProjectModifiedEvent()
         PostEvent(dest=self._listeningWindow, event=eventToPost)
 
-    def _sendRequestLollipopLocationEvent(self, requestShape: Shape):
-        eventToPost: RequestLollipopLocationEvent = RequestLollipopLocationEvent(shape=requestShape)
+    def _sendRequestLollipopLocationEvent(self, **kwargs):
+
+        requestShape: Shape                        = kwargs[REQUEST_LOLLIPOP_LOCATION_PARAMETER]
+        eventToPost:  RequestLollipopLocationEvent = RequestLollipopLocationEvent(shape=requestShape)
         PostEvent(dest=self._listeningWindow, event=eventToPost)
 
-    def _sendCreateLollipopInterfaceEvent(self, implementor: 'OglClass', attachmentPoint: 'SelectAnchorPoint'):
+    def _sendCreateLollipopInterfaceEvent(self, **kwargs):
+
+        implementor:     OglClass          = kwargs[CREATE_LOLLIPOP_IMPLEMENTOR_PARAMETER]
+        attachmentPoint: SelectAnchorPoint = kwargs[CREATE_LOLLIPOP_ATTACHMENT_POINT_PARAMETER]
 
         eventToPost: CreateLollipopInterfaceEvent = CreateLollipopInterfaceEvent(implementor=implementor, attachmentPoint=attachmentPoint)
         PostEvent(dest=self._listeningWindow, event=eventToPost)
