@@ -171,21 +171,14 @@ class OglLink(LineShape, ShapeEventHandler):
 
     def getSourceShape(self):
         """
-        Return the source shape for this link.
-
-        @return OglObject
-        @since 1.22
-        @author Laurent Burgbacher <lb@alawa.ch>
+        Returns:  the source shape for this link.
         """
         return self._srcShape
 
     def getDestinationShape(self):
         """
-        Return the destination shape for this link.
 
-        @return OglObject
-        @since 1.22
-        @author Laurent Burgbacher <lb@alawa.ch>
+        Returns:    The destination shape for this link.
         """
         return self._destShape
 
@@ -222,10 +215,7 @@ class OglLink(LineShape, ShapeEventHandler):
 
     def Detach(self):
         """
-        Detach the line and all its line points, including src and dst.
-
-        @since 1.0
-        @author Laurent Burgbacher <lb@alawa.ch>
+        Detach the line and all its line points, including source and destination.
         """
         if self._diagram is not None and not self._protected:
             LineShape.Detach(self)

@@ -54,16 +54,8 @@ class OglInterface(OglLink):
     def updateLabels(self):
         """
         Update the labels according to the link.
-
-        @since 1.14
-        @author Laurent Burgbacher <lb@alawa.ch>
         """
         def prepareLabel(textShape, text):
-            """
-            Update a label.
-
-            @author Laurent Burgbacher <lb@alawa.ch>
-            """
             # If label should be drawn
             if text.strip() != "":
                 textShape.SetText(text)

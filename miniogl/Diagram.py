@@ -62,6 +62,8 @@ class Diagram:
 
         @param  shape
         """
+        if isinstance(shape, SizerShape):
+            self.clsLogger.warning(f'Removing SizerShape')
         if shape in self._shapes:
             self._shapes.remove(shape)
         if shape in self._parentShapes:
