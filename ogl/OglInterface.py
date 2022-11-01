@@ -13,7 +13,6 @@ from wx import WHITE_BRUSH
 
 from pyutmodel.PyutLink import PyutLink
 
-
 from ogl.OglLink import OglLink
 from ogl.OglClass import OglClass
 
@@ -125,3 +124,6 @@ class OglInterface(OglLink):
 
             if withChildren is True:
                 self.DrawChildren(dc)
+
+    def __repr__(self):
+        return f'OglInterface - {super().__repr__()}'

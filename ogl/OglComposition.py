@@ -1,8 +1,8 @@
 
 from wx import DC
 
-from miniogl import Shape
 from pyutmodel.PyutLink import PyutLink
+
 from ogl.OglAssociation import OglAssociation
 from ogl.OglClass import OglClass
 
@@ -39,9 +39,5 @@ class OglComposition(OglAssociation):
         self.drawDiamond(dc, True)
 
     def __repr__(self):
-        srcShape: Shape = self.getSourceShape()
-        dstShape: Shape = self.getDestinationShape()
-        sourceId: int   = srcShape.GetID()
-        dstId:    int   = dstShape.GetID()
-
-        return f'OglComposition - from: id: {sourceId} {self.getSourceShape()} to: id: {dstId} {self.getDestinationShape()}'
+        from ogl.OglLink import OglLink
+        return f'OglComposition - {OglLink.__repr__(self)}'

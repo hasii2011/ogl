@@ -4,7 +4,6 @@ from logging import getLogger
 
 from wx import DC
 
-from miniogl.Shape import Shape
 from ogl.OglAssociation import OglAssociation
 
 
@@ -35,7 +34,7 @@ class OglAggregation(OglAssociation):
         Called to draw link contents
         Args:
             dc:     The device context
-            withChildren:  Should we draw childrent
+            withChildren:  Should we draw children
         """
         super().Draw(dc, withChildren)
 
@@ -43,10 +42,5 @@ class OglAggregation(OglAssociation):
         self.drawDiamond(dc, False)
 
     def __repr__(self):
-
-        srcShape:  Shape = self.getSourceShape()
-        destShape: Shape = self.getDestinationShape()
-        sourceId:  int   = srcShape.GetID()
-        destId:    int   = destShape.GetID()
-
-        return f'OglAggregation - from: id: {sourceId} {self.getSourceShape()} to: id: {destId} {self.getDestinationShape()}'
+        from ogl.OglLink import OglLink
+        return f'OglAggregation - {OglLink.__repr__(self)}'

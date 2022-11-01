@@ -23,6 +23,7 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
 from miniogl.LinePoint import LinePoint
 from miniogl.LineShape import LineShape
+from miniogl.Shape import Shape
 from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.AttachmentLocation import AttachmentLocation
 
@@ -413,3 +414,12 @@ class OglLink(LineShape, ShapeEventHandler):
                 closestPoint = cast(ControlPoint, controlPoint)
 
         return closestPoint
+
+    def __repr__(self):
+
+        srcShape: Shape = self.getSourceShape()
+        dstShape: Shape = self.getDestinationShape()
+        sourceId: int   = srcShape.id
+        dstId:    int   = dstShape.id
+
+        return f'from: id: {sourceId} {srcShape} to id: {dstId} {dstShape}'
