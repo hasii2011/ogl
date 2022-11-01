@@ -15,6 +15,8 @@ from wx import RED
 from wx import RED_PEN
 from wx import WHITE_BRUSH
 
+from deprecated import deprecated
+
 from miniogl.ShapeModel import ShapeModel
 
 from ogl.preferences.OglPreferences import OglPreferences
@@ -72,6 +74,14 @@ class Shape:
                 t: TextShape = self.AddText(0, -10, str(self._id))
                 t.SetColor(RED)
 
+    @property
+    def id(self) -> int:
+        return self._id
+
+    @id.setter
+    def id(self, newValue: int):
+        self._id = newValue
+
     def SetPen(self, pen: Pen):
         """
         Set the pen used to draw the shape.
@@ -104,16 +114,21 @@ class Shape:
         """
         return self._brush
 
+    @deprecated(reason='Use the .id property')
     def GetID(self):
         """
+        TODO:  Make this a property
         Get the ID number of the shape.
 
         @return int
         """
         return self._id
 
+    @deprecated(reason='Use the .id property')
     def SetID(self, theId):
         """
+        TODO: Make this a property
+
         Set the ID of the shape. This can be used when loading a shape.
 
         @param theId

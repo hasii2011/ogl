@@ -134,7 +134,7 @@ class OglInterface2(LollipopLine, Common):
             return False
 
     def __hash__(self):
-        return hash(self._pyutInterface.name) + hash(self.GetID())
+        return hash(self._pyutInterface.name) + hash(self.id)
 
     def _isSameName(self, other) -> bool:
 
@@ -146,7 +146,8 @@ class OglInterface2(LollipopLine, Common):
     def _isSameId(self, other):
 
         ans: bool = False
-        if self.GetID() == other.GetID():
+        # if self.GetID() == other.GetID():
+        if self.id == other.id:
             ans = True
         return ans
 
