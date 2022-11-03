@@ -154,8 +154,8 @@ class OglSDMessage(OglLink):
         srcY: int = pyutSDMessage.getSrcY() - srcShape.lifeline.GetPosition()[1]
         dstY: int = pyutSDMessage.getDstY() - dstShape.lifeline.GetPosition()[1]
 
-        srcAnchor: AnchorPoint = srcShape.getLifeLineShape().AddAnchor(0, srcY)
-        dstAnchor: AnchorPoint = dstShape.getLifeLineShape().AddAnchor(0, dstY)
+        srcAnchor: AnchorPoint = srcShape.lifeline.AddAnchor(0, srcY)
+        dstAnchor: AnchorPoint = dstShape.lifeline.AddAnchor(0, dstY)
         srcAnchor.SetStayOnBorder(False)
         dstAnchor.SetStayOnBorder(False)
         srcAnchor.SetStayInside(True)
