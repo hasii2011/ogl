@@ -1,9 +1,8 @@
 
 [![Build Status](https://app.travis-ci.com/hasii2011/ogl.svg?branch=master)](https://app.travis-ci.com/hasii2011/ogl)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+<img width="34" height="20" src="./ogl/resources/img/agpl-license-web-badge-version-2.png"/> 
 [![macOS](https://svgshare.com/i/ZjP.svg)](https://svgshare.com/i/ZjP.svg)
-<img width="34" height="17" src="./src/org/pyut/resources/img/gplv3-with-text-136x68.png"/> 
-
 [![forthebadge made-with-python](http://ForTheBadge.com/images/badges/made-with-python.svg)](https://www.python.org/)
 
 𝓟 𝓨 𝓤 𝓣 stands for Python UML Tool. This is the external graphical shapes module for Pyut
