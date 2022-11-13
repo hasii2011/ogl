@@ -29,11 +29,12 @@ class TestAll:
     NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine',
                             # These are just independently run
                             'miniogl/TestRectangleShape',
-                            'ogl/TestOglInterface2'
+                            'ogl/TestOglInterface2',
+                            'ogl/TestLinkRepr',
                             ]
 
     VERBOSITY_QUIET:   int = 0  # Print the total numbers of tests executed and the global result
-    VERBOSITY_DEFAULT: int = 1  # VERBOSITY_QUIET plus a dot for every successful test or a F for every failure
+    VERBOSITY_DEFAULT: int = 1  # VERBOSITY_QUIET plus a dot for every successful test or an F for every failure
     VERBOSITY_VERBOSE: int = 2  # Print help string of every test and the result
     VERBOSITY_LOUD:    int = 3  # ??
 

@@ -12,7 +12,6 @@ from unittest import main as unitTestMain
 from pyutmodel.PyutClass import PyutClass
 from pyutmodel.PyutLink import PyutLink
 from pyutmodel.PyutLinkType import PyutLinkType
-from wx import App
 
 from ogl.OglAggregation import OglAggregation
 from ogl.OglAssociation import OglAssociation
@@ -54,15 +53,13 @@ class TestLinkRepr(TestBase):
         TestLinkRepr.clsLogger = getLogger(__name__)
 
     def setUp(self):
-        self.app: App = App()
-
+        super().setUp()
         self.logger: Logger = TestLinkRepr.clsLogger
 
         self._linkClasses: LinkClasses = self._createLinkClasses()
 
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
+        super().tearDown()
 
     def testOglInterfaceRepr(self):
 
