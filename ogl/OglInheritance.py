@@ -35,7 +35,7 @@ class OglInheritance(OglLink):
 
     def __repr__(self):
         srcShape:  Shape = self.getSourceShape()
-        dstShape: Shape  = self.getDestinationShape()
-        sourceId:  int   = srcShape.GetID()
-        dstId:    int    = dstShape.GetID()
+        dstShape:  Shape = self.getDestinationShape()
+        sourceId:  int   = srcShape.id
+        dstId:     int   = dstShape.id
         return f'OglInheritance[from: id: {sourceId} {self.getSourceShape()} to: id: {dstId} {self.getDestinationShape()}]'

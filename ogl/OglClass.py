@@ -172,7 +172,7 @@ class OglClass(OglObject):
         pyutClass: PyutClass = self.pyutObject
         # stereo = self.getPyutObject().getStereotype()
         stereo: PyutStereotype = pyutClass.stereotype
-        if stereo is not None and stereo.name != '' and pyutClass.getShowStereotype() is True:
+        if stereo is not None and stereo.name != '' and pyutClass.displayStereoType is True:
             name = str(stereo)
             nameWidth = self.GetTextWidth(dc, name)
             if draw:
@@ -435,7 +435,7 @@ class OglClass(OglObject):
         eventId:      int       = event.GetId()
 
         if eventId == MENU_TOGGLE_STEREOTYPE:
-            pyutObject.setShowStereotype(not pyutObject.getShowStereotype())
+            pyutObject.setShowStereotype(not pyutObject.displayStereoType)
             self.autoResize()
         elif eventId == MENU_TOGGLE_METHODS:
             pyutObject.showMethods = not pyutObject.showMethods     # flip it!!  too cute
@@ -447,10 +447,8 @@ class OglClass(OglObject):
             self.autoResize()
         elif eventId == MENU_CUT_SHAPE:
             self.eventEngine.sendEvent(OglEventType.CutOglClass, shapeToCut=self)
-            # self.eventEngine.sendCutShapeEvent(shapeToCut=self)
         elif eventId == MENU_IMPLEMENT_INTERFACE:
             self.eventEngine.sendEvent(OglEventType.RequestLollipopLocation, requestShape=self)
-            # self.eventEngine.sendRequestLollipopLocationEvent(requestShape=self)
         else:
             event.Skip()
 
