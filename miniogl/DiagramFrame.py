@@ -76,9 +76,9 @@ class DiagramFrame(ScrolledWindow):
     diagramFrameLogger: Logger = getLogger(__name__)
 
     """
-    A frame to draw simulation diagrams.
-    This frame also manage all mouse events.
-    It has a Diagram automatically associated.
+    A frame to draw UML diagrams.
+    This frame also manages all mouse events.
+    It has a Diagram that is automatically associated.
     """
     def __init__(self, parent: Window):
         """
@@ -99,14 +99,15 @@ class DiagramFrame(ScrolledWindow):
         self._clickedShape: Shape = cast(Shape, None)      # last clicked shape
         self._moving:       bool  = False     # a drag has been initiated
 
-        self._xOffset:   float       = 0.0   # abscissa offset between the view and the model
-        self._yOffset:   float       = 0.0   # ordinate offset between the view and the model
+        self._xOffset:   int       = 0   # abscissa offset between the view and the model
+        self._yOffset:   int       = 0   # ordinate offset between the view and the model
         self._zoomStack: List[float] = []    # store all zoom factors applied
 
         self._zoomLevel = 0             # number of zoom factors applied
-        self._maxZoomFactor = 6         # can zoom in beyond 600%
-        self._minZoomFactor = 0.2       # can zoom out beyond 20%
-        self._defaultZoomFactor = 1.5   # used when only a point is selected
+        self._maxZoomFactor: float = 6         # can zoom in beyond 600%
+        self._minZoomFactor: float = 0.2       # can zoom out beyond 20%
+
+        self._defaultZoomFactor:float = 1.5   # used when only a point is selected
 
         # margins define a perimeter around the work area that must remains
         # blank and hidden. if we scroll beyond the limits, the diagram is
@@ -145,15 +146,70 @@ class DiagramFrame(ScrolledWindow):
             self._debugDialog.startMonitor()
             self._debugDialog.Show(True)
 
+    @property
+    def currentZoom(self) -> float:
+        """
+        Returns:  the global current zoom factor.
+        """
+        zoom = 1.0
+        for z in self._zoomStack:
+            zoom *= z
+        return zoom
+
+    @property
+    def xOffSet(self) -> int:
+        """
+        Returns:          Returns: the x offset between the model and the shapes view (MVC)
+        """
+        return self._xOffset
+
+    @xOffSet.setter
+    def xOffSet(self, newValue: int):
+        self._xOffset = newValue
+
+    @property
+    def yOffSet(self) -> int:
+        """
+        Returns:    the y offset between the model and the view of the shapes (MVC)
+        """
+        return self._yOffset
+
+    @yOffSet.setter
+    def yOffSet(self, newValue: int):
+        self._yOffset = newValue
+
+    @property
+    def defaultZoomFactor(self) -> float:
+        return self._defaultZoomFactor
+
+    @defaultZoomFactor.setter
+    def defaultZoomFactor(self, newValue: float):
+        self._defaultZoomFactor = newValue
+
+    @property
+    def minZoomFactor(self) -> float:
+        return self._minZoomFactor
+
+    @minZoomFactor.setter
+    def minZoomFactor(self, newValue: float):
+        self._minZoomFactor = newValue
+
+    @property
+    def maxZoomFactor(self) -> float:
+        return self._maxZoomFactor
+
+    @maxZoomFactor.setter
+    def maxZoomFactor(self, newValue: float):
+        self._maxZoomFactor = newValue
+
     def getEventPosition(self, event: MouseEvent):
         """
         Return the position of a click in the diagram.
+        Args:
+            event:   The mouse event
 
-        @param  event : mouse event
-
-        @return (int, int) : x, y
+        Returns: A tuple with x,y coordinates
         """
-
         x, y = self._ConvertEventCoordinates(event)  # Updated by CD, 20041005
         return x, y
 
@@ -634,6 +690,7 @@ class DiagramFrame(ScrolledWindow):
 
         dc.Blit(0, 0, w, h, mem, x, y)
 
+    @deprecated(reason='Use the currentZoom property')
     def GetCurrentZoom(self):
         """
         Returns:  the global current zoom factor.
@@ -643,14 +700,15 @@ class DiagramFrame(ScrolledWindow):
             zoom *= z
         return zoom
 
+    @deprecated(reason='Use the .xOffSet property')
     def GetXOffset(self):
         """
-
         Returns: the x offset between the model and the shapes view (MVC)
 
         """
         return self._xOffset
 
+    @deprecated(reason='Use the .yOffSet property')
     def GetYOffset(self):
         """
 
@@ -658,6 +716,7 @@ class DiagramFrame(ScrolledWindow):
         """
         return self._yOffset
 
+    @deprecated(reason='Use the .xOffset property')
     def SetXOffset(self, offset):
         """
         Set the x offset between the model and the view of the shapes (MVC)
@@ -666,6 +725,7 @@ class DiagramFrame(ScrolledWindow):
         """
         self._xOffset = offset
 
+    @deprecated(reason='Use the yOffSet property')
     def SetYOffset(self, offset):
         """
         Set the y offset between the model and the view of the shapes (MVC)
@@ -674,6 +734,14 @@ class DiagramFrame(ScrolledWindow):
         """
         self._yOffset = offset
 
+    @deprecated(reason='use the .defaultZoomFactor property')
+    def GetDefaultZoomFactor(self):
+        """
+        Returns:    the default zoom factor. (1 = 100%)
+        """
+        return self._defaultZoomFactor
+
+    @deprecated(reason='Use the .defaultZoomFactor property')
     def SetDefaultZoomFactor(self, factor):
         """
         Set the default zoom factor (1 = 100%)
@@ -683,6 +751,15 @@ class DiagramFrame(ScrolledWindow):
         """
         self._defaultZoomFactor = factor
 
+    @deprecated(reason='Use the .maxZoomFactor property')
+    def GetMaxZoomFactor(self):
+        """
+
+        Returns:    The maximum zoom factor that can be reached. (1 = 100%)
+        """
+        return self._maxZoomFactor
+
+    @deprecated(reason='Use the .maxZoomFactor property')
     def SetMaxZoomFactor(self, factor):
         """
         Set the maximum zoom factor that can be reached (1 = 100%)
@@ -691,19 +768,15 @@ class DiagramFrame(ScrolledWindow):
         """
         self._maxZoomFactor = factor
 
-    def GetDefaultZoomFactor(self):
-        """
-        Returns:    the default zoom factor. (1 = 100%)
-        """
-        return self._defaultZoomFactor
-
-    def GetMaxZoomFactor(self):
+    @deprecated(reason='Use the ._minZoomFactor property')
+    def GetMinZoomFactor(self):
         """
 
-        Returns:    The maximum zoom factor that can be reached. (1 = 100%)
+        Returns:  The minimum zoom factor that can be reached. (1 = 100%)
         """
-        return self._maxZoomFactor
+        return self._minZoomFactor
 
+    @deprecated(reason='Use the .minZoomFactor property')
     def SetMinZoomFactor(self, factor):
         """
         Set the minimum zoom factor that can be reached. (1 = 100%)
@@ -712,13 +785,6 @@ class DiagramFrame(ScrolledWindow):
             factor:
         """
         self._minLevelZoom = factor
-
-    def GetMinZoomFactor(self):
-        """
-
-        Returns:  The minimum zoom factor that can be reached. (1 = 100%)
-        """
-        return self._minZoomFactor
 
     def DoZoomIn(self, ax, ay, width=0, height=0):
         """
