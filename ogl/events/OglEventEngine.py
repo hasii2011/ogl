@@ -19,7 +19,8 @@ if TYPE_CHECKING:
 from miniogl.Shape import Shape
 
 from ogl.events.IEventEngine import IEventEngine
-from ogl.events.OglEventType import OglEventType
+
+from ogl.events.OglEvents import OglEventType
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
 from ogl.events.OglEvents import CutOglClassEvent
 from ogl.events.OglEvents import ProjectModifiedEvent

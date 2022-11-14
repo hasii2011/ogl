@@ -35,7 +35,7 @@ from ogl.OglObject import DEFAULT_FONT_SIZE
 
 from ogl.OglConstants import OglConstants
 from ogl.OglUtils import OglUtils
-from ogl.events.OglEventType import OglEventType
+from ogl.events.OglEvents import OglEventType
 
 from ogl.preferences.OglPreferences import OglPreferences
 

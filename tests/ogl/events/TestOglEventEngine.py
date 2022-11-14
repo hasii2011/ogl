@@ -36,7 +36,7 @@ from miniogl.SelectAnchorPoint import SelectAnchorPoint
 from ogl.OglClass import OglClass
 
 from ogl.events.OglEventEngine import OglEventEngine
-from ogl.events.OglEventType import OglEventType
+from ogl.events.OglEvents import OglEventType
 
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
 from ogl.events.OglEvents import CutOglClassEvent

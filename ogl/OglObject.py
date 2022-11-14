@@ -20,7 +20,7 @@ from miniogl.ShapeEventHandler import ShapeEventHandler
 from ogl.OglLink import OglLink
 from ogl.OglUtils import OglUtils
 
-from ogl.events.OglEventType import OglEventType
+from ogl.events.OglEvents import OglEventType
 from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
