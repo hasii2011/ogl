@@ -278,13 +278,14 @@ class Shape:
         removed, and link lines too.
         """
         # do not detach a protected shape
+        from miniogl.Diagram import Diagram
 
         if self._diagram is not None and not self._protected:
             # noinspection PyProtectedMember
             self.GetModel()._views.remove(self)
 
             diagram = self._diagram
-            self._diagram = None
+            self._diagram = cast(Diagram, None)
             diagram.RemoveShape(self)
             # detach the anchors + children
             while self._anchors:

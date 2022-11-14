@@ -34,7 +34,6 @@ class TestOglInterface2(TestBase):
 
         TestBase.setUpLogging()
         TestOglInterface2.clsLogger = getLogger(__name__)
-        TestOglInterface2.clsApp    = App()
 
     @classmethod
     def tearDownClass(cls):
@@ -46,7 +45,7 @@ class TestOglInterface2(TestBase):
         self.app: App = App()
 
         self._pyutInterface:    PyutInterface     = PyutInterface()
-        self._destinationAnchor: SelectAnchorPoint = SelectAnchorPoint(250, 250, AttachmentLocation.NORTH)
+        self._destinationAnchor: SelectAnchorPoint = SelectAnchorPoint(250, 250, AttachmentLocation.NORTH, None)
 
     def tearDown(self):
         self.app.OnExit()

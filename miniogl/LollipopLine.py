@@ -84,24 +84,24 @@ class LollipopLine(Shape):
         self.logger.debug(f'{lollipopLength}')
 
         if attachmentPoint == AttachmentLocation.EAST:
-            xSrc: int = int(xDest + lollipopLength)
-            ySrc: int = int(yDest)
+            xSrc:    int = int(xDest + lollipopLength)
+            ySrc:    int = int(yDest)
             circleX: int = int(xDest + lollipopLength)
             circleY: int = int(yDest)
         elif attachmentPoint == AttachmentLocation.WEST:
-            xSrc: int = int(xDest - lollipopLength)
-            ySrc: int = int(yDest)
-            circleX: int = int(xDest - lollipopLength)
-            circleY: int = int(yDest)
+            xSrc    = int(xDest - lollipopLength)
+            ySrc    = int(yDest)
+            circleX = int(xDest - lollipopLength)
+            circleY = int(yDest)
         elif attachmentPoint == AttachmentLocation.NORTH:
-            xSrc: int = int(xDest)
-            ySrc: int = int(yDest - lollipopLength)
-            circleX: int = int(xDest)
-            circleY: int = int(yDest - lollipopLength)
+            xSrc    = int(xDest)
+            ySrc    = int(yDest - lollipopLength)
+            circleX = int(xDest)
+            circleY = int(yDest - lollipopLength)
         else:  # it is South
-            xSrc: int = int(xDest)
-            ySrc: int = int(yDest + lollipopLength)
-            circleX: int = int(xDest)
-            circleY: int = int(yDest + lollipopLength)
+            xSrc    = int(xDest)
+            ySrc    = int(yDest + lollipopLength)
+            circleX = int(xDest)
+            circleY = int(yDest + lollipopLength)
 
         return circleX, circleY, xSrc, ySrc

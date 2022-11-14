@@ -22,7 +22,7 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
     to attach something
 
     """
-    def __init__(self, x: int, y: int, attachmentPoint: AttachmentLocation, parent: Shape = None):
+    def __init__(self, x: int, y: int, attachmentPoint: AttachmentLocation, parent: Shape | None):
         """
 
         Args:

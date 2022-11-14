@@ -67,16 +67,16 @@ class TestMiniOglApp(App):
 
         for x in range(10):
             for y in range(3):
-                pointShape: PointShape = PointShape(300 + x*50, 300 + y*50)
+                pointShape = PointShape(300 + x*50, 300 + y*50)
                 diagramFrame.AddShape(pointShape)
 
         rectShape: RectangleShape = RectangleShape(100, 50, 130, 80)
         rectShape.SetDraggable(True)
         diagramFrame.AddShape(rectShape)
 
-        anchor1 = AnchorPoint(50, 100)
+        anchor1 = AnchorPoint(50, 100, None)
         anchor1.SetDraggable(True)
-        anchor2 = AnchorPoint(200, 300)
+        anchor2 = AnchorPoint(200, 300, None)
         anchor2.SetDraggable(True)
 
         lineShape: LineShape = LineShape(anchor1, anchor2)
@@ -84,10 +84,10 @@ class TestMiniOglApp(App):
         lineShape.SetDraggable(True)
         lineShape.SetSpline(False)
 
-        controlPoint: ControlPoint = ControlPoint(50, 150)
-        lineShape.AddControl(controlPoint)
-        controlPoint = ControlPoint(200, 150)
-        lineShape.AddControl(controlPoint)
+        controlPoint: ControlPoint = ControlPoint(50, 150, None)
+        lineShape.AddControl(controlPoint, None)
+        controlPoint = ControlPoint(200, 150, None)
+        lineShape.AddControl(controlPoint, None)
 
         diagramFrame.AddShape(lineShape)
 

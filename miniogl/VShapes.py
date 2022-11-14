@@ -1,4 +1,4 @@
-
+# type: ignore
 """
 This is a suite of small classes used to draw RotatableShapes.
 Each one represent a simple shape (line, rectangle, circle, ellipse...) or

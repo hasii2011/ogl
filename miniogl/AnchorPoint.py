@@ -11,7 +11,7 @@ class AnchorPoint(LinePoint):
     This is a point which begins or ends a line.
     It is often anchored to a parent shape, but that's not mandatory.
     """
-    def __init__(self, x: int, y: int, parent: Shape = None):
+    def __init__(self, x: int, y: int, parent: Shape | None):
         """
 
         Args:

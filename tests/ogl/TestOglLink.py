@@ -82,11 +82,11 @@ class TestOglLink(TestBase):
         pointsToAdd: ControlPoints = self._createControlPoints()
 
         for cp in pointsToAdd:
-            oglLink.AddControl(cp)
+            oglLink.AddControl(cp, None)
 
         self.logger.debug(f'{len(oglLink._controls)=}')
 
-        expectedControlPoint: ControlPoint = pointsToAdd[0]
+        expectedControlPoint: ControlPoint = pointsToAdd[0]     # type: ignore
         closestPoint:         ControlPoint = oglLink._findClosestControlPoint(clickPoint=(100, 151))
 
         self.logger.debug(f'{closestPoint=}')

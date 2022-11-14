@@ -2,7 +2,8 @@
 
 function changeToProjectRoot {
 
-    export areHere=`basename ${PWD}`
+    areHere=$(basename "${PWD}")
+    export areHere
     if [[ ${areHere} = "scripts" ]]; then
         cd ..
     fi
@@ -10,7 +11,7 @@ function changeToProjectRoot {
 
 changeToProjectRoot
 
-mypy --config-file .mypi.ini --pretty --no-color-output --show-error-codes miniogl ogl tests
+mypy --config-file .mypi.ini --pretty --no-color-output --show-error-codes --check-untyped-defs miniogl ogl tests
 # mypy --config-file .mypi.ini --pretty  --show-error-codes org
 status=$?
 

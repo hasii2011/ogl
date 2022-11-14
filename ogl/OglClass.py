@@ -69,7 +69,7 @@ class OglClass(OglObject):
     For more instructions about how to create an OGL object, please refer
     to the `OglObject` class.
     """
-    def __init__(self, pyutClass: PyutClass = None, w: int = 0, h: int = 0):
+    def __init__(self, pyutClass: PyutClass | None, w: int = 0, h: int = 0):
         """
 
         Args:

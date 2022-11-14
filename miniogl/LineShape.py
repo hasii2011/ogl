@@ -102,7 +102,7 @@ class LineShape(Shape, Common):
             # odd number, take the middle point
             return points[middle]
 
-    def AddControl(self, control: ControlPoint, after: Union[ControlPoint, LinePoint] = None):
+    def AddControl(self, control: ControlPoint, after: Union[ControlPoint, LinePoint] | None):
         """
         Add a control point to the line.
         The control point can be appended (last before the destination anchor)
@@ -337,7 +337,7 @@ class LineShape(Shape, Common):
         Remove all the control points of the line.
         """
         while self._controls:
-            self._removeControl(self._controls[0])
+            self._removeControl(self._controls[0])   # type: ignore
 
     def Remove(self, point):
         """

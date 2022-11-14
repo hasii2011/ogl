@@ -9,6 +9,7 @@ from unittest import main as unitTestMain
 
 from tests.TestBase import TestBase
 
+from miniogl.Shape import Shape
 from miniogl.AnchorPoint import AnchorPoint
 
 
@@ -31,7 +32,7 @@ class TestAnchorPoint(TestBase):
         self.logger: Logger = TestAnchorPoint.clsLogger
 
         super().setUp()
-        self.anchorPoint: AnchorPoint = AnchorPoint(x=93, y=276, parent=None)
+        self.anchorPoint: AnchorPoint = AnchorPoint(x=93, y=276, parent=cast(Shape, None))
 
     def tearDown(self):
         super().tearDown()

@@ -1,4 +1,6 @@
 
+from typing import Union
+
 from logging import Logger
 from logging import getLogger
 
@@ -55,13 +57,19 @@ class Diagram:
         self._shapes = []
         self._parentShapes = []
 
-    def RemoveShape(self, shape: SizerShape):
+    def RemoveShape(self, shape: Union[Shape, SizerShape]):
         """
         Remove a shape from the diagram. Use Shape.Detach() instead!
         This also works, but it not the better way.
 
-        @param  shape
+        TODO:  Use a Union for now;  I think the correct type is just Shape.  But,
+        I need to see how Pyut uses it
+
+        Args:
+            shape:
+
         """
+        Diagram.clsLogger.debug(f'Determine what got passed in: {shape=}')
         if isinstance(shape, SizerShape):
             self.clsLogger.warning(f'Removing SizerShape')
         if shape in self._shapes:
