@@ -168,7 +168,7 @@ class OglObject(RectangleShape, ShapeEventHandler):
             y:  The new ordinate
         """
         if self.eventEngine is not None:        # we might be associated with a diagram yet
-            self.eventEngine.sendEvent(OglEventType.ProjectModified)
+            self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)
         RectangleShape.SetPosition(self, x, y)
 
     def SetSelected(self, state=True):

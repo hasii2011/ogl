@@ -18,12 +18,12 @@ if TYPE_CHECKING:
 
 from miniogl.Shape import Shape
 
-from ogl.events.IEventEngine import IEventEngine
+from ogl.events.IOglEventEngine import IEventEngine
 
 from ogl.events.OglEvents import OglEventType
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
 from ogl.events.OglEvents import CutOglClassEvent
-from ogl.events.OglEvents import ProjectModifiedEvent
+from ogl.events.OglEvents import DiagramFrameModifiedEvent
 from ogl.events.OglEvents import RequestLollipopLocationEvent
 from ogl.events.OglEvents import ShapeSelectedEvent
 from ogl.events.ShapeSelectedEventData import ShapeSelectedEventData
@@ -63,8 +63,8 @@ class OglEventEngine(IEventEngine):
         """
         try:
             match eventType:
-                case OglEventType.ProjectModified:
-                    self._sendProjectModifiedEvent()
+                case OglEventType.DiagramFrameModified:
+                    self._sendDiagramFrameModifiedEvent()
                 case OglEventType.RequestLollipopLocation:
                     self._sendRequestLollipopLocationEvent(**kwargs)
                 case OglEventType.CutOglClass:
@@ -96,8 +96,8 @@ class OglEventEngine(IEventEngine):
         cutOglClassEvent: CutOglClassEvent = CutOglClassEvent(selectedShape=shapeToCut)
         PostEvent(dest=self._listeningWindow, event=cutOglClassEvent)
 
-    def _sendProjectModifiedEvent(self):
-        eventToPost: ProjectModifiedEvent = ProjectModifiedEvent()
+    def _sendDiagramFrameModifiedEvent(self):
+        eventToPost: DiagramFrameModifiedEvent = DiagramFrameModifiedEvent()
         PostEvent(dest=self._listeningWindow, event=eventToPost)
 
     def _sendRequestLollipopLocationEvent(self, **kwargs):

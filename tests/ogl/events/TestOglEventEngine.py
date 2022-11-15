@@ -42,10 +42,10 @@ from ogl.events.OglEvents import CreateLollipopInterfaceEvent
 from ogl.events.OglEvents import CutOglClassEvent
 from ogl.events.OglEvents import EVT_CREATE_LOLLIPOP_INTERFACE
 from ogl.events.OglEvents import EVT_CUT_OGL_CLASS
-from ogl.events.OglEvents import EVT_PROJECT_MODIFIED
+from ogl.events.OglEvents import EVT_DIAGRAM_FRAME_MODIFIED
 from ogl.events.OglEvents import EVT_REQUEST_LOLLIPOP_LOCATION
 from ogl.events.OglEvents import EVT_SHAPE_SELECTED
-from ogl.events.OglEvents import ProjectModifiedEvent
+from ogl.events.OglEvents import DiagramFrameModifiedEvent
 from ogl.events.OglEvents import RequestLollipopLocationEvent
 from ogl.events.OglEvents import ShapeSelectedEvent
 from ogl.events.ShapeSelectedEventData import ShapeSelectedEventData
@@ -72,7 +72,7 @@ class TestOglEventEngine(App):
 
         self._eventEngine.registerListener(EVT_SHAPE_SELECTED, self._onAShapeWasSelected)
         self._eventEngine.registerListener(EVT_CUT_OGL_CLASS, self._onShapeCut)
-        self._eventEngine.registerListener(EVT_PROJECT_MODIFIED, self._onProjectModified)
+        self._eventEngine.registerListener(EVT_DIAGRAM_FRAME_MODIFIED, self._onDiagramFrameModified)
         self._eventEngine.registerListener(EVT_REQUEST_LOLLIPOP_LOCATION, self._onRequestLollipopLocation)
         self._eventEngine.registerListener(EVT_CREATE_LOLLIPOP_INTERFACE, self._onCreateLollipopInterface)
 
@@ -86,14 +86,14 @@ class TestOglEventEngine(App):
 
         b1: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Select Shape', imageFileName='ShapeSelected.png')
         b2: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Cut Ogl Class', imageFileName='CutOglClass.png')
-        b3: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Project Modified', imageFileName='ProjectModified.png')
+        b3: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Diagram Frame Modified', imageFileName='DiagramFrameModified.png')
         b4: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Request Lollipop Location', imageFileName='RequestLollipopLocation.png')
         b5: GenBitmapTextButton = self._createButton(parentPanel=sizedPanel, label='Create Lollipop', imageFileName='CreateLollipop.png')
 
         self._createBackGroundColorSelector(sizedFrame, sizedPanel)
         self.Bind(EVT_BUTTON, self._onSendShapeSelected, b1)
         self.Bind(EVT_BUTTON, self._onSendCutOglClassShape, b2)
-        self.Bind(EVT_BUTTON, self._onSendProjectModified, b3)
+        self.Bind(EVT_BUTTON, self._onSendDiagramFrameModified, b3)
         self.Bind(EVT_BUTTON, self._onSendRequestLollipopLocation, b4)
         self.Bind(EVT_BUTTON, self._onSendCreateLollipop, b5)
 
@@ -138,8 +138,8 @@ class TestOglEventEngine(App):
         self._eventEngine.sendEvent(OglEventType.CutOglClass, shapeToCut=oglClass)
 
     # noinspection PyUnusedLocal
-    def _onSendProjectModified(self, event: GenButtonEvent):
-        self._eventEngine.sendEvent(OglEventType.ProjectModified)
+    def _onSendDiagramFrameModified(self, event: GenButtonEvent):
+        self._eventEngine.sendEvent(OglEventType.DiagramFrameModified)
 
     # noinspection PyUnusedLocal
     def _onSendRequestLollipopLocation(self, event: GenButtonEvent):
@@ -173,8 +173,8 @@ class TestOglEventEngine(App):
         dlg.Destroy()
 
     # noinspection PyUnusedLocal
-    def _onProjectModified(self, event: ProjectModifiedEvent):
-        dlg: MessageDialog = MessageDialog(self._sizedFrame, 'Project Modified!', 'Success', OK | ICON_INFORMATION)
+    def _onDiagramFrameModified(self, event: DiagramFrameModifiedEvent):
+        dlg: MessageDialog = MessageDialog(self._sizedFrame, 'Diagram Frame Modified!', 'Success', OK | ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
