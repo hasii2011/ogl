@@ -631,15 +631,16 @@ class Shape:
         # Get the offsets and the ratio between the shape (view) and the
         # shape model (ShapeModel) given by the frame where the shape
         # is displayed.
+        from miniogl.DiagramFrame import DiagramFrame
         diagram = self.GetDiagram()
-        panel   = diagram.GetPanel()   # to enable debugging and unit tests
+        panel: DiagramFrame   = diagram.GetPanel()   # to enable debugging and unit tests
 
         # ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
         # dx = self.GetDiagram().GetPanel().GetXOffset()
         # dy = self.GetDiagram().GetPanel().GetYOffset()
-        ratio = panel.GetCurrentZoom()
-        dx    = panel.GetXOffset()
-        dy    = panel.GetYOffset()
+        ratio = panel.currentZoom
+        dx    = panel.xOffSet
+        dy    = panel.yOffSet
 
         #  get the coordinates of this shape
         x, y = self.GetPosition()

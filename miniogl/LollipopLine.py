@@ -78,7 +78,7 @@ class LollipopLine(Shape):
 
         diagram = self.GetDiagram()
         panel   = diagram.GetPanel()   # to enable debugging and unit tests
-        ratio = panel.GetCurrentZoom()
+        ratio = panel.currentZoom
 
         lollipopLength: int = LollipopLine.LOLLIPOP_LINE_LENGTH * ratio
         self.logger.debug(f'{lollipopLength}')

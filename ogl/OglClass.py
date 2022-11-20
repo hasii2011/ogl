@@ -574,4 +574,4 @@ class OglClass(OglObject):
 
         selfPyutObj:  PyutObject = self.pyutObject
 
-        return hash(selfPyutObj.name) + hash(self.GetID())
+        return hash(selfPyutObj.name) + hash(self.id)
