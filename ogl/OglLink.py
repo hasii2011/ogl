@@ -224,17 +224,17 @@ class OglLink(LineShape, ShapeEventHandler):
             self._srcAnchor.Detach()
             self._dstAnchor.Detach()
             try:
-                self.getSourceShape().getLinks().remove(self)
+                self.getSourceShape().links.remove(self)
             except ValueError:
                 pass
             try:
-                self.getDestinationShape().getLinks().remove(self)
+                self.getDestinationShape().links.remove(self)
             except ValueError:
                 pass
             try:
-                self._link.getSource().getLinks().remove(self._link)
+                self._link.getSource().links.remove(self._link)
             except ValueError:
-                pass
+                pass        # TODO:  Fix this silent failure
 
     def optimizeLine(self):
         """
