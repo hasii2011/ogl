@@ -53,10 +53,10 @@ class OglLinkFactory(Singleton):
     from this object, and it will return you what you was asking for.
     """
     def init(self, *args, **kwargs):
+        # noinspection PyAttributeOutsideInit
         self.logger: Logger = getLogger(__name__)
 
-    # noinspection PyUnusedLocal
-    def getOglLink(self, srcShape, pyutLink, destShape, linkType: PyutLinkType, srcPos=None, dstPos=None):
+    def getOglLink(self, srcShape, pyutLink, destShape, linkType: PyutLinkType):
         """
         Used to get a OglLink of the given linkType.
 
@@ -65,8 +65,6 @@ class OglLinkFactory(Singleton):
             pyutLink:   Conceptual links associated with the graphical links.
             destShape:  Destination shape
             linkType:   The linkType of the link (OGL_INHERITANCE, ...)
-            srcPos:     source position
-            dstPos:     destination position
 
         Returns:  The requested link
         """
