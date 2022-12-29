@@ -39,6 +39,7 @@ class OglPreferences(Singleton):
     TEXT_ITALICIZE:   str = 'text_italicize'
     TEXT_FONT_FAMILY: str = 'text_font_family'
     TEXT_FONT_SIZE:   str = 'text_font_size'
+    TEXT_VALUE:       str = 'text_value'
     CLASS_NAME:       str = 'class_name'
     CLASS_DIMENSIONS: str = 'class_dimensions'
     CLASS_BACKGROUND_COLOR: str = 'class_background_color'
@@ -53,6 +54,7 @@ class OglPreferences(Singleton):
 
     SHOW_PARAMETERS:            str = 'Show_Parameters'
 
+    # noinspection SpellCheckingInspection
     OGL_PREFERENCES: OGL_PREFS_NAME_VALUES = {
         NOTE_TEXT:              'This is the note text',
         NOTE_DIMENSIONS:        OglDimensions(100, 50).__str__(),
@@ -61,10 +63,11 @@ class OglPreferences(Singleton):
         TEXT_ITALICIZE:         'False',
         TEXT_FONT_FAMILY:       'Swiss',
         TEXT_FONT_SIZE:         '14',
+        TEXT_VALUE:             'Donec eleifend luctus enim vel mollis',
         CLASS_NAME:             'ClassName',
         CLASS_DIMENSIONS:        OglDimensions(100, 100).__str__(),
-        CLASS_BACKGROUND_COLOR: DEFAULT_CLASS_BACKGROUND_COLOR,
-        CLASS_TEXT_COLOR:       DEFAULT_CLASS_TEXT_COLOR,
+        CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
+        CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
         DEFAULT_NAME_INTERFACE: 'IClassInterface',
         DEFAULT_NAME_USECASE:   'UseCaseName',
         DEFAULT_NAME_ACTOR:     'ActorName',
@@ -192,6 +195,15 @@ class OglPreferences(Singleton):
     @textFontSize.setter
     def textFontSize(self, newValue: int):
         self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_FONT_SIZE, str(newValue))
+        self.__saveConfig()
+
+    @property
+    def textValue(self) -> str:
+        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_VALUE)
+
+    @textValue.setter
+    def textValue(self, newValue: str):
+        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_VALUE, newValue)
         self.__saveConfig()
 
     @property

@@ -10,6 +10,7 @@ from pyutmodel.PyutField import PyutField
 from pyutmodel.PyutMethod import PyutMethod
 from pyutmodel.PyutMethod import PyutParameters
 from pyutmodel.PyutParameter import PyutParameter
+from pyutmodel.PyutText import PyutText
 from pyutmodel.PyutType import PyutType
 from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
 from wx import App
@@ -27,16 +28,17 @@ from wx.lib.sized_controls import SizedPanel
 
 from miniogl.Diagram import Diagram
 from ogl.OglClass import OglClass
+from ogl.OglDimensions import OglDimensions
+from ogl.OglObject import OglObject
+from ogl.OglText import OglText
 
 from ogl.events.IOglEventEngine import IEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
+from ogl.preferences.OglPreferences import OglPreferences
 
 from tests.TestBase import TestBase
 from tests.demo.DemoUmlFrame import DemoUmlFrame
 
-
-CLASS_WIDTH:  int = 240
-CLASS_HEIGHT: int = 100
 
 INITIAL_X:   int = 100
 INITIAL_Y:   int = 100
@@ -58,9 +60,11 @@ class TestOglElements(App):
         self._oglEventEngine: IEventEngine = cast(OglEventEngine, None)
 
         self._ID_DISPLAY_OGL_CLASS: int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_TEXT:  int = wxNewIdRef()
 
         self._x: int = 100
         self._y: int = 100
+        self._oglPreferences: OglPreferences = OglPreferences()
 
         super().__init__(redirect)
 
@@ -98,20 +102,37 @@ class TestOglElements(App):
         fileMenu.Append(ID_EXIT, '&Quit', "Quit Application")
 
         viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS, item='Ogl Class', helpString='Display an Ogl Class')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,  item='Ogl Text',  helpString='Display Ogl Text')
         menuBar.Append(fileMenu, 'File')
         menuBar.Append(viewMenu, 'View')
 
         self._frame.SetMenuBar(menuBar)
 
         self.Bind(EVT_MENU, self._onDisplayElement,  id=self._ID_DISPLAY_OGL_CLASS)
+        self.Bind(EVT_MENU, self._onDisplayElement,  id=self._ID_DISPLAY_OGL_TEXT)
 
     def _onDisplayElement(self, event: CommandEvent):
         menuId: int = event.GetId()
         match menuId:
             case self._ID_DISPLAY_OGL_CLASS:
                 self._displayOglClass()
+            case self._ID_DISPLAY_OGL_TEXT:
+                self._displayOglText()
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
+
+    def _displayOglText(self):
+        pyutText: PyutText = PyutText(textContent=self._oglPreferences.textValue)
+        textDimensions: OglDimensions = self._oglPreferences.textDimensions
+        oglText:  OglText  = OglText(pyutText=pyutText, width=textDimensions.width, height=textDimensions.height)
+        oglText.textFontFamily = self._oglPreferences.textFontFamily
+        oglText.textSize       = self._oglPreferences.textFontSize
+        oglText.isBold         = self._oglPreferences.textBold
+        oglText.isItalicized   = self._oglPreferences.textItalicize
+
+        self._addToDiagram(oglObject=oglText)
+        oglText.autoResize()
+        self._diagramFrame.Refresh()
 
     def _displayOglClass(self):
 
@@ -126,19 +147,10 @@ class TestOglElements(App):
 
         pyutClass.fields  = [pyutField]
         pyutClass.methods = [pyutMethod]
-        oglClass:  OglClass  = OglClass(pyutClass, w=CLASS_WIDTH, h=CLASS_HEIGHT)
+        classDimensions: OglDimensions = self._oglPreferences.classDimensions
+        oglClass:  OglClass  = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
 
-        oglClass.SetDraggable(True)
-        x,y = self._getPosition()
-        oglClass.SetPosition(x, y)
-        # if pen is not None:
-        #     shape.SetPen(pen)
-        # if brush is not None:
-        #     shape.SetBrush(brush)
-        self._diagram.AddShape(oglClass, withModelUpdate=False)
-        self._diagramFrame.Refresh()
-
-        self.logger.info(f'{self._diagram.GetShapes()=}')
+        self._addToDiagram(oglObject=oglClass)
 
     def _getPosition(self)->  Tuple[int, int]:
         x: int = self._x
@@ -147,6 +159,17 @@ class TestOglElements(App):
         self._x += INCREMENT_X
         self._y += INCREMENT_Y
         return x,y
+
+    def _addToDiagram(self, oglObject: OglObject):
+
+        oglObject.SetDraggable(True)
+        x,y = self._getPosition()
+        oglObject.SetPosition(x, y)
+        self._diagram.AddShape(oglObject, withModelUpdate=True)
+        self._diagramFrame.Refresh()
+
+        self.logger.info(f'{self._diagram.GetShapes()=}')
+
 
 testApp: TestOglElements = TestOglElements(redirect=False)
 
