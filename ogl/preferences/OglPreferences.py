@@ -41,11 +41,15 @@ class OglPreferences(Singleton):
     TEXT_FONT_SIZE:   str = 'text_font_size'
     CLASS_NAME:       str = 'class_name'
     CLASS_DIMENSIONS: str = 'class_dimensions'
+    CLASS_BACKGROUND_COLOR: str = 'class_background_color'
+    CLASS_TEXT_COLOR:       str = 'class_text_color'
 
     DEFAULT_NAME_INTERFACE: str = 'default_name_interface'
     DEFAULT_NAME_USECASE:   str = 'default_name_usecase'
     DEFAULT_NAME_ACTOR:     str = 'default_name_actor'
     DEFAULT_NAME_METHOD:    str = 'default_name_method'
+    DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
+    DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.WHITE.value
 
     SHOW_PARAMETERS:            str = 'Show_Parameters'
 
@@ -59,6 +63,8 @@ class OglPreferences(Singleton):
         TEXT_FONT_SIZE:         '14',
         CLASS_NAME:             'ClassName',
         CLASS_DIMENSIONS:        OglDimensions(100, 100).__str__(),
+        CLASS_BACKGROUND_COLOR: DEFAULT_CLASS_BACKGROUND_COLOR,
+        CLASS_TEXT_COLOR:       DEFAULT_CLASS_TEXT_COLOR,
         DEFAULT_NAME_INTERFACE: 'IClassInterface',
         DEFAULT_NAME_USECASE:   'UseCaseName',
         DEFAULT_NAME_ACTOR:     'ActorName',
@@ -93,6 +99,7 @@ class OglPreferences(Singleton):
         DEBUG_BASIC_SHAPE:   'False',
     }
 
+    # noinspection PyAttributeOutsideInit
     def init(self, *args, **kwargs):
 
         self.logger:  Logger       = getLogger(__name__)
@@ -204,6 +211,31 @@ class OglPreferences(Singleton):
     @classDimensions.setter
     def classDimensions(self, newValue: OglDimensions):
         self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_DIMENSIONS, newValue.__str__())
+        self.__saveConfig()
+
+    @property
+    def classBackgroundColor(self) -> MiniOglColorEnum:
+        colorName:     str           = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_BACKGROUND_COLOR)
+        pyutColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorName)
+        return pyutColorEnum
+
+    @classBackgroundColor.setter
+    def classBackgroundColor(self, newValue: MiniOglColorEnum):
+        colorName: str = newValue.value
+        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_BACKGROUND_COLOR, colorName)
+        self.__saveConfig()
+
+    @property
+    def classTextColor(self) -> MiniOglColorEnum:
+        colorName:     str           = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_TEXT_COLOR)
+        pyutColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorName)
+        return pyutColorEnum
+
+    @classTextColor.setter
+    def classTextColor(self, newValue: MiniOglColorEnum):
+        colorName: str = newValue.value
+        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_TEXT_COLOR, colorName)
+
         self.__saveConfig()
 
     @property

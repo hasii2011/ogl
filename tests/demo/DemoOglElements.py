@@ -1,0 +1,153 @@
+
+from typing import Tuple
+from typing import cast
+
+from logging import Logger
+from logging import getLogger
+
+from pyutmodel.PyutClass import PyutClass
+from pyutmodel.PyutField import PyutField
+from pyutmodel.PyutMethod import PyutMethod
+from pyutmodel.PyutMethod import PyutParameters
+from pyutmodel.PyutParameter import PyutParameter
+from pyutmodel.PyutType import PyutType
+from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
+from wx import App
+from wx import CommandEvent
+from wx import DEFAULT_FRAME_STYLE
+from wx import EVT_MENU
+from wx import ID_EXIT
+from wx import Menu
+from wx import MenuBar
+
+from wx import NewIdRef as wxNewIdRef
+
+from wx.lib.sized_controls import SizedFrame
+from wx.lib.sized_controls import SizedPanel
+
+from miniogl.Diagram import Diagram
+from ogl.OglClass import OglClass
+
+from ogl.events.IOglEventEngine import IEventEngine
+from ogl.events.OglEventEngine import OglEventEngine
+
+from tests.TestBase import TestBase
+from tests.demo.DemoUmlFrame import DemoUmlFrame
+
+
+CLASS_WIDTH:  int = 240
+CLASS_HEIGHT: int = 100
+
+INITIAL_X:   int = 100
+INITIAL_Y:   int = 100
+
+INCREMENT_X: int = INITIAL_X + 20
+INCREMENT_Y: int = INITIAL_Y + 40
+
+class TestOglElements(App):
+
+    def __init__(self, redirect: bool):
+
+        TestBase.setUpLogging()
+
+        self.logger:          Logger          = getLogger(__name__)
+
+        self._frame:          SizedFrame   = cast(SizedFrame, None)
+        self._diagramFrame:   DemoUmlFrame = cast(DemoUmlFrame, None)
+        self._diagram:        Diagram      = cast(Diagram, None)
+        self._oglEventEngine: IEventEngine = cast(OglEventEngine, None)
+
+        self._ID_DISPLAY_OGL_CLASS: int = wxNewIdRef()
+
+        self._x: int = 100
+        self._y: int = 100
+
+        super().__init__(redirect)
+
+    def OnInit(self):
+        self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(800, 600), style=DEFAULT_FRAME_STYLE)
+        self._frame.CreateStatusBar()  # should always do this when there's a resize border
+
+        self._oglEventEngine = OglEventEngine(listeningWindow=self._frame)
+
+        sizedPanel: SizedPanel = self._frame.GetContentsPane()
+        self._diagramFrame = DemoUmlFrame(parent=sizedPanel, eventEngine=self._oglEventEngine)
+        # noinspection PyUnresolvedReferences
+        self._diagramFrame.SetSizerProps(expand=True, proportion=1)
+
+        # Some incestuous behavior going on here
+        self._diagram = Diagram(panel=self._diagramFrame)
+        self._diagramFrame.diagram = self._diagram
+
+        self._createApplicationMenuBar()
+
+        self.SetTopWindow(self._frame)
+
+        self._frame.SetAutoLayout(True)
+        self._frame.Show(True)
+
+        return True
+
+    def _createApplicationMenuBar(self):
+
+        menuBar:  MenuBar = MenuBar()
+        fileMenu: Menu = Menu()
+        viewMenu: Menu = Menu()
+
+        fileMenu.AppendSeparator()
+        fileMenu.Append(ID_EXIT, '&Quit', "Quit Application")
+
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS, item='Ogl Class', helpString='Display an Ogl Class')
+        menuBar.Append(fileMenu, 'File')
+        menuBar.Append(viewMenu, 'View')
+
+        self._frame.SetMenuBar(menuBar)
+
+        self.Bind(EVT_MENU, self._onDisplayElement,  id=self._ID_DISPLAY_OGL_CLASS)
+
+    def _onDisplayElement(self, event: CommandEvent):
+        menuId: int = event.GetId()
+        match menuId:
+            case self._ID_DISPLAY_OGL_CLASS:
+                self._displayOglClass()
+            case _:
+                self.logger.error(f'WTH!  I am not handling that menu item')
+
+    def _displayOglClass(self):
+
+        pyutClass:     PyutClass  = PyutClass('DemoClass')
+        pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibilityEnum.PUBLIC,
+                                              fieldType=PyutType('float'),
+                                              defaultValue='42.0')
+
+        pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', parameterType=PyutType("str"), defaultValue='Ozzee')
+        pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibilityEnum.PUBLIC)
+        pyutMethod.parameters = PyutParameters([pyutParameter])
+
+        pyutClass.fields  = [pyutField]
+        pyutClass.methods = [pyutMethod]
+        oglClass:  OglClass  = OglClass(pyutClass, w=CLASS_WIDTH, h=CLASS_HEIGHT)
+
+        oglClass.SetDraggable(True)
+        x,y = self._getPosition()
+        oglClass.SetPosition(x, y)
+        # if pen is not None:
+        #     shape.SetPen(pen)
+        # if brush is not None:
+        #     shape.SetBrush(brush)
+        self._diagram.AddShape(oglClass, withModelUpdate=False)
+        self._diagramFrame.Refresh()
+
+        self.logger.info(f'{self._diagram.GetShapes()=}')
+
+    def _getPosition(self)->  Tuple[int, int]:
+        x: int = self._x
+        y: int = self._y
+
+        self._x += INCREMENT_X
+        self._y += INCREMENT_Y
+        return x,y
+
+testApp: TestOglElements = TestOglElements(redirect=False)
+
+testApp.MainLoop()
