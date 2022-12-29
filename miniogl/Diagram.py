@@ -12,9 +12,9 @@ class Diagram:
 
     clsLogger: Logger = getLogger(__name__)
     """
-    A diagram contains shapes and is responsible to manage them.
-    It can be saved to a file, and loaded back. It knows every shapes that
-    can be clicked (selected, moved...).
+    A diagram contains shapes and is manages them.
+    
+    It knows every shapes that can be clicked, selected, and moved.
     """
     def __init__(self, panel):
         """

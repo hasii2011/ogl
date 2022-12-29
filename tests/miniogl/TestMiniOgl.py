@@ -52,6 +52,7 @@ class TestMiniOglApp(App):
 
         self.SetTopWindow(diagramFrame)
 
+        # noinspection PyAttributeOutsideInit
         self._diagramFrame: DiagramFrame = diagramFrame
 
         self.initTest()
@@ -60,7 +61,7 @@ class TestMiniOglApp(App):
 
     def initTest(self):
 
-        diagramFrame: Diagram = self._diagramFrame.GetDiagram()
+        diagramFrame: Diagram = self._diagramFrame.diagram
 
         pointShape: PointShape = PointShape(50, 50)
         diagramFrame.AddShape(pointShape)
@@ -95,7 +96,7 @@ class TestMiniOglApp(App):
 
     def drawLollipops(self):
 
-        diagramFrame: Diagram = self._diagramFrame.GetDiagram()
+        diagramFrame: Diagram = self._diagramFrame.diagram
 
         rectShape: RectangleShape = RectangleShape(400, 50, 130, 80)
         rectShape.SetDraggable(True)

@@ -116,12 +116,7 @@ class Shape:
 
     @deprecated(reason='Use the .id property')
     def GetID(self):
-        """
-        TODO:  Make this a property
-        Get the ID number of the shape.
 
-        @return int
-        """
         return self._id
 
     @deprecated(reason='Use the .id property')
