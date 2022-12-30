@@ -811,8 +811,9 @@ class DiagramFrame(ScrolledWindow):
             shape.UpdateFromModel()
 
         # resize the virtual screen in order to match with the zoom
-        virtualWidth:  int  = round(virtualWidth * zoomFactor)
-        virtualHeight: int  = round(virtualHeight * zoomFactor)
+        virtualWidth  = round(virtualWidth * zoomFactor)
+        virtualHeight = round(virtualHeight * zoomFactor)
+
         virtualSize:   Size = Size(virtualWidth, virtualHeight)
         self.SetVirtualSize(virtualSize)
 
@@ -903,8 +904,9 @@ class DiagramFrame(ScrolledWindow):
             shape.UpdateFromModel()
 
         # resize the virtual screen in order to match with the zoom
-        virtualWidth:  int  = round(virtualWidth * zoomFactor)
-        virtualHeight: int  = round(virtualHeight * zoomFactor)
+        virtualWidth  = round(virtualWidth * zoomFactor)
+        virtualHeight = round(virtualHeight * zoomFactor)
+        
         virtualSize:   Size = Size(virtualWidth, virtualHeight)
         self.SetVirtualSize(virtualSize)
 
