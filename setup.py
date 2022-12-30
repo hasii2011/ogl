@@ -36,5 +36,5 @@ setup(
         'ogl.resources', 'ogl.resources.img', 'ogl.resources.img.textdetails',
         'ogl.sd',
     ],
-    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.2.0', 'wxPython~=4.2.0'],
+    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.3.0', 'wxPython~=4.2.0'],
 )
