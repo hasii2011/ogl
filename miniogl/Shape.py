@@ -598,9 +598,9 @@ class Shape:
         # Get the offsets and the ratio between the shape (view) and the
         # shape model (ShapeModel) given by the frame where the shape
         # is displayed.
-        ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
-        dx: int = round(self.GetDiagram().GetPanel().GetXOffset())
-        dy: int = round(self.GetDiagram().GetPanel().GetYOffset())
+        ratio = self.GetDiagram().GetPanel().currentZoom
+        dx: int = round(self.GetDiagram().GetPanel().xOffSet)
+        dy: int = round(self.GetDiagram().GetPanel().yOffSet)
 
         # calculation of the shape (view) coordinates in the light of the offsets and ratio
         x: int = round(ratio * mx) + dx

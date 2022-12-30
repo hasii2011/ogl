@@ -103,7 +103,8 @@ class DiagramFrame(ScrolledWindow):
         self._yOffset:   int       = 0   # ordinate offset between the view and the model
         self._zoomStack: List[float] = []    # store all zoom factors applied
 
-        self._zoomLevel = 0             # number of zoom factors applied
+        self._minLevelZoom:  int = 0
+        self._zoomLevel:     int = 0           # number of zoom factors applied
         self._maxZoomFactor: float = 6         # can zoom in beyond 600%
         self._minZoomFactor: float = 0.2       # can zoom out beyond 20%
 
@@ -705,7 +706,7 @@ class DiagramFrame(ScrolledWindow):
 
         # maximal zoom factor that can be applied
         # maxZoomFactor = self.GetMaxLevelZoom() * self.GetDefaultZoomFactor()
-        maxZoomFactor = self.GetMaxZoomFactor()
+        maxZoomFactor = self.maxZoomFactor
 
         # transform event coordinates to get them relative to the upper left corner of
         # the virtual screen (avoid the case where that corner is on a shape and
@@ -768,7 +769,7 @@ class DiagramFrame(ScrolledWindow):
             # previous ones won't be beyond the maximal zoom. If it's the case,
             # we proceed to the calculation of the zoom factor that allows to
             # exactly reach the maximal zoom.
-            maxZoomReached = maxZoomFactor <= self.GetCurrentZoom() * zoomFactor
+            maxZoomReached = maxZoomFactor <= self.currentZoom * zoomFactor
             if maxZoomReached:
                 zoomFactor = maxZoomFactor/self.GetCurrentZoom()
 
@@ -801,38 +802,38 @@ class DiagramFrame(ScrolledWindow):
                     self._zoomLevel += 1
 
         # set the offsets between the model and the view
-        self.SetXOffset((self.GetXOffset() + dx) * zoomFactor)
-        self.SetYOffset((self.GetYOffset() + dy) * zoomFactor)
+        self.xOffSet = (self.xOffSet + dx) * zoomFactor
+        self.yOffSet = (self.yOffSet + dy) * zoomFactor
 
         # updates the shapes (view) position and dimensions from
         # their models in the light of the new zoom factor and offsets.
-        for shape in self.GetDiagram().GetShapes():
+        for shape in self.diagram.GetShapes():
             shape.UpdateFromModel()
 
         # resize the virtual screen in order to match with the zoom
-        virtualWidth  = virtualWidth * zoomFactor
-        virtualHeight = virtualHeight * zoomFactor
-        virtualSize = Size(virtualWidth, virtualHeight)
+        virtualWidth:  int  = round(virtualWidth * zoomFactor)
+        virtualHeight: int  = round(virtualHeight * zoomFactor)
+        virtualSize:   Size = Size(virtualWidth, virtualHeight)
         self.SetVirtualSize(virtualSize)
 
         # perform the scrolling in the way to have the zoom area visible
         # and centred on the virtual screen.
-        scrollX = (virtualWidth - clientWidth) // 2 // xUnit
-        scrollY = (virtualHeight - clientHeight) // 2 // yUnit
-        self.Scroll(scrollX, scrollY)
+        scrollX = (virtualWidth - clientWidth) / 2 / xUnit
+        scrollY = (virtualHeight - clientHeight) / 2 / yUnit
+        self.Scroll(round(scrollX), round(scrollY))
 
     def DoZoomOut(self, ax: int, ay: int):
         """
         Do the 'zoom out' in the way to have the clicked point (ax, ay) as
         the central point of new view.
         If one or many 'zoom in' where performed before, then we just suppress the
-        last one from the zoom stack. Else, we add the default inverted zoom factor
-        to the stack.
+        last one from the zoom stack.
+        Else, we add the default inverted zoom factor to the stack.
 
-        @param ax  abscissa of the clicked point
-        @param ay  ordinate of the clicked point
+        Args:
+            ax: abscissa of the clicked point
+            ay: ordinate of the clicked point
         """
-
         # number of pixels per unit of scrolling
         xUnit, yUnit = self.GetScrollPixelsPerUnit()
 
@@ -860,10 +861,11 @@ class DiagramFrame(ScrolledWindow):
         # size is the half of the diagram frame and which is centred
         # on the clicked point. This calculation is done in the way to
         # get the zoom area centred in the middle of the virtual screen.
-        dx = virtualWidth/2 - x
-        dy = virtualHeight/2 - y
+        dx: int = virtualWidth // 2 - x
+        dy: int = virtualHeight // 2 - y
 
-        minZoomFactor = self.GetMinZoomFactor()
+        # minZoomFactor = self.GetMinZoomFactor()
+        minZoomFactor: float = self.minZoomFactor
         # minZoomReached = False        not used
 
         # if the view is enlarged, then we just remove the last
@@ -873,9 +875,11 @@ class DiagramFrame(ScrolledWindow):
             zoomFactor = 1/self._zoomStack.pop()
             self._zoomLevel -= 1
         else:
-            zoomFactor = 1/self.GetDefaultZoomFactor()
+            # zoomFactor = 1/self.GetDefaultZoomFactor()
+            zoomFactor = 1 / self.defaultZoomFactor
             # check if minimal zoom has been reached
-            minZoomReached = minZoomFactor >= (self.GetCurrentZoom() * zoomFactor)
+            # minZoomReached = minZoomFactor >= (self.GetCurrentZoom() * zoomFactor)
+            minZoomReached = minZoomFactor >= (self.currentZoom * zoomFactor)
             if not minZoomReached:
                 self._zoomStack.append(zoomFactor)
                 self._zoomLevel -= 1
@@ -887,25 +891,30 @@ class DiagramFrame(ScrolledWindow):
 
         # set the offsets between the view and the model for
         # each shape on this diagram frame.
-        self.SetXOffset((self.GetXOffset() + dx) * zoomFactor)
-        self.SetYOffset((self.GetYOffset() + dy) * zoomFactor)
+        # self.SetXOffset((self.GetXOffset() + dx) * zoomFactor)
+        # self.SetYOffset((self.GetYOffset() + dy) * zoomFactor)
+        self.xOffSet = round((self.xOffSet + dx) * zoomFactor)
+        self.yOffSet = round((self.yOffSet + dy) * zoomFactor)
 
         # updates the shapes (view) position and dimensions from
         # their model in the light of the new zoom factor and offsets.
-        for shape in self.GetDiagram().GetShapes():
+        # for shape in self.GetDiagram().GetShapes():
+        for shape in self.diagram.GetShapes():
             shape.UpdateFromModel()
 
         # resize the virtual screen in order to match with the zoom
-        virtualWidth  = virtualWidth * zoomFactor
-        virtualHeight = virtualHeight * zoomFactor
-        virtualSize = Size(virtualWidth, virtualHeight)
+        virtualWidth:  int  = round(virtualWidth * zoomFactor)
+        virtualHeight: int  = round(virtualHeight * zoomFactor)
+        virtualSize:   Size = Size(virtualWidth, virtualHeight)
         self.SetVirtualSize(virtualSize)
 
         # perform the scrolling in the way to have the zoom area visible
         # and centred on the virtual screen.
-        scrollX = (virtualWidth - clientWidth) // 2 // xUnit
-        scrollY = (virtualHeight - clientHeight) // 2 // yUnit
-        self.Scroll(scrollX, scrollY)
+        self.diagramFrameLogger.info(f'{virtualWidth=} {clientWidth=} {xUnit=}')
+        scrollX: int = (virtualWidth - clientWidth) /2 / xUnit
+        scrollY: int = (virtualHeight - clientHeight) /2 /yUnit
+
+        self.Scroll(round(scrollX), round(scrollY))
 
     def SetInfinite(self, infinite: bool = False):
         """

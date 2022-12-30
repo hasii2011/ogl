@@ -39,6 +39,17 @@ from ogl.preferences.OglPreferences import OglPreferences
 from tests.TestBase import TestBase
 from tests.demo.DemoUmlFrame import DemoUmlFrame
 
+FRAME_WIDTH:  int = 800
+FRAME_HEIGHT: int = 600
+
+ZOOM_WIDTH:   int = FRAME_WIDTH - 100
+ZOOM_HEIGHT:  int = FRAME_HEIGHT - 100
+
+ZOOM_IN_UPPER_X: int = 0
+ZOOM_IN_UPPER_Y: int = 0
+
+ZOOM_OUT_X: int = ZOOM_WIDTH // 2
+ZOOM_OUT_Y: int = ZOOM_HEIGHT // 2
 
 INITIAL_X:   int = 100
 INITIAL_Y:   int = 100
@@ -61,6 +72,8 @@ class TestOglElements(App):
 
         self._ID_DISPLAY_OGL_CLASS: int = wxNewIdRef()
         self._ID_DISPLAY_OGL_TEXT:  int = wxNewIdRef()
+        self._ID_ZOOM_IN:           int = wxNewIdRef()
+        self._ID_ZOOM_OUT:          int = wxNewIdRef()
 
         self._x: int = 100
         self._y: int = 100
@@ -69,7 +82,7 @@ class TestOglElements(App):
         super().__init__(redirect)
 
     def OnInit(self):
-        self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(800, 600), style=DEFAULT_FRAME_STYLE)
+        self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE)
         self._frame.CreateStatusBar()  # should always do this when there's a resize border
 
         self._oglEventEngine = OglEventEngine(listeningWindow=self._frame)
@@ -103,13 +116,19 @@ class TestOglElements(App):
 
         viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS, item='Ogl Class', helpString='Display an Ogl Class')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,  item='Ogl Text',  helpString='Display Ogl Text')
+        viewMenu.AppendSeparator()
+        viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
+        viewMenu.Append(id=self._ID_ZOOM_OUT, item='Zoom Out', helpString='Zoom the frame out')
         menuBar.Append(fileMenu, 'File')
         menuBar.Append(viewMenu, 'View')
 
         self._frame.SetMenuBar(menuBar)
 
-        self.Bind(EVT_MENU, self._onDisplayElement,  id=self._ID_DISPLAY_OGL_CLASS)
-        self.Bind(EVT_MENU, self._onDisplayElement,  id=self._ID_DISPLAY_OGL_TEXT)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
+
+        self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_IN)
+        self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_OUT)
 
     def _onDisplayElement(self, event: CommandEvent):
         menuId: int = event.GetId()
@@ -120,6 +139,16 @@ class TestOglElements(App):
                 self._displayOglText()
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
+
+    def _onZoom(self, event: CommandEvent):
+        menuId: int = event.GetId()
+
+        if menuId == self._ID_ZOOM_IN:
+            self._diagramFrame.DoZoomIn(ax=ZOOM_IN_UPPER_X, ay=ZOOM_IN_UPPER_Y, width=ZOOM_WIDTH, height=ZOOM_HEIGHT)
+        elif menuId == self._ID_ZOOM_OUT:
+            self._diagramFrame.DoZoomOut(ax=ZOOM_OUT_X, ay=ZOOM_OUT_Y)
+        else:
+            self.logger.error(f'Unknown Zoom menu id: {menuId}')
 
     def _displayOglText(self):
         pyutText: PyutText = PyutText(textContent=self._oglPreferences.textValue)

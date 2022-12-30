@@ -299,7 +299,7 @@ class RectangleShape(Shape):
         width, height = self.GetModel().GetSize()
 
         #  get the diagram frame ratio between the shape and the model
-        ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
+        ratio = self.GetDiagram().GetPanel().currentZoom
 
         # set the new size to the shape.
         self._width  = round(width * ratio)

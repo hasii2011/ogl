@@ -350,7 +350,7 @@ class OglClass(OglObject):
     def _isSameId(self, other):
 
         ans: bool = False
-        if self.GetID() == other.GetID():
+        if self.id == other.id:
             ans = True
         return ans
 
