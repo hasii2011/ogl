@@ -10,6 +10,7 @@ from pyutmodel.PyutField import PyutField
 from pyutmodel.PyutMethod import PyutMethod
 from pyutmodel.PyutMethod import PyutParameters
 from pyutmodel.PyutParameter import PyutParameter
+from pyutmodel.PyutStereotype import PyutStereotype
 from pyutmodel.PyutText import PyutText
 from pyutmodel.PyutType import PyutType
 from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
@@ -170,6 +171,8 @@ class TestOglElements(App):
                                               fieldType=PyutType('float'),
                                               defaultValue='42.0')
 
+        # pyutClass.stereotype = cast(PyutStereotype, None)
+        pyutClass.stereotype = PyutStereotype.IMPLEMENTATION_CLASS
         pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', parameterType=PyutType("str"), defaultValue='Ozzee')
         pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibilityEnum.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])

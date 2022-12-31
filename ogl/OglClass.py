@@ -365,7 +365,7 @@ class OglClass(OglObject):
         else:
             assert False, 'Unknown display type'
 
-    def _drawClassHeader(self, dc, draw=False, initialX=None, initialY=None, calcWidth=False):
+    def _drawClassHeader(self, dc: DC, draw: bool=False, initialX=None, initialY=None, calcWidth: bool=False):
         """
         Calculate the class header position and size and display it if
         a draw is True
@@ -411,19 +411,21 @@ class OglClass(OglObject):
         h += self.GetTextHeight(dc, str(name))
         h += lth
 
-        # draw the stereotype if there's one
         pyutClass: PyutClass = self.pyutObject
-        # stereo = self.getPyutObject().getStereotype()
         stereo: PyutStereotype = pyutClass.stereotype
-        if stereo is not None and stereo.name != '' and pyutClass.displayStereoType is True:
-            name = str(stereo)
-            nameWidth = self.GetTextWidth(dc, name)
-            if draw:
-                dc.DrawText(name, x + (w - nameWidth) // 2, y + h)
-            if calcWidth:
-                w = max(nameWidth, w)
-            h += self.GetTextHeight(dc, str(name))
-            h += lth
+
+        if pyutClass.displayStereoType is True and stereo is not None and stereo != PyutStereotype.NO_STEREOTYPE:
+            name: str = f'<<{stereo.value}>>'
+        else:
+            name = ''
+
+        nameWidth = self.GetTextWidth(dc, name)
+        if draw:
+            dc.DrawText(name, x + (w - nameWidth) // 2, y + h)
+        if calcWidth:
+            w = max(nameWidth, w)
+        h += self.GetTextHeight(dc, str(name))
+        h += lth
 
         # Return sizes
         return x, y, w, h
