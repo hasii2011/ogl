@@ -1,19 +1,11 @@
-
 from typing import Tuple
 from typing import cast
 
 from logging import Logger
 from logging import getLogger
 
-from pyutmodel.PyutClass import PyutClass
-from pyutmodel.PyutField import PyutField
-from pyutmodel.PyutMethod import PyutMethod
-from pyutmodel.PyutMethod import PyutParameters
-from pyutmodel.PyutParameter import PyutParameter
-from pyutmodel.PyutStereotype import PyutStereotype
-from pyutmodel.PyutText import PyutText
-from pyutmodel.PyutType import PyutType
-from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
+import random
+
 from wx import App
 from wx import CommandEvent
 from wx import DEFAULT_FRAME_STYLE
@@ -26,6 +18,16 @@ from wx import NewIdRef as wxNewIdRef
 
 from wx.lib.sized_controls import SizedFrame
 from wx.lib.sized_controls import SizedPanel
+
+from pyutmodel.PyutClass import PyutClass
+from pyutmodel.PyutField import PyutField
+from pyutmodel.PyutMethod import PyutMethod
+from pyutmodel.PyutMethod import PyutParameters
+from pyutmodel.PyutParameter import PyutParameter
+from pyutmodel.PyutStereotype import PyutStereotype
+from pyutmodel.PyutText import PyutText
+from pyutmodel.PyutType import PyutType
+from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
 
 from miniogl.Diagram import Diagram
 from ogl.OglClass import OglClass
@@ -171,8 +173,10 @@ class TestOglElements(App):
                                               fieldType=PyutType('float'),
                                               defaultValue='42.0')
 
-        # pyutClass.stereotype = cast(PyutStereotype, None)
-        pyutClass.stereotype = PyutStereotype.IMPLEMENTATION_CLASS
+        if self._fiftyFifty() is True:
+            pyutClass.stereotype = PyutStereotype.NO_STEREOTYPE
+        else:
+            pyutClass.stereotype = PyutStereotype.TYPE
         pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', parameterType=PyutType("str"), defaultValue='Ozzee')
         pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibilityEnum.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])
@@ -202,6 +206,10 @@ class TestOglElements(App):
 
         self.logger.info(f'{self._diagram.GetShapes()=}')
 
+    def _fiftyFifty(self) -> bool:
+        if random.random() < .5:
+            return True
+        return False
 
 testApp: TestOglElements = TestOglElements(redirect=False)
 

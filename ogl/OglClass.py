@@ -400,9 +400,9 @@ class OglClass(OglObject):
         h += lth
 
         # draw a pyutClass name
-        name = self.pyutObject.name
+        name: str = self.pyutObject.name
         dc.SetFont(self._nameFont)
-        nameWidth = self.GetTextWidth(dc, name)
+        nameWidth: int = self.GetTextWidth(dc, name)
         if draw:
             dc.DrawText(name, x + (w - nameWidth) // 2, y + h)
         if calcWidth:
@@ -410,21 +410,23 @@ class OglClass(OglObject):
         dc.SetFont(self._defaultFont)
         h += self.GetTextHeight(dc, str(name))
         h += lth
-
+        #
+        # Draw the stereotype value
+        #
         pyutClass: PyutClass = self.pyutObject
         stereo: PyutStereotype = pyutClass.stereotype
 
         if pyutClass.displayStereoType is True and stereo is not None and stereo != PyutStereotype.NO_STEREOTYPE:
-            name: str = f'<<{stereo.value}>>'
+            stereoTypeValue: str = f'<<{stereo.value}>>'
         else:
-            name = ''
+            stereoTypeValue = ''
 
-        nameWidth = self.GetTextWidth(dc, name)
+        stereoTypeValueWidth = self.GetTextWidth(dc, stereoTypeValue)
         if draw:
-            dc.DrawText(name, x + (w - nameWidth) // 2, y + h)
+            dc.DrawText(stereoTypeValue, x + (w - stereoTypeValueWidth) // 2, y + h)
         if calcWidth:
-            w = max(nameWidth, w)
-        h += self.GetTextHeight(dc, str(name))
+            w = max(stereoTypeValueWidth, w)
+        h += self.GetTextHeight(dc, str(stereoTypeValue))
         h += lth
 
         # Return sizes
