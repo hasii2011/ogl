@@ -60,6 +60,7 @@ INITIAL_Y:   int = 100
 INCREMENT_X: int = INITIAL_X + 20
 INCREMENT_Y: int = INITIAL_Y + 40
 
+
 class TestOglElements(App):
 
     def __init__(self, redirect: bool):
@@ -188,18 +189,18 @@ class TestOglElements(App):
 
         self._addToDiagram(oglObject=oglClass)
 
-    def _getPosition(self)->  Tuple[int, int]:
+    def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
         y: int = self._y
 
         self._x += INCREMENT_X
         self._y += INCREMENT_Y
-        return x,y
+        return x, y
 
     def _addToDiagram(self, oglObject: OglObject):
 
         oglObject.SetDraggable(True)
-        x,y = self._getPosition()
+        x, y = self._getPosition()
         oglObject.SetPosition(x, y)
         self._diagram.AddShape(oglObject, withModelUpdate=True)
         self._diagramFrame.Refresh()
@@ -210,6 +211,7 @@ class TestOglElements(App):
         if random.random() < .5:
             return True
         return False
+
 
 testApp: TestOglElements = TestOglElements(redirect=False)
 
