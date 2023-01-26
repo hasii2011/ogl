@@ -54,6 +54,7 @@ from ogl.preferences.OglPreferences import OglPreferences
 
 MARGIN: int = 10
 
+
 @dataclass
 class ClickedOnSelectAnchorPointData:
     clicked:           bool             = False

@@ -6,6 +6,8 @@ from logging import getLogger
 
 import random
 
+from pyutmodel.PyutField import PyutFields
+from pyutmodel.PyutMethod import PyutMethods
 from wx import App
 from wx import CommandEvent
 from wx import DEFAULT_FRAME_STYLE
@@ -182,8 +184,8 @@ class TestOglElements(App):
         pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibilityEnum.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])
 
-        pyutClass.fields  = [pyutField]
-        pyutClass.methods = [pyutMethod]
+        pyutClass.fields  = PyutFields([pyutField])
+        pyutClass.methods = PyutMethods([pyutMethod])
         classDimensions: OglDimensions = self._oglPreferences.classDimensions
         oglClass:  OglClass  = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
 

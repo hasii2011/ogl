@@ -1,11 +1,12 @@
 .idea/
 __pycache__/
 .DS_Store
+.mypy_cache/
 /html/
 build/
 dist/
 ogl.egg-info
-/pyenv-3.9.1/
+/pyenv-3.10.6/
 /pyenv-3.10.0-wxpython-4.2.0/
 .envrc
 .python-version

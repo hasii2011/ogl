@@ -19,6 +19,9 @@ from wx import MenuItem
 from wx import MouseEvent
 
 
+from pyutmodel.PyutLink import PyutLink
+from pyutmodel.PyutLink import PyutLinks
+
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
 from miniogl.LinePoint import LinePoint
@@ -28,8 +31,6 @@ from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.AttachmentLocation import AttachmentLocation
 
 from ogl.OglPosition import OglPosition
-
-from pyutmodel.PyutLink import PyutLink
 
 from ogl.IllegalOperationException import IllegalOperationException
 
@@ -223,18 +224,50 @@ class OglLink(LineShape, ShapeEventHandler):
             self._dstAnchor.SetProtected(False)
             self._srcAnchor.Detach()
             self._dstAnchor.Detach()
-            try:
-                self.getSourceShape().links.remove(self)
-            except ValueError:
-                pass
-            try:
-                self.getDestinationShape().links.remove(self)
-            except ValueError:
-                pass
-            try:
-                self._link.getSource().links.remove(self._link)
-            except ValueError:
-                pass        # TODO:  Fix this silent failure
+            self._detachFromOglEnds()
+            self._detachModel()
+
+    def _detachModel(self):
+        """
+        From the data model of the source remove the
+        data model link
+        """
+        from typing import Union
+        from pyutmodel.PyutClass import PyutClass
+        from pyutmodel.PyutNote import PyutNote
+        try:
+            # self._link.getSource().links.remove(self._link)
+            pyutSrc: Union[PyutClass, PyutNote] = self._link.getSource()
+            links: PyutLinks = pyutSrc.links
+            links.remove(self._link)
+        except ValueError as ve:
+            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
+
+    def _detachFromOglEnds(self):
+        """
+        Remove us (self) from the links list in each of the ends
+
+        """
+        # Do local imports because of these incestuous self references
+        from typing import Union
+        from typing import List
+        from ogl.OglClass import OglClass
+        from ogl.OglNote import OglNote
+        try:
+            # self.getSourceShape().links.remove(self)
+            src: Union[OglClass, OglNote] = self.getSourceShape()
+            links: List[OglLink] = src.links
+            links.remove(self)
+        except ValueError as ve:
+            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
+
+        try:
+            # self.getDestinationShape().links.remove(self)
+            dest: Union[OglClass, OglNote] = self.getDestinationShape()
+            links = dest.links
+            links.remove(self)
+        except ValueError as ee:
+            self.clsLogger.warning(f'Ignoring destination removal error: {ee}')
 
     def optimizeLine(self):
         """
