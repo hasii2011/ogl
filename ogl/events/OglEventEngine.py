@@ -54,12 +54,9 @@ class OglEventEngine(IEventEngine):
 
     def sendEvent(self, eventType: OglEventType, **kwargs):
         """
-        CutOglClass: shapeToCut
-
         Args:
             eventType:
             **kwargs:
-
         """
         try:
             match eventType:

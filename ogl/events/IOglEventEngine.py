@@ -10,7 +10,7 @@ from ogl.events.OglEvents import OglEventType
 
 class IEventEngine(ABC):
     """
-    Implement an interface using standard Python library.  I found zope to abstract
+    Implement an interface using the standard Python library.  I found zope too abstract
     and python interface could not handle subclasses
     """
     @abstractmethod
