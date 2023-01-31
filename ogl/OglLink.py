@@ -7,7 +7,6 @@ from logging import getLogger
 
 from math import sqrt
 
-# noinspection PyPackageRequirements
 from deprecated import deprecated
 
 from wx import BLACK_PEN

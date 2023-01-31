@@ -1,8 +1,10 @@
-
+from typing import List
 from typing import Tuple
 
 from logging import Logger
 from logging import getLogger
+
+from deprecated import deprecated
 
 from wx import BLACK_PEN
 
@@ -16,11 +18,13 @@ from wx import TextEntryDialog
 
 from pyutmodel.PyutSDMessage import PyutSDMessage
 
+from miniogl.LineShape import LineShape
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.TextShape import TextShape
 
-from ogl.OglPosition import OglPosition
 from ogl.sd.OglSDInstance import OglSDInstance
+
+from ogl.OglPosition import OglPosition
 from ogl.OglLink import OglLink
 
 
@@ -35,6 +39,7 @@ class OglSDMessage(OglLink):
 
     def __init__(self, srcShape: OglSDInstance, pyutSDMessage: PyutSDMessage, dstShape: OglSDInstance):
         """
+        For this class use the .pyutSDMessage property to retrieve the data model
 
         Args:
             srcShape:   Source shape OglSDInstance
@@ -69,6 +74,14 @@ class OglSDMessage(OglLink):
         self.updateMessage()
         self.SetDrawArrow(True)
 
+    @property
+    def pyutSDMessage(self) -> PyutSDMessage:
+        """
+
+        Returns: The pyut sd message
+        """
+        return self._pyutSDMessage
+
     def updatePositions(self):
         """
         Define the positions on lifeline (y)
@@ -96,6 +109,7 @@ class OglSDMessage(OglLink):
         else:
             textShape.SetVisible(False)
 
+    @deprecated(reason='Use the .pyutSDMessage property')
     def getPyutObject(self) -> PyutSDMessage:
         """
         override
@@ -127,6 +141,38 @@ class OglSDMessage(OglLink):
         self.DrawChildren(dc=dc)
 
         dc.SetPen(BLACK_PEN)
+
+    def Detach(self):
+        """
+        Override OglLink because are ends are OglSDInstance's
+        """
+        if self._diagram is not None and not self._protected:
+            LineShape.Detach(self)
+            self._srcAnchor.SetProtected(False)
+            self._dstAnchor.SetProtected(False)
+            self._srcAnchor.Detach()
+            self._dstAnchor.Detach()
+
+            self._detachFromOglEnds()
+            # TODO:
+            # pyutSDMessage: PyutSDMessage = self.pyutSDMessage
+            # I don't think anything needs to be done because once
+            # the Ogl instance is gone the model should disappear
+
+    def _detachFromOglEnds(self):
+        """
+        Override base class
+        """
+        src: OglSDInstance = self.getSourceShape()
+        dst: OglSDInstance = self.getDestinationShape()
+        assert isinstance(src, OglSDInstance), 'Developer Error, src of message should be an instance'
+        assert isinstance(dst, OglSDInstance), 'Developer Error, dst of message should be an instance'
+
+        links: List[OglSDMessage] = src.links
+        links.remove(self)
+
+        links = dst.links
+        links.remove(self)
 
     def OnLeftDClick(self, event):
         """
