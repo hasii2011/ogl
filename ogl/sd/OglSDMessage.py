@@ -37,24 +37,24 @@ class OglSDMessage(OglLink):
     """
     clsLogger: Logger = getLogger(__name__)
 
-    def __init__(self, srcShape: OglSDInstance, pyutSDMessage: PyutSDMessage, dstShape: OglSDInstance):
+    def __init__(self, srcSDInstance: OglSDInstance, pyutSDMessage: PyutSDMessage, dstSDInstance: OglSDInstance):
         """
         For this class use the .pyutSDMessage property to retrieve the data model
 
         Args:
-            srcShape:   Source shape OglSDInstance
+            srcSDInstance:   Source shape OglSDInstance
             pyutSDMessage:  PyutSDMessage
-            dstShape:   Destination shape OglSDInstance
+            dstSDInstance:   Destination shape OglSDInstance
 
         """
         self._pyutSDMessage = pyutSDMessage
 
-        super().__init__(srcShape=srcShape, pyutLink=pyutSDMessage, dstShape=dstShape)
+        super().__init__(srcShape=srcSDInstance, pyutLink=pyutSDMessage, dstShape=dstSDInstance)
         # LineShape.__init__(self, srcAnchor=srcAnchor, dstAnchor=dstAnchor)
         #
         # Override OglLink anchors
         #
-        srcAnchor, dstAnchor = self._createAnchorPoints(srcShape=srcShape, pyutSDMessage=pyutSDMessage, dstShape=dstShape)
+        srcAnchor, dstAnchor = self._createAnchorPoints(srcShape=srcSDInstance, pyutSDMessage=pyutSDMessage, dstShape=dstSDInstance)
         srcAnchorPosition = srcAnchor.GetPosition()
         dstAnchorPosition = dstAnchor.GetPosition()
 
@@ -73,6 +73,13 @@ class OglSDMessage(OglLink):
 
         self.updateMessage()
         self.SetDrawArrow(True)
+
+        assert isinstance(srcSDInstance, OglSDInstance), 'Developer Error, src of message should be an instance'
+        assert isinstance(dstSDInstance, OglSDInstance), 'Developer Error, dst of message should be an instance'
+        #
+        # TODO:  Should I really do this?
+        srcSDInstance.addLink(self)
+        dstSDInstance.addLink(self)
 
     @property
     def pyutSDMessage(self) -> PyutSDMessage:
@@ -163,8 +170,8 @@ class OglSDMessage(OglLink):
         """
         Override base class
         """
-        src: OglSDInstance = self.getSourceShape()
-        dst: OglSDInstance = self.getDestinationShape()
+        src: OglSDInstance = self.sourceShape
+        dst: OglSDInstance = self.destinationShape
         assert isinstance(src, OglSDInstance), 'Developer Error, src of message should be an instance'
         assert isinstance(dst, OglSDInstance), 'Developer Error, dst of message should be an instance'
 

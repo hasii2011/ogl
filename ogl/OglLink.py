@@ -97,7 +97,7 @@ class OglLink(LineShape, ShapeEventHandler):
                 dstX, dstY = dw, dh//2
 
             # ============== Avoid over-lining; Added by C.Dutoit ================
-            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in srcShape.GetAnchors()]
+            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in srcSDInstance.GetAnchors()]
             # while (srcX, srcY) in lstAnchorsPoints:
             #     OglLink.clsLogger.warning(f'Over-lining in source shape')
             #     if orient == PyutAttachmentPoint.NORTH or orient == PyutAttachmentPoint.SOUTH:
@@ -105,11 +105,11 @@ class OglLink(LineShape, ShapeEventHandler):
             #     else:
             #         srcY += 10
             #
-            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in dstShape.GetAnchors()]
+            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in dstSDInstance.GetAnchors()]
             # while (dstX, dstY) in lstAnchorsPoints:
             #     from org.pyut.ogl.OglClass import OglClass
-            #     dstShape: OglClass = cast(OglClass, dstShape)
-            #     OglLink.clsLogger.warning(f'Over-lining in destination shape: {dstShape.getPyutObject}')
+            #     dstSDInstance: OglClass = cast(OglClass, dstSDInstance)
+            #     OglLink.clsLogger.warning(f'Over-lining in destination shape: {dstSDInstance.getPyutObject}')
             #     if orient == PyutAttachmentPoint.NORTH or orient == PyutAttachmentPoint.SOUTH:
             #         dstX += 10
             #     else:
