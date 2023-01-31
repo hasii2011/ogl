@@ -27,15 +27,15 @@ function checkStatus {
 
 function independentlyRunSomeTests {
 
-  python3 -m unittest tests.miniogl.TestRectangleShape
+  python3 -Wdefault -m unittest tests.miniogl.TestRectangleShape
   status=$?
   checkStatus ${status} TestRectangleShape
 
-  python3 -m unittest tests.ogl.TestOglInterface2
+  python3 -Wdefault -m unittest tests.ogl.TestOglInterface2
   status=$?
   checkStatus ${status} TestOglInterface2
 
-  python3 -m unittest tests.ogl.TestLinkRepr
+  python3 -Wdefault -m unittest tests.ogl.TestLinkRepr
   status=$?
   checkStatus ${status} TestLinkRepr
 }

@@ -34,8 +34,8 @@ class OglInheritance(OglLink):
         self.SetDrawArrow(True)
 
     def __repr__(self):
-        srcShape:  Shape = self.getSourceShape()
-        dstShape:  Shape = self.getDestinationShape()
+        srcShape:  Shape = self.sourceShape
+        dstShape:  Shape = self.destinationShape
         sourceId:  int   = srcShape.id
         dstId:     int   = dstShape.id
-        return f'OglInheritance[from: id: {sourceId} {self.getSourceShape()} to: id: {dstId} {self.getDestinationShape()}]'
+        return f'OglInheritance[from: id: {sourceId} {srcShape} to: id: {dstId} {dstShape}]'

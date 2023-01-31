@@ -456,8 +456,8 @@ class OglLink(LineShape, ShapeEventHandler):
 
     def __repr__(self):
 
-        srcShape: Shape = self.getSourceShape()
-        dstShape: Shape = self.getDestinationShape()
+        srcShape: Shape = self.sourceShape
+        dstShape: Shape = self.destinationShape
         sourceId: int   = srcShape.id
         dstId:    int   = dstShape.id
 
