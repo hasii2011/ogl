@@ -34,6 +34,6 @@ class OglNoteLink(OglLink):
 
         srcShape:  Shape = self.getSourceShape()
         destShape: Shape = self.getDestinationShape()
-        sourceId:  int   = srcShape.GetID()
-        destId:    int   = destShape.GetID()
+        sourceId:  int   = srcShape.id
+        destId:    int   = destShape.id
         return f'OglNoteLink - from: id: {sourceId} {self.getSourceShape()}  to: id: {destId} {self.getDestinationShape()}'
