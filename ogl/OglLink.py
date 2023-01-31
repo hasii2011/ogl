@@ -169,12 +169,29 @@ class OglLink(LineShape, ShapeEventHandler):
             else:
                 return AttachmentLocation.SOUTH
 
+    @property
+    def sourceShape(self):
+        """
+        Returns:  the source shape for this link.
+        """
+        return self._srcShape
+
+    @property
+    def destinationShape(self):
+        """
+
+        Returns:    The destination shape for this link.
+        """
+        return self._destShape
+
+    @deprecated(reason='Use sourceShape property')
     def getSourceShape(self):
         """
         Returns:  the source shape for this link.
         """
         return self._srcShape
 
+    @deprecated(reason='Use destinationShape property')
     def getDestinationShape(self):
         """
 
