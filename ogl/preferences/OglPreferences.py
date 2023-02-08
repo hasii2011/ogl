@@ -30,6 +30,7 @@ class OglPreferences(Singleton):
 
     OGL_PREFERENCES_SECTION: str = 'Ogl'
     DIAGRAM_SECTION:         str = 'Diagram'
+    NAMES_SECTION:           str = 'Names'
     DEBUG_SECTION:           str = 'Debug'
 
     NOTE_TEXT:        str = 'note_text'
@@ -40,15 +41,9 @@ class OglPreferences(Singleton):
     TEXT_FONT_FAMILY: str = 'text_font_family'
     TEXT_FONT_SIZE:   str = 'text_font_size'
     TEXT_VALUE:       str = 'text_value'
-    CLASS_NAME:       str = 'class_name'
     CLASS_DIMENSIONS: str = 'class_dimensions'
     CLASS_BACKGROUND_COLOR: str = 'class_background_color'
     CLASS_TEXT_COLOR:       str = 'class_text_color'
-
-    DEFAULT_NAME_INTERFACE: str = 'default_name_interface'
-    DEFAULT_NAME_USECASE:   str = 'default_name_usecase'
-    DEFAULT_NAME_ACTOR:     str = 'default_name_actor'
-    DEFAULT_NAME_METHOD:    str = 'default_name_method'
     DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
     DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.WHITE.value
 
@@ -64,14 +59,9 @@ class OglPreferences(Singleton):
         TEXT_FONT_FAMILY:       'Swiss',
         TEXT_FONT_SIZE:         '14',
         TEXT_VALUE:             'Donec eleifend luctus enim vel mollis',
-        CLASS_NAME:             'ClassName',
         CLASS_DIMENSIONS:        OglDimensions(100, 100).__str__(),
         CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
         CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
-        DEFAULT_NAME_INTERFACE: 'IClassInterface',
-        DEFAULT_NAME_USECASE:   'UseCaseName',
-        DEFAULT_NAME_ACTOR:     'ActorName',
-        DEFAULT_NAME_METHOD:    'MethodName',
         SHOW_PARAMETERS: 'False',
     }
 
@@ -92,6 +82,25 @@ class OglPreferences(Singleton):
         BACKGROUND_GRID_INTERVAL: '25',
         GRID_LINE_COLOR:          DEFAULT_GRID_LINE_COLOR,
         GRID_LINE_STYLE:          DEFAULT_GRID_LINE_STYLE
+    }
+
+    DEFAULT_CLASS_NAME:     str = 'default_class_name'
+    DEFAULT_NAME_INTERFACE: str = 'default_name_interface'
+    DEFAULT_NAME_USECASE:   str = 'default_name_usecase'
+    DEFAULT_NAME_ACTOR:     str = 'default_name_actor'
+    DEFAULT_NAME_METHOD:    str = 'default_name_method'
+
+    DEFAULT_NAME_FIELD:     str = 'default_name_field'
+    DEFAULT_NAME_PARAMETER: str = 'default_name_parameter'
+
+    NAME_PREFERENCES: OGL_PREFS_NAME_VALUES = {
+        DEFAULT_CLASS_NAME:     'ClassName',
+        DEFAULT_NAME_INTERFACE: 'IClassInterface',
+        DEFAULT_NAME_USECASE:   'UseCaseName',
+        DEFAULT_NAME_ACTOR:     'ActorName',
+        DEFAULT_NAME_METHOD:    'MethodName',
+        DEFAULT_NAME_FIELD:     'FieldName',
+        DEFAULT_NAME_PARAMETER: 'ParameterName',
     }
 
     DEBUG_DIAGRAM_FRAME:           str = 'debug_diagram_frame'
@@ -207,15 +216,6 @@ class OglPreferences(Singleton):
         self.__saveConfig()
 
     @property
-    def className(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_NAME)
-
-    @className.setter
-    def className(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_NAME, str(newValue))
-        self.__saveConfig()
-
-    @property
     def classDimensions(self) -> OglDimensions:
         serializedDimensions: str = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_DIMENSIONS)
         return OglDimensions.deSerialize(serializedDimensions)
@@ -251,39 +251,66 @@ class OglPreferences(Singleton):
         self.__saveConfig()
 
     @property
+    def className(self) -> str:
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_CLASS_NAME)
+
+    @className.setter
+    def className(self, newValue: str):
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_CLASS_NAME, str(newValue))
+        self.__saveConfig()
+
+    @property
     def interfaceName(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE)
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE)
 
     @interfaceName.setter
     def interfaceName(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE, newValue)
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE, newValue)
         self.__saveConfig()
 
     @property
     def useCaseName(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_USECASE)
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_USECASE)
 
     @useCaseName.setter
     def useCaseName(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_USECASE, newValue)
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_USECASE, newValue)
         self.__saveConfig()
 
     @property
     def actorName(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR)
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR)
 
     @actorName.setter
     def actorName(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR, newValue)
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR, newValue)
         self.__saveConfig()
 
     @property
     def methodName(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_METHOD)
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_METHOD)
 
     @methodName.setter
     def methodName(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.DEFAULT_NAME_METHOD, newValue)
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_METHOD, newValue)
+        self.__saveConfig()
+
+    @property
+    def fieldName(self) -> str:
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_FIELD)
+
+    @fieldName.setter
+    def fieldName(self, newValue: str):
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_FIELD, newValue)
+        self.__saveConfig()
+
+    @property
+    def parameterName(self) -> str:
+        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_PARAMETER)
+
+    @parameterName.setter
+    def parameterName(self, newValue: str):
+        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_PARAMETER, newValue)
         self.__saveConfig()
 
     @property
@@ -414,14 +441,18 @@ class OglPreferences(Singleton):
 
             if self._config.has_section(OglPreferences.DIAGRAM_SECTION) is False:
                 self._config.add_section(OglPreferences.DIAGRAM_SECTION)
-
             for prefName in OglPreferences.DIAGRAM_PREFERENCES:
                 if self._config.has_option(OglPreferences.DIAGRAM_SECTION, prefName) is False:
                     self.__addMissingDiagramPreference(prefName, OglPreferences.DIAGRAM_PREFERENCES[prefName])
 
+            if self._config.has_section(OglPreferences.NAMES_SECTION) is False:
+                self._config.add_section(OglPreferences.NAMES_SECTION)
+            for prefName in OglPreferences.NAME_PREFERENCES:
+                if self._config.has_option(OglPreferences.NAMES_SECTION, prefName) is False:
+                    self.__addMissingNamePreference(prefName, OglPreferences.NAME_PREFERENCES[prefName])
+
             if self._config.has_section(OglPreferences.DEBUG_SECTION) is False:
                 self._config.add_section(OglPreferences.DEBUG_SECTION)
-
             for prefName in OglPreferences.DEBUG_PREFERENCES:
                 if self._config.has_option(OglPreferences.DEBUG_SECTION, prefName) is False:
                     self.__addMissingDebugPreference(prefName, OglPreferences.DEBUG_PREFERENCES[prefName])
@@ -434,6 +465,9 @@ class OglPreferences(Singleton):
 
     def __addMissingDiagramPreference(self, preferenceName, value):
         self.__addMissingPreference(OglPreferences.DIAGRAM_SECTION, preferenceName, value)
+
+    def __addMissingNamePreference(self, preferenceName: str, value: str):
+        self.__addMissingPreference(OglPreferences.NAMES_SECTION, preferenceName, value)
 
     def __addMissingDebugPreference(self, preferenceName, value):
         self.__addMissingPreference(OglPreferences.DEBUG_SECTION, preferenceName, value)
