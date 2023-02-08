@@ -50,7 +50,6 @@ class OglSDMessage(OglLink):
         self._pyutSDMessage = pyutSDMessage
 
         super().__init__(srcShape=srcSDInstance, pyutLink=pyutSDMessage, dstShape=dstSDInstance)
-        # LineShape.__init__(self, srcAnchor=srcAnchor, dstAnchor=dstAnchor)
         #
         # Override OglLink anchors
         #
@@ -69,8 +68,7 @@ class OglSDMessage(OglLink):
         centerMessageX: int = round(-dy * 5 // linkLength)
         centerMessageY: int = round(dx * 5 // linkLength)
 
-        self._messageLabel: TextShape = self.AddText(centerMessageX, centerMessageY, pyutSDMessage.getMessage())  # font=self._defaultFont
-
+        self._messageLabel: TextShape = self.AddText(centerMessageX, centerMessageY, pyutSDMessage.message)  # font=self._defaultFont
         self.updateMessage()
         self.SetDrawArrow(True)
 
@@ -107,7 +105,7 @@ class OglSDMessage(OglLink):
         """
         Update the message
         """
-        text:      str       = self._pyutSDMessage.getMessage()
+        text:      str       = self._pyutSDMessage.message
         textShape: TextShape = self._messageLabel
         # Don't draw blank messages
         if text.strip() != "":
@@ -202,10 +200,9 @@ class OglSDMessage(OglLink):
             pyutSDMessage
 
         Returns:  A tuple of anchor points for the source and destination shapes
-
         """
-        srcY: int = pyutSDMessage.getSrcY() - srcShape.lifeline.GetPosition()[1]
-        dstY: int = pyutSDMessage.getDstY() - dstShape.lifeline.GetPosition()[1]
+        srcY: int = pyutSDMessage.sourceY      - srcShape.lifeline.GetPosition()[1]
+        dstY: int = pyutSDMessage.destinationY - dstShape.lifeline.GetPosition()[1]
 
         srcAnchor: AnchorPoint = srcShape.lifeline.AddAnchor(0, srcY)
         dstAnchor: AnchorPoint = dstShape.lifeline.AddAnchor(0, dstY)
