@@ -2,31 +2,46 @@
 from logging import Logger
 from logging import getLogger
 
+from wx import DEFAULT_DIALOG_STYLE
 from wx import EVT_BUTTON
 from wx import EVT_CLOSE
 from wx import ID_CANCEL
 from wx import ID_OK
+from wx import NB_FIXEDWIDTH
+from wx import NB_TOP
+from wx import Notebook
 from wx import OK
 from wx import CANCEL
 
 from wx import CommandEvent
+from wx import RESIZE_BORDER
 from wx import StdDialogButtonSizer
 
 from wx.lib.sized_controls import SizedDialog
 from wx.lib.sized_controls import SizedPanel
+
+from ogl.ui.DiagramPreferencesPage import DiagramPreferencesPage
 
 
 class DlgOglPreferences(SizedDialog):
 
     def __init__(self, parent):
 
-        super().__init__(parent, title='Ogl Preferences')
+        style:   int  = DEFAULT_DIALOG_STYLE | RESIZE_BORDER
+
+        super().__init__(parent, title='Ogl Preferences', style=style)
 
         self.logger: Logger     = getLogger(__name__)
         sizedPanel:  SizedPanel = self.GetContentsPane()
         sizedPanel.SetSizerType('vertical')
 
-        # self._pluginPreferencePage: PluginPreferencesPage = PluginPreferencesPage(parent=sizedPanel)
+        nbStyle: int = NB_TOP | NB_FIXEDWIDTH
+        book: Notebook = Notebook(sizedPanel, style=nbStyle)
+        book.SetSizerProps(expand=True, proportion=1)
+
+        diagramPreferencesPage: DiagramPreferencesPage = DiagramPreferencesPage(parent=book)
+
+        book.AddPage(diagramPreferencesPage,     text=diagramPreferencesPage.name,     select=True)
 
         self._layoutStandardOkCancelButtonSizer()
         self.Fit()

@@ -19,9 +19,11 @@ from wx.lib.sized_controls import SizedFrame
 from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 
-from preferences.OglPreferences import OglPreferences
-from tests.TestBase import TestBase
+from ogl.preferences.OglPreferences import OglPreferences
+
 from tests.ogl.ui.DlgOglPreferences import DlgOglPreferences
+
+from tests.TestBase import TestBase
 
 
 class DialogNamesEnum(Enum):
