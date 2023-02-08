@@ -31,6 +31,7 @@ class TestAll:
                             'miniogl/TestRectangleShape',
                             'ogl/TestOglInterface2',
                             'ogl/TestLinkRepr',
+                            'ui/TestDialogs',
                             ]
 
     VERBOSITY_QUIET:   int = 0  # Print the total numbers of tests executed and the global result
