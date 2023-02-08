@@ -1,3 +1,4 @@
+
 from typing import Tuple
 from typing import cast
 
@@ -6,13 +7,14 @@ from logging import getLogger
 
 import random
 
-from pyutmodel.PyutField import PyutFields
-from pyutmodel.PyutMethod import PyutMethods
-from wx import App
-from wx import CommandEvent
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
+from wx import ID_PREFERENCES
+from wx import OK
+
+from wx import App
+from wx import CommandEvent
 from wx import Menu
 from wx import MenuBar
 
@@ -30,8 +32,11 @@ from pyutmodel.PyutStereotype import PyutStereotype
 from pyutmodel.PyutText import PyutText
 from pyutmodel.PyutType import PyutType
 from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
+from pyutmodel.PyutField import PyutFields
+from pyutmodel.PyutMethod import PyutMethods
 
 from miniogl.Diagram import Diagram
+
 from ogl.OglClass import OglClass
 from ogl.OglDimensions import OglDimensions
 from ogl.OglObject import OglObject
@@ -43,6 +48,8 @@ from ogl.preferences.OglPreferences import OglPreferences
 
 from tests.TestBase import TestBase
 from tests.demo.DemoUmlFrame import DemoUmlFrame
+from tests.demo.DlgOglPreferences import DlgOglPreferences
+
 
 FRAME_WIDTH:  int = 800
 FRAME_HEIGHT: int = 600
@@ -119,6 +126,8 @@ class TestOglElements(App):
 
         fileMenu.AppendSeparator()
         fileMenu.Append(ID_EXIT, '&Quit', "Quit Application")
+        fileMenu.AppendSeparator()
+        fileMenu.Append(ID_PREFERENCES, "P&references", "Ogl preferences")
 
         viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS, item='Ogl Class', helpString='Display an Ogl Class')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,  item='Ogl Text',  helpString='Display Ogl Text')
@@ -129,6 +138,8 @@ class TestOglElements(App):
         menuBar.Append(viewMenu, 'View')
 
         self._frame.SetMenuBar(menuBar)
+
+        self.Bind(EVT_MENU, self._onOglPreferences, id=ID_PREFERENCES)
 
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
@@ -155,6 +166,12 @@ class TestOglElements(App):
             self._diagramFrame.DoZoomOut(ax=ZOOM_OUT_X, ay=ZOOM_OUT_Y)
         else:
             self.logger.error(f'Unknown Zoom menu id: {menuId}')
+
+    # noinspection PyUnusedLocal
+    def _onOglPreferences(self, event: CommandEvent):
+        with DlgOglPreferences(parent=self._frame) as dlg:
+            if dlg.ShowModal() == OK:
+                self.logger.info(f'Pressed Ok')
 
     def _displayOglText(self):
         pyutText: PyutText = PyutText(textContent=self._oglPreferences.textValue)
