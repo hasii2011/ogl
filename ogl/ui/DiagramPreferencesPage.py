@@ -25,14 +25,14 @@ from wx import Window
 from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 
-from ogl.preferences.OglPreferences import OglPreferences
+from ogl.ui.BaseOglPreferencesPage import BaseOglPreferencesPage
 
 
 SPINNER_WIDTH:  int = 60
 SPINNER_HEIGHT: int = 35
 
 
-class DiagramPreferencesPage(SizedPanel):
+class DiagramPreferencesPage(BaseOglPreferencesPage):
     """
     This is a complex layout.  The following description is good as of version 0.60.50;
     If you change the layout please update this (Yeah, I do not like this kind of brittle
@@ -75,8 +75,6 @@ class DiagramPreferencesPage(SizedPanel):
 
         super().__init__(parent)
         self.SetSizerType('vertical')
-
-        self._preferences: OglPreferences = OglPreferences()
 
         self._enableBackgroundGrid: CheckBox = cast(CheckBox, None)
         self._snapToGrid:           CheckBox = cast(CheckBox, None)
@@ -210,15 +208,3 @@ class DiagramPreferencesPage(SizedPanel):
             self._snapToGrid.SetValue(False)
             self._snapToGrid.Enabled = False
             self._preferences.snapToGrid = False
-
-    def _fixPanelSize(self, panel: SizedPanel):
-        """
-        Do the following or does not get resized correctly
-        A little trick to make sure that the sizer cannot be resized to
-        less screen space than the controls need
-
-        Args:
-            panel:
-        """
-        panel.Fit()
-        panel.SetMinSize(panel.GetSize())

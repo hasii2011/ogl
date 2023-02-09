@@ -70,7 +70,7 @@ from miniogl.DlgDebugDiagramFrame import DlgDebugDiagramFrame
 
 class DiagramFrame(ScrolledWindow):
     """
-    TODO:  Deprecate all the Get/Set methods and make the properties
+    TODO: T Deprecate all the Get/Set methods and make the properties
     """
 
     diagramFrameLogger: Logger = getLogger(__name__)

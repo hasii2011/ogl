@@ -20,12 +20,14 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/hasii2011/ogl",
     package_data={
-        'miniogl':         ['py.typed'],
-        'ogl':             ['py.typed'],
-        'ogl.events':      ['py.typed'],
-        'ogl.preferences': ['py.typed'],
-        'ogl.resources':   ['py.typed'],
-        'ogl.sd':          ['py.typed'],
+        'miniogl':              ['py.typed'],
+        'ogl':                  ['py.typed'],
+        'ogl.events':           ['py.typed'],
+        'ogl.preferences':      ['py.typed'],
+        'ogl.resources':        ['py.typed'],
+        'ogl.sd':               ['py.typed'],
+        'ogl.ui':               ['py.typed'],
+        'ogl.ui.valuecontrols': ['py.typed'],
     },
 
     packages=[
@@ -35,6 +37,7 @@ setup(
         'ogl.preferences',
         'ogl.resources', 'ogl.resources.img', 'ogl.resources.img.textdetails',
         'ogl.sd',
+        'ogl.ui', 'ogl.ui.valuecontrols',
     ],
-    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.4.0', 'wxPython~=4.2.0'],
+    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.4.0', 'hasiicommon==0.0.3', 'wxPython~=4.2.0'],
 )

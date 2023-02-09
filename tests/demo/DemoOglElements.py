@@ -70,7 +70,7 @@ INCREMENT_X: int = INITIAL_X + 20
 INCREMENT_Y: int = INITIAL_Y + 40
 
 
-class TestOglElements(App):
+class DemoOglElements(App):
 
     def __init__(self, redirect: bool):
 
@@ -232,6 +232,6 @@ class TestOglElements(App):
         return False
 
 
-testApp: TestOglElements = TestOglElements(redirect=False)
+testApp: DemoOglElements = DemoOglElements(redirect=False)
 
 testApp.MainLoop()

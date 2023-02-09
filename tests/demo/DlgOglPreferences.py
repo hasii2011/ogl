@@ -15,11 +15,13 @@ from wx import CANCEL
 
 from wx import CommandEvent
 from wx import RESIZE_BORDER
+from wx import Size
 from wx import StdDialogButtonSizer
 
 from wx.lib.sized_controls import SizedDialog
 from wx.lib.sized_controls import SizedPanel
 
+from ogl.ui.DefaultValuesPreferencesPage import DefaultValuesPreferencesPage
 from ogl.ui.DiagramPreferencesPage import DiagramPreferencesPage
 
 
@@ -28,24 +30,28 @@ class DlgOglPreferences(SizedDialog):
     def __init__(self, parent):
 
         style:   int  = DEFAULT_DIALOG_STYLE | RESIZE_BORDER
+        dlgSize: Size = Size(440, 325)
 
-        super().__init__(parent, title='Ogl Preferences', style=style)
+        super().__init__(parent, title='Ogl Preferences', size=dlgSize, style=style)
 
         self.logger: Logger     = getLogger(__name__)
         sizedPanel:  SizedPanel = self.GetContentsPane()
         sizedPanel.SetSizerType('vertical')
+        sizedPanel.SetSizerProps(proportion=1, expand=True)
 
         nbStyle: int = NB_TOP | NB_FIXEDWIDTH
         book: Notebook = Notebook(sizedPanel, style=nbStyle)
         book.SetSizerProps(expand=True, proportion=1)
 
-        diagramPreferencesPage: DiagramPreferencesPage = DiagramPreferencesPage(parent=book)
+        diagramPreferencesPage:       DiagramPreferencesPage       = DiagramPreferencesPage(parent=book)
+        defaultValuesPreferencesPage: DefaultValuesPreferencesPage = DefaultValuesPreferencesPage(parent=book)
 
-        book.AddPage(diagramPreferencesPage,     text=diagramPreferencesPage.name,     select=True)
+        book.AddPage(diagramPreferencesPage,       text=diagramPreferencesPage.name,       select=False)
+        book.AddPage(defaultValuesPreferencesPage, text=defaultValuesPreferencesPage.name, select=True)
 
         self._layoutStandardOkCancelButtonSizer()
-        self.Fit()
-        self.SetMinSize(self.GetSize())
+        # self.Fit()
+        # self.SetMinSize(self.GetSize())
 
     def _layoutStandardOkCancelButtonSizer(self):
         """
