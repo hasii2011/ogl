@@ -21,7 +21,8 @@ from hasiicommon.resources.images.icons.embedded16.ImgToolboxClass import embedd
 from wx.lib.sized_controls import SizedPanel
 
 from ogl.ui.BaseOglPreferencesPage import BaseOglPreferencesPage
-from ogl.ui.valuecontrols.ClassControl import ClassControl
+from ogl.ui.valuecontrols.ClassAttributesControl import ClassAttributesControl
+from ogl.ui.valuecontrols.NoteAttributesControl import NoteAttributesControl
 
 
 def getNextImageID(count):
@@ -60,13 +61,13 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
 
         imageIdGenerator = getNextImageID(imageList.GetImageCount())
 
-        # notePanel:  NoteAttributesControl   = NoteAttributesControl(parent=toolBook)
+        notePanel:  NoteAttributesControl   = NoteAttributesControl(parent=toolBook)
         # textPanel:  TextAttributesControl   = TextAttributesControl(parent=toolBook)
-        classPanel: ClassControl            = ClassControl(parent=toolBook)
+        classPanel: ClassAttributesControl  = ClassAttributesControl(parent=toolBook)
 
         # defaultNamesPanel: DefaultNamesControl      = DefaultNamesControl(parent=toolBook)
 
-        # toolBook.AddPage(notePanel,         text='Notes', select=True,  imageId=next(imageIdGenerator))
+        toolBook.AddPage(notePanel,         text='Notes', select=True,  imageId=next(imageIdGenerator))
         # toolBook.AddPage(textPanel,         text='Text',  select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(classPanel,        text='Class', select=False, imageId=next(imageIdGenerator))
         # toolBook.AddPage(defaultNamesPanel, text='Names', select=False, imageId=next(imageIdGenerator))

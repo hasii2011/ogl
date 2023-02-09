@@ -16,7 +16,7 @@ from ogl.OglDimensions import OglDimensions
 from ogl.preferences.OglPreferences import OglPreferences
 
 
-class ClassControl(SizedPanel):
+class ClassAttributesControl(SizedPanel):
 
     def __init__(self, parent: Window):
 
