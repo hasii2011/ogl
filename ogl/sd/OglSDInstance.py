@@ -34,7 +34,7 @@ class OglSDInstance(OglObject):
         self.logger:       Logger         = getLogger(__name__)
 
         prefs: OglPreferences = OglPreferences()    # need our own since superclass constructs it
-        super().__init__(pyutObject, prefs.instanceWidth, prefs.instanceHeight)
+        super().__init__(pyutObject, prefs.instanceDimensions.width, prefs.instanceDimensions.height)
 
         self._instanceYPosition: int = self._prefs.instanceYPosition  # User super class version
 
@@ -164,8 +164,10 @@ class OglSDInstance(OglObject):
 
         Returns:  The lifeline
         """
-        (srcX, srcY, dstX, dstY) = (self._prefs.instanceWidth // 2, 0,
-                                    self._prefs.instanceWidth // 2, self._prefs.instanceHeight
+        width:   int = self._prefs.instanceDimensions.width
+        height: int  = self._prefs.instanceDimensions.height
+        (srcX, srcY, dstX, dstY) = (width // 2, 0,
+                                    width // 2, height
                                     )
 
         (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))

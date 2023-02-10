@@ -108,13 +108,11 @@ class OglPreferences(Singleton):
     }
 
     INSTANCE_Y_POSITION: str = 'instance_y_position'
-    INSTANCE_WIDTH:      str = 'instance_width'
-    INSTANCE_HEIGHT:     str = 'instance_height'
+    INSTANCE_DIMENSIONS: str = 'instance_dimensions'
 
     SEQUENCE_DIAGRAM_PREFERENCES: OGL_PREFS_NAME_VALUES = {
         INSTANCE_Y_POSITION: '50',
-        INSTANCE_WIDTH:      '100',
-        INSTANCE_HEIGHT:     '400',
+        INSTANCE_DIMENSIONS: OglDimensions(100, 400).__str__(),
     }
     DEBUG_DIAGRAM_FRAME:           str = 'debug_diagram_frame'
     DEBUG_BASIC_SHAPE:             str = 'debug_basic_shape'              # If `True` turn on debug display code in basic Shape.py
@@ -144,33 +142,6 @@ class OglPreferences(Singleton):
             preferencesFileName = OglPreferences.PREFERENCES_FILENAME
 
         return preferencesFileName
-
-    @property
-    def instanceYPosition(self) -> int:
-        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION)
-
-    @instanceYPosition.setter
-    def instanceYPosition(self, newValue: int):
-        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION, str(newValue))
-        self._saveConfig()
-
-    @property
-    def instanceWidth(self) -> int:
-        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_WIDTH)
-
-    @instanceWidth.setter
-    def instanceWidth(self, newValue: int):
-        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_WIDTH, str(newValue))
-        self._saveConfig()
-
-    @property
-    def instanceHeight(self) -> int:
-        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_HEIGHT)
-
-    @instanceHeight.setter
-    def instanceHeight(self, newValue: int):
-        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_HEIGHT, str(newValue))
-        self._saveConfig()
 
     @property
     def noteText(self) -> str:
@@ -424,6 +395,25 @@ class OglPreferences(Singleton):
 
         penStyleName: str = theNewValue.value
         self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.GRID_LINE_STYLE, penStyleName)
+        self._saveConfig()
+
+    @property
+    def instanceYPosition(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION)
+
+    @instanceYPosition.setter
+    def instanceYPosition(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION, str(newValue))
+        self._saveConfig()
+
+    @property
+    def instanceDimensions(self) -> OglDimensions:
+        serializedDimensions: str = self._config.get(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_DIMENSIONS)
+        return OglDimensions.deSerialize(serializedDimensions)
+
+    @instanceDimensions.setter
+    def instanceDimensions(self, newValue: OglDimensions):
+        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_DIMENSIONS, newValue.__str__())
         self._saveConfig()
 
     @property
