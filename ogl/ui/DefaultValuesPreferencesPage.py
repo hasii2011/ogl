@@ -10,8 +10,6 @@ from wx import Window
 from wx.lib.embeddedimage import PyEmbeddedImage
 
 # from pyut.dialogs.preferencesv2.valuecontrols.DefaultNamesControl import DefaultNamesControl
-# from pyut.dialogs.preferencesv2.valuecontrols.NoteAttributesControl import NoteAttributesControl
-# from pyut.dialogs.preferencesv2.valuecontrols.TextAttributesControl import TextAttributesControl
 #
 from hasiicommon.resources.images.DefaultPreferences import embeddedImage as DefaultPreferences
 
@@ -20,9 +18,11 @@ from hasiicommon.resources.images.icons.embedded16.ImgToolboxText import embedde
 from hasiicommon.resources.images.icons.embedded16.ImgToolboxClass import embeddedImage as ImgToolboxClass
 from wx.lib.sized_controls import SizedPanel
 
-from ogl.ui.BaseOglPreferencesPage import BaseOglPreferencesPage
 from ogl.ui.valuecontrols.ClassAttributesControl import ClassAttributesControl
 from ogl.ui.valuecontrols.NoteAttributesControl import NoteAttributesControl
+from ogl.ui.valuecontrols.TextAttributesControl import TextAttributesControl
+
+from ogl.ui.BaseOglPreferencesPage import BaseOglPreferencesPage
 
 
 def getNextImageID(count):
@@ -61,14 +61,14 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
 
         imageIdGenerator = getNextImageID(imageList.GetImageCount())
 
-        notePanel:  NoteAttributesControl   = NoteAttributesControl(parent=toolBook)
-        # textPanel:  TextAttributesControl   = TextAttributesControl(parent=toolBook)
-        classPanel: ClassAttributesControl  = ClassAttributesControl(parent=toolBook)
+        notePanel:  NoteAttributesControl  = NoteAttributesControl(parent=toolBook)
+        textPanel:  TextAttributesControl  = TextAttributesControl(parent=toolBook)
+        classPanel: ClassAttributesControl = ClassAttributesControl(parent=toolBook)
 
         # defaultNamesPanel: DefaultNamesControl      = DefaultNamesControl(parent=toolBook)
 
-        toolBook.AddPage(notePanel,         text='Notes', select=True,  imageId=next(imageIdGenerator))
-        # toolBook.AddPage(textPanel,         text='Text',  select=False, imageId=next(imageIdGenerator))
+        toolBook.AddPage(notePanel,         text='Notes', select=False,  imageId=next(imageIdGenerator))
+        toolBook.AddPage(textPanel,         text='Text',  select=True, imageId=next(imageIdGenerator))
         toolBook.AddPage(classPanel,        text='Class', select=False, imageId=next(imageIdGenerator))
         # toolBook.AddPage(defaultNamesPanel, text='Names', select=False, imageId=next(imageIdGenerator))
 

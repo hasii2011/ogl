@@ -17,6 +17,7 @@ from hasiicommon.Dimensions import Dimensions
 
 from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
 
+from ogl.OglDimensions import OglDimensions
 from ogl.preferences.OglPreferences import OglPreferences
 
 
@@ -48,4 +49,5 @@ class NoteAttributesControl(SizedPanel):
 
     def _noteDimensionsChanged(self, newValue: Dimensions):
 
-        self._preferences.noteDimensions = newValue
+        # Just as easy to just cast this;  But, I want no technical debt
+        self._preferences.noteDimensions = OglDimensions(width=newValue.width, height=newValue.height)
