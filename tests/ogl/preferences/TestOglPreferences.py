@@ -71,6 +71,13 @@ class TestOglPreferences(TestCase):
     def tearDown(self):
         self._restoreBackup()
 
+    def testInitialCreation(self):
+        """
+        Make sure we correctly create the preferences file if none exists
+        It must have the default values
+        """
+        self.logger.warning(f'testInitialCreation -- not yet implemented')
+
     def testNewOglPreferences(self):
 
         oglPreferences: OglPreferences = OglPreferences()
@@ -109,28 +116,28 @@ class TestOglPreferences(TestCase):
     def _backupPrefs(self):
 
         prefsFileName: str = self.oglPreferences._preferencesFileName
-        source: str = prefsFileName
-        target: str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
-        if osPath.exists(source):
+        original: str = prefsFileName
+        backup:   str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
+        if osPath.exists(original):
             try:
-                copyfile(source, target)
+                copyfile(original, backup)
             except IOError as e:
                 self.logger.error(f"Unable to copy file. {e}")
 
     def _restoreBackup(self):
 
         prefsFileName: str = self.oglPreferences._preferencesFileName
-        source: str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
-        target: str = prefsFileName
-        if osPath.exists(source):
+        backup:   str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
+        original: str = prefsFileName
+        if osPath.exists(backup):
             try:
-                copyfile(source, target)
+                copyfile(backup, original)
             except IOError as e:
                 self.logger.error(f"Unable to copy file. {e}")
 
-            osRemove(source)
+            osRemove(backup)
         else:
-            osRemove(target)
+            osRemove(original)
 
     def _createDefaultPreferences(self):
         """

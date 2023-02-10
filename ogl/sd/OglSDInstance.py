@@ -17,6 +17,7 @@ from miniogl.LineShape import LineShape
 from miniogl.RectangleShape import RectangleShape
 
 from ogl.OglObject import OglObject
+from ogl.preferences.OglPreferences import OglPreferences
 
 from ogl.sd.OglInstanceName import OglInstanceName
 
@@ -25,21 +26,17 @@ class OglSDInstance(OglObject):
     """
     Class Diagram Instance
     This class is an OGL object for class diagram instance (vertical line)
-
-    Instantiated by UmlClassDiagramFrame
-    To actually place one of these on a UML Frame requires use of the SDHelper class
     """
-    DEFAULT_WIDTH:  int = 100
-    DEFAULT_HEIGHT: int = 400
 
     def __init__(self, pyutObject: PyutSDInstance):
         """
         """
-        self.logger: Logger = getLogger(__name__)
+        self.logger:       Logger         = getLogger(__name__)
 
-        super().__init__(pyutObject, OglSDInstance.DEFAULT_WIDTH, OglSDInstance.DEFAULT_HEIGHT)
+        prefs: OglPreferences = OglPreferences()    # need our own since superclass constructs it
+        super().__init__(pyutObject, prefs.instanceWidth, prefs.instanceHeight)
 
-        self._instanceYPosition: int = 50       # Start of instances position
+        self._instanceYPosition: int = self._prefs.instanceYPosition  # User super class version
 
         self.SetDraggable(True)
         self.SetVisible(True)
@@ -167,8 +164,8 @@ class OglSDInstance(OglObject):
 
         Returns:  The lifeline
         """
-        (srcX, srcY, dstX, dstY) = (OglSDInstance.DEFAULT_WIDTH // 2, 0,
-                                    OglSDInstance.DEFAULT_WIDTH // 2, OglSDInstance.DEFAULT_HEIGHT
+        (srcX, srcY, dstX, dstY) = (self._prefs.instanceWidth // 2, 0,
+                                    self._prefs.instanceWidth // 2, self._prefs.instanceHeight
                                     )
 
         (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))

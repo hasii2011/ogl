@@ -1,5 +1,6 @@
 
 from typing import Dict
+from typing import List
 from typing import Optional
 
 from logging import Logger
@@ -28,10 +29,13 @@ class OglPreferences(Singleton):
     PREFERENCES_FILENAME:   str = 'ogl.ini'
     THE_GREAT_MAC_PLATFORM: str = 'darwin'
 
-    OGL_PREFERENCES_SECTION: str = 'Ogl'
-    DIAGRAM_SECTION:         str = 'Diagram'
-    NAMES_SECTION:           str = 'Names'
-    DEBUG_SECTION:           str = 'Debug'
+    SECTION_OGL_PREFERENCES:  str = 'Ogl'
+    SECTION_DIAGRAM:          str = 'Diagram'
+    SECTION_NAMES:            str = 'Names'
+    SECTION_SEQUENCE_DIAGRAM: str = 'SequenceDiagrams'
+    SECTION_DEBUG:            str = 'Debug'
+
+    SECTIONS: List[str] = [SECTION_OGL_PREFERENCES, SECTION_DIAGRAM, SECTION_NAMES, SECTION_SEQUENCE_DIAGRAM, SECTION_DEBUG]
 
     NOTE_TEXT:        str = 'note_text'
     NOTE_DIMENSIONS:  str = 'note_dimensions'
@@ -103,6 +107,15 @@ class OglPreferences(Singleton):
         DEFAULT_NAME_PARAMETER: 'ParameterName',
     }
 
+    INSTANCE_Y_POSITION: str = 'instance_y_position'
+    INSTANCE_WIDTH:      str = 'instance_width'
+    INSTANCE_HEIGHT:     str = 'instance_height'
+
+    SEQUENCE_DIAGRAM_PREFERENCES: OGL_PREFS_NAME_VALUES = {
+        INSTANCE_Y_POSITION: '50',
+        INSTANCE_WIDTH:      '100',
+        INSTANCE_HEIGHT:     '400',
+    }
     DEBUG_DIAGRAM_FRAME:           str = 'debug_diagram_frame'
     DEBUG_BASIC_SHAPE:             str = 'debug_basic_shape'              # If `True` turn on debug display code in basic Shape.py
 
@@ -133,51 +146,78 @@ class OglPreferences(Singleton):
         return preferencesFileName
 
     @property
+    def instanceYPosition(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION)
+
+    @instanceYPosition.setter
+    def instanceYPosition(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_Y_POSITION, str(newValue))
+        self._saveConfig()
+
+    @property
+    def instanceWidth(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_WIDTH)
+
+    @instanceWidth.setter
+    def instanceWidth(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_WIDTH, str(newValue))
+        self._saveConfig()
+
+    @property
+    def instanceHeight(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_HEIGHT)
+
+    @instanceHeight.setter
+    def instanceHeight(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_SEQUENCE_DIAGRAM, OglPreferences.INSTANCE_HEIGHT, str(newValue))
+        self._saveConfig()
+
+    @property
     def noteText(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.NOTE_TEXT)
+        return self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.NOTE_TEXT)
 
     @noteText.setter
     def noteText(self, theNewValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.NOTE_TEXT, theNewValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.NOTE_TEXT, theNewValue)
+        self._saveConfig()
 
     @property
     def noteDimensions(self) -> OglDimensions:
-        serializedDimensions: str = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.NOTE_DIMENSIONS)
+        serializedDimensions: str = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.NOTE_DIMENSIONS)
         return OglDimensions.deSerialize(serializedDimensions)
 
     @noteDimensions.setter
     def noteDimensions(self, newValue: OglDimensions):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.NOTE_DIMENSIONS, newValue.__str__())
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.NOTE_DIMENSIONS, newValue.__str__())
+        self._saveConfig()
 
     @property
     def textDimensions(self) -> OglDimensions:
-        serializedDimensions: str = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_DIMENSIONS)
+        serializedDimensions: str = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_DIMENSIONS)
         return OglDimensions.deSerialize(serializedDimensions)
 
     @textDimensions.setter
     def textDimensions(self, newValue: OglDimensions):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_DIMENSIONS, newValue.__str__())
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_DIMENSIONS, newValue.__str__())
+        self._saveConfig()
 
     @property
     def textBold(self) -> bool:
-        return self._config.getboolean(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_BOLD)
+        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_BOLD)
 
     @textBold.setter
     def textBold(self, newValue: bool):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_BOLD, str(newValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_BOLD, str(newValue))
+        self._saveConfig()
 
     @property
     def textItalicize(self) -> bool:
-        return self._config.getboolean(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_ITALICIZE)
+        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_ITALICIZE)
 
     @textItalicize.setter
     def textItalicize(self, newValue: bool):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_ITALICIZE, str(newValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_ITALICIZE, str(newValue))
+        self._saveConfig()
 
     @property
     def textFontFamily(self) -> OglTextFontFamily:
@@ -186,7 +226,7 @@ class OglPreferences(Singleton):
         Returns: The Text Font Family
         """
 
-        fontStr: str = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_FONT_FAMILY)
+        fontStr: str = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_FONT_FAMILY)
 
         fontEnum: OglTextFontFamily = OglTextFontFamily(fontStr)
 
@@ -194,175 +234,175 @@ class OglPreferences(Singleton):
 
     @textFontFamily.setter
     def textFontFamily(self, newValue: OglTextFontFamily):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_FONT_FAMILY, newValue.value)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_FONT_FAMILY, newValue.value)
+        self._saveConfig()
 
     @property
     def textFontSize(self) -> int:
-        return self._config.getint(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_FONT_SIZE)
+        return self._config.getint(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_FONT_SIZE)
 
     @textFontSize.setter
     def textFontSize(self, newValue: int):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_FONT_SIZE, str(newValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_FONT_SIZE, str(newValue))
+        self._saveConfig()
 
     @property
     def textValue(self) -> str:
-        return self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_VALUE)
+        return self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_VALUE)
 
     @textValue.setter
     def textValue(self, newValue: str):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.TEXT_VALUE, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.TEXT_VALUE, newValue)
+        self._saveConfig()
 
     @property
     def classDimensions(self) -> OglDimensions:
-        serializedDimensions: str = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_DIMENSIONS)
+        serializedDimensions: str = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_DIMENSIONS)
         return OglDimensions.deSerialize(serializedDimensions)
 
     @classDimensions.setter
     def classDimensions(self, newValue: OglDimensions):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_DIMENSIONS, newValue.__str__())
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_DIMENSIONS, newValue.__str__())
+        self._saveConfig()
 
     @property
     def classBackgroundColor(self) -> MiniOglColorEnum:
-        colorName:     str           = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_BACKGROUND_COLOR)
+        colorName:     str           = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_BACKGROUND_COLOR)
         pyutColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorName)
         return pyutColorEnum
 
     @classBackgroundColor.setter
     def classBackgroundColor(self, newValue: MiniOglColorEnum):
         colorName: str = newValue.value
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_BACKGROUND_COLOR, colorName)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_BACKGROUND_COLOR, colorName)
+        self._saveConfig()
 
     @property
     def classTextColor(self) -> MiniOglColorEnum:
-        colorName:     str           = self._config.get(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_TEXT_COLOR)
+        colorName:     str           = self._config.get(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_TEXT_COLOR)
         pyutColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorName)
         return pyutColorEnum
 
     @classTextColor.setter
     def classTextColor(self, newValue: MiniOglColorEnum):
         colorName: str = newValue.value
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.CLASS_TEXT_COLOR, colorName)
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_TEXT_COLOR, colorName)
 
-        self.__saveConfig()
+        self._saveConfig()
 
     @property
     def className(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_CLASS_NAME)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_CLASS_NAME)
 
     @className.setter
     def className(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_CLASS_NAME, str(newValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_CLASS_NAME, str(newValue))
+        self._saveConfig()
 
     @property
     def interfaceName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_INTERFACE)
 
     @interfaceName.setter
     def interfaceName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_INTERFACE, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_INTERFACE, newValue)
+        self._saveConfig()
 
     @property
     def useCaseName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_USECASE)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_USECASE)
 
     @useCaseName.setter
     def useCaseName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_USECASE, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_USECASE, newValue)
+        self._saveConfig()
 
     @property
     def actorName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_ACTOR)
 
     @actorName.setter
     def actorName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_ACTOR, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_ACTOR, newValue)
+        self._saveConfig()
 
     @property
     def methodName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_METHOD)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_METHOD)
 
     @methodName.setter
     def methodName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_METHOD, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_METHOD, newValue)
+        self._saveConfig()
 
     @property
     def fieldName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_FIELD)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_FIELD)
 
     @fieldName.setter
     def fieldName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_FIELD, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_FIELD, newValue)
+        self._saveConfig()
 
     @property
     def parameterName(self) -> str:
-        return self._config.get(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_PARAMETER)
+        return self._config.get(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_PARAMETER)
 
     @parameterName.setter
     def parameterName(self, newValue: str):
-        self._config.set(OglPreferences.NAMES_SECTION, OglPreferences.DEFAULT_NAME_PARAMETER, newValue)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_NAMES, OglPreferences.DEFAULT_NAME_PARAMETER, newValue)
+        self._saveConfig()
 
     @property
     def showParameters(self) -> bool:
-        return self._config.getboolean(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.SHOW_PARAMETERS)
+        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.SHOW_PARAMETERS)
 
     @showParameters.setter
     def showParameters(self, theNewValue: bool):
-        self._config.set(OglPreferences.OGL_PREFERENCES_SECTION, OglPreferences.SHOW_PARAMETERS, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.SHOW_PARAMETERS, str(theNewValue))
+        self._saveConfig()
 
     @property
     def centerDiagram(self):
-        centerDiagram: bool = self._config.getboolean(OglPreferences.DIAGRAM_SECTION, OglPreferences.CENTER_DIAGRAM)
+        centerDiagram: bool = self._config.getboolean(OglPreferences.SECTION_DIAGRAM, OglPreferences.CENTER_DIAGRAM)
         return centerDiagram
 
     @centerDiagram.setter
     def centerDiagram(self, theNewValue: bool):
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.CENTER_DIAGRAM, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.CENTER_DIAGRAM, str(theNewValue))
+        self._saveConfig()
 
     @property
     def backgroundGridEnabled(self) -> bool:
-        return self._config.getboolean(OglPreferences.DIAGRAM_SECTION, OglPreferences.BACKGROUND_GRID_ENABLED)
+        return self._config.getboolean(OglPreferences.SECTION_DIAGRAM, OglPreferences.BACKGROUND_GRID_ENABLED)
 
     @backgroundGridEnabled.setter
     def backgroundGridEnabled(self, theNewValue: bool):
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.BACKGROUND_GRID_ENABLED, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.BACKGROUND_GRID_ENABLED, str(theNewValue))
+        self._saveConfig()
 
     @property
     def snapToGrid(self) -> bool:
-        return self._config.getboolean(OglPreferences.DIAGRAM_SECTION, OglPreferences.SNAP_TO_GRID)
+        return self._config.getboolean(OglPreferences.SECTION_DIAGRAM, OglPreferences.SNAP_TO_GRID)
 
     @snapToGrid.setter
     def snapToGrid(self, theNewValue: bool):
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.SNAP_TO_GRID, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.SNAP_TO_GRID, str(theNewValue))
+        self._saveConfig()
 
     @property
     def backgroundGridInterval(self) -> int:
-        return self._config.getint(OglPreferences.DIAGRAM_SECTION, OglPreferences.BACKGROUND_GRID_INTERVAL)
+        return self._config.getint(OglPreferences.SECTION_DIAGRAM, OglPreferences.BACKGROUND_GRID_INTERVAL)
 
     @backgroundGridInterval.setter
     def backgroundGridInterval(self, theNewValue: int):
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.BACKGROUND_GRID_INTERVAL, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.BACKGROUND_GRID_INTERVAL, str(theNewValue))
+        self._saveConfig()
 
     @property
     def gridLineColor(self) -> MiniOglColorEnum:
 
-        colorName:     str           = self._config.get(OglPreferences.DIAGRAM_SECTION, OglPreferences.GRID_LINE_COLOR)
+        colorName:     str           = self._config.get(OglPreferences.SECTION_DIAGRAM, OglPreferences.GRID_LINE_COLOR)
         pyutColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorName)
         return pyutColorEnum
 
@@ -370,12 +410,12 @@ class OglPreferences(Singleton):
     def gridLineColor(self, theNewValue: MiniOglColorEnum):
 
         colorName: str = theNewValue.value
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.GRID_LINE_COLOR, colorName)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.GRID_LINE_COLOR, colorName)
+        self._saveConfig()
 
     @property
     def gridLineStyle(self) -> MiniOglPenStyle:
-        penStyleName: str          = self._config.get(OglPreferences.DIAGRAM_SECTION, OglPreferences.GRID_LINE_STYLE)
+        penStyleName: str          = self._config.get(OglPreferences.SECTION_DIAGRAM, OglPreferences.GRID_LINE_STYLE)
         pyutPenStyle: MiniOglPenStyle = MiniOglPenStyle(penStyleName)
         return pyutPenStyle
 
@@ -383,28 +423,28 @@ class OglPreferences(Singleton):
     def gridLineStyle(self, theNewValue: MiniOglPenStyle):
 
         penStyleName: str = theNewValue.value
-        self._config.set(OglPreferences.DIAGRAM_SECTION, OglPreferences.GRID_LINE_STYLE, penStyleName)
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.GRID_LINE_STYLE, penStyleName)
+        self._saveConfig()
 
     @property
     def debugDiagramFrame(self) -> bool:
-        ans: bool = self._config.getboolean(OglPreferences.DEBUG_SECTION, OglPreferences.DEBUG_DIAGRAM_FRAME)
+        ans: bool = self._config.getboolean(OglPreferences.SECTION_DEBUG, OglPreferences.DEBUG_DIAGRAM_FRAME)
         return ans
 
     @debugDiagramFrame.setter
     def debugDiagramFrame(self, theNewValue: bool):
-        self._config.set(OglPreferences.DEBUG_SECTION, OglPreferences.DEBUG_DIAGRAM_FRAME, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DEBUG, OglPreferences.DEBUG_DIAGRAM_FRAME, str(theNewValue))
+        self._saveConfig()
 
     @property
     def debugBasicShape(self):
-        ans: bool = self._config.getboolean(OglPreferences.DEBUG_SECTION, OglPreferences.DEBUG_BASIC_SHAPE)
+        ans: bool = self._config.getboolean(OglPreferences.SECTION_DEBUG, OglPreferences.DEBUG_BASIC_SHAPE)
         return ans
 
     @debugBasicShape.setter
     def debugBasicShape(self, theNewValue: bool):
-        self._config.set(OglPreferences.DEBUG_SECTION, OglPreferences.DEBUG_BASIC_SHAPE, str(theNewValue))
-        self.__saveConfig()
+        self._config.set(OglPreferences.SECTION_DEBUG, OglPreferences.DEBUG_BASIC_SHAPE, str(theNewValue))
+        self._saveConfig()
 
     def _loadPreferences(self):
 
@@ -413,7 +453,7 @@ class OglPreferences(Singleton):
         # Read data
         self._config.read(self._preferencesFileName)
         self._addMissingPreferences()
-        self.__saveConfig()
+        self._saveConfig()
 
     def _ensurePreferenceFileExists(self):
 
@@ -433,53 +473,42 @@ class OglPreferences(Singleton):
     def _addMissingPreferences(self):
 
         try:
-            if self._config.has_section(OglPreferences.OGL_PREFERENCES_SECTION) is False:
-                self._config.add_section(OglPreferences.OGL_PREFERENCES_SECTION)
-            for prefName in OglPreferences.OGL_PREFERENCES:
-                if self._config.has_option(OglPreferences.OGL_PREFERENCES_SECTION, prefName) is False:
-                    self.__addMissingOglPreference(prefName, OglPreferences.OGL_PREFERENCES[prefName])
+            self._addMissingSections()
 
-            if self._config.has_section(OglPreferences.DIAGRAM_SECTION) is False:
-                self._config.add_section(OglPreferences.DIAGRAM_SECTION)
-            for prefName in OglPreferences.DIAGRAM_PREFERENCES:
-                if self._config.has_option(OglPreferences.DIAGRAM_SECTION, prefName) is False:
-                    self.__addMissingDiagramPreference(prefName, OglPreferences.DIAGRAM_PREFERENCES[prefName])
-
-            if self._config.has_section(OglPreferences.NAMES_SECTION) is False:
-                self._config.add_section(OglPreferences.NAMES_SECTION)
-            for prefName in OglPreferences.NAME_PREFERENCES:
-                if self._config.has_option(OglPreferences.NAMES_SECTION, prefName) is False:
-                    self.__addMissingNamePreference(prefName, OglPreferences.NAME_PREFERENCES[prefName])
-
-            if self._config.has_section(OglPreferences.DEBUG_SECTION) is False:
-                self._config.add_section(OglPreferences.DEBUG_SECTION)
-            for prefName in OglPreferences.DEBUG_PREFERENCES:
-                if self._config.has_option(OglPreferences.DEBUG_SECTION, prefName) is False:
-                    self.__addMissingDebugPreference(prefName, OglPreferences.DEBUG_PREFERENCES[prefName])
+            # key: section name, value: section dictionary
+            preferenceSections: Dict[str, OGL_PREFS_NAME_VALUES] = {
+                OglPreferences.SECTION_OGL_PREFERENCES:  OglPreferences.OGL_PREFERENCES,
+                OglPreferences.SECTION_DIAGRAM:          OglPreferences.DIAGRAM_PREFERENCES,
+                OglPreferences.SECTION_NAMES:            OglPreferences.NAME_PREFERENCES,
+                OglPreferences.SECTION_SEQUENCE_DIAGRAM: OglPreferences.SEQUENCE_DIAGRAM_PREFERENCES,
+                OglPreferences.SECTION_DEBUG:            OglPreferences.DEBUG_PREFERENCES
+            }
+            # loop through each section dictionary
+            for sectionName in preferenceSections:
+                self.logger.debug(f'{sectionName}')
+                preferences: OGL_PREFS_NAME_VALUES = preferenceSections[sectionName]
+                self.logger.debug(f'{preferences}')
+                # Loop through each preference in the section dictionary
+                for preferenceName in preferences:
+                    if self._config.has_option(sectionName, preferenceName) is False:
+                        value: str = preferences[preferenceName]
+                        self._addMissingPreference(sectionName=sectionName, preferenceName=preferenceName, value=value)
 
         except (ValueError, Exception) as e:
             self.logger.error(f"Error: {e}")
 
-    def __addMissingOglPreference(self, preferenceName, value):
-        self.__addMissingPreference(OglPreferences.OGL_PREFERENCES_SECTION, preferenceName, value)
+    def _addMissingSections(self):
+        for sectionName in OglPreferences.SECTIONS:
+            if self._config.has_section(sectionName) is False:
+                self._config.add_section(sectionName)
 
-    def __addMissingDiagramPreference(self, preferenceName, value):
-        self.__addMissingPreference(OglPreferences.DIAGRAM_SECTION, preferenceName, value)
-
-    def __addMissingNamePreference(self, preferenceName: str, value: str):
-        self.__addMissingPreference(OglPreferences.NAMES_SECTION, preferenceName, value)
-
-    def __addMissingDebugPreference(self, preferenceName, value):
-        self.__addMissingPreference(OglPreferences.DEBUG_SECTION, preferenceName, value)
-
-    def __addMissingPreference(self, sectionName: str, preferenceName: str, value: str):
+    def _addMissingPreference(self, sectionName: str, preferenceName: str, value: str):
         self._config.set(sectionName, preferenceName, value)
-        self.__saveConfig()
+        self._saveConfig()
 
-    def __saveConfig(self):
+    def _saveConfig(self):
         """
         Save data to the preferences file
         """
-        f = open(self._preferencesFileName, "w")
-        self._config.write(f)
-        f.close()
+        with open(self._preferencesFileName, "w") as fd:
+            self._config.write(fd)
