@@ -16,7 +16,9 @@ from hasiicommon.resources.images.icons.embedded16.ImgToolboxNote import embedde
 from hasiicommon.resources.images.icons.embedded16.ImgToolboxText import embeddedImage as ImgToolboxText
 from hasiicommon.resources.images.icons.embedded16.ImgToolboxClass import embeddedImage as ImgToolboxClass
 from hasiicommon.resources.images.icons.embedded16.ImgToolboxSequenceDiagramInstance import embeddedImage as ImgToolboxSequenceDiagramInstance
+from hasiicommon.resources.images.icons.embedded16.ImgToolboxRelationshipComposition import embeddedImage as ImgToolboxRelationshipComposition
 
+from ogl.ui.valuecontrols.AssociationAttributesControl import AssociationAttributesControl
 from ogl.ui.valuecontrols.ClassAttributesControl import ClassAttributesControl
 from ogl.ui.valuecontrols.DefaultNamesControl import DefaultNamesControl
 from ogl.ui.valuecontrols.NoteAttributesControl import NoteAttributesControl
@@ -51,7 +53,10 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
         toolBook: Toolbook = Toolbook(parent, ID_ANY, style=BK_DEFAULT)
         toolBook.SetSizerProps(expand=True, proportion=1)
 
-        embeddedImages: List[PyEmbeddedImage] = [ImgToolboxNote, ImgToolboxText, ImgToolboxClass, DefaultPreferences, ImgToolboxSequenceDiagramInstance]
+        embeddedImages: List[PyEmbeddedImage] = [ImgToolboxNote, ImgToolboxText, ImgToolboxClass, DefaultPreferences,
+                                                 ImgToolboxSequenceDiagramInstance,
+                                                 ImgToolboxRelationshipComposition
+                                                 ]
         imageList:      ImageList             = ImageList(width=16, height=16)
 
         for embeddedImage in embeddedImages:
@@ -69,11 +74,14 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
         defaultNamesPanel: DefaultNamesControl = DefaultNamesControl(parent=toolBook)
         sdPanel:           SDAttributesControl = SDAttributesControl(parent=toolBook)
 
+        associationPanel:  AssociationAttributesControl = AssociationAttributesControl(parent=toolBook)
+
         toolBook.AddPage(notePanel,         text='Notes', select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(textPanel,         text='Text',  select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(classPanel,        text='Class', select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(defaultNamesPanel, text='Names', select=False, imageId=next(imageIdGenerator))
-        toolBook.AddPage(sdPanel,           text='SD',    select=True,  imageId=next(imageIdGenerator))
+        toolBook.AddPage(sdPanel,           text='SD',    select=False, imageId=next(imageIdGenerator))
+        toolBook.AddPage(associationPanel,  text='Association', select=True, imageId=next(imageIdGenerator))
 
     def _setControlValues(self):
         pass

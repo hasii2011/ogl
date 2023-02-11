@@ -1,5 +1,6 @@
 
 from typing import Tuple
+from typing import Union
 from typing import cast
 
 from logging import Logger
@@ -7,6 +8,8 @@ from logging import getLogger
 
 import random
 
+from pyutmodel.PyutLink import PyutLink
+from pyutmodel.PyutLinkType import PyutLinkType
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
@@ -38,7 +41,9 @@ from pyutmodel.PyutMethod import PyutMethods
 from miniogl.Diagram import Diagram
 
 from ogl.OglClass import OglClass
+from ogl.OglComposition import OglComposition
 from ogl.OglDimensions import OglDimensions
+from ogl.OglLink import OglLink
 from ogl.OglObject import OglObject
 from ogl.OglText import OglText
 
@@ -83,10 +88,11 @@ class DemoOglElements(App):
         self._diagram:        Diagram      = cast(Diagram, None)
         self._oglEventEngine: IEventEngine = cast(OglEventEngine, None)
 
-        self._ID_DISPLAY_OGL_CLASS: int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_TEXT:  int = wxNewIdRef()
-        self._ID_ZOOM_IN:           int = wxNewIdRef()
-        self._ID_ZOOM_OUT:          int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_CLASS:       int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_TEXT:        int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_COMPOSITION: int = wxNewIdRef()
+        self._ID_ZOOM_IN:                 int = wxNewIdRef()
+        self._ID_ZOOM_OUT:                int = wxNewIdRef()
 
         self._x: int = 100
         self._y: int = 100
@@ -129,8 +135,10 @@ class DemoOglElements(App):
         fileMenu.AppendSeparator()
         fileMenu.Append(ID_PREFERENCES, "P&references", "Ogl preferences")
 
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS, item='Ogl Class', helpString='Display an Ogl Class')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,  item='Ogl Text',  helpString='Display Ogl Text')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,       item='Ogl Class',       helpString='Display an Ogl Class')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,        item='Ogl Text',        helpString='Display Ogl Text')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION, item='Ogl Composition', helpString='Display an Composition Link')
+
         viewMenu.AppendSeparator()
         viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
         viewMenu.Append(id=self._ID_ZOOM_OUT, item='Zoom Out', helpString='Zoom the frame out')
@@ -143,6 +151,7 @@ class DemoOglElements(App):
 
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_COMPOSITION)
 
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_IN)
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_OUT)
@@ -154,6 +163,8 @@ class DemoOglElements(App):
                 self._displayOglClass()
             case self._ID_DISPLAY_OGL_TEXT:
                 self._displayOglText()
+            case self._ID_DISPLAY_OGL_COMPOSITION:
+                self._displayOglComposition()
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
 
@@ -208,6 +219,24 @@ class DemoOglElements(App):
 
         self._addToDiagram(oglObject=oglClass)
 
+    def _displayOglComposition(self):
+        pyutComposerClass: PyutClass = PyutClass('ComposerClass')
+        pyutComposedClass: PyutClass = PyutClass('ComposedClass')
+
+        classDimensions: OglDimensions = self._oglPreferences.classDimensions
+
+        oglComposerClass:  OglClass  = OglClass(pyutComposerClass, w=classDimensions.width, h=classDimensions.height)
+        oglComposedClass:  OglClass  = OglClass(pyutComposedClass, w=classDimensions.width, h=classDimensions.height)
+
+        self._addToDiagram(oglObject=oglComposerClass)
+        self._addToDiagram(oglObject=oglComposedClass)
+
+        pyutLink: PyutLink = PyutLink("", linkType=PyutLinkType.COMPOSITION, source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
+
+        oglComposition: OglComposition = OglComposition(srcShape=oglComposerClass, pyutLink=pyutLink, dstShape=oglComposedClass)
+
+        self._addToDiagram(oglComposition)
+
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
         y: int = self._y
@@ -216,7 +245,7 @@ class DemoOglElements(App):
         self._y += INCREMENT_Y
         return x, y
 
-    def _addToDiagram(self, oglObject: OglObject):
+    def _addToDiagram(self, oglObject: Union[OglObject, OglLink]):
 
         oglObject.SetDraggable(True)
         x, y = self._getPosition()

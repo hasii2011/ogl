@@ -38,14 +38,14 @@ class MiniOglColorEnum(Enum):
     def toWxColor(colorEnum: 'MiniOglColorEnum') -> Colour:
         cdb: ColourDatabase = ColourDatabase()
 
-        cdb.AddColour(MiniOglColorEnum.ALICE_BLUE.value,   Colour(240,248,255))
-        cdb.AddColour(MiniOglColorEnum.GAINSBORO.value,    Colour(218,218,218))
-        cdb.AddColour(MiniOglColorEnum.LIGHT_YELLOW.value, Colour(255,255,224))
-        cdb.AddColour(MiniOglColorEnum.MINT_CREAM.value,   Colour(245,255,250))
+        cdb.AddColour(MiniOglColorEnum.ALICE_BLUE.value,   Colour(240, 248, 255))
+        cdb.AddColour(MiniOglColorEnum.GAINSBORO.value,    Colour(218, 218, 218))
+        cdb.AddColour(MiniOglColorEnum.LIGHT_YELLOW.value, Colour(255, 255, 224))
+        cdb.AddColour(MiniOglColorEnum.MINT_CREAM.value,   Colour(245, 255, 250))
 
         c: Colour = cdb.Find(colorEnum.value)
         if c.IsOk() is False:
-            c = cdb.Find(MiniOglColorEnum.WHITE.value)
+            c = cdb.Find(MiniOglColorEnum.BLACK.value)
             print('Cannot find color use default')
-        del cdb
+
         return c

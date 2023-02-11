@@ -33,9 +33,10 @@ class OglPreferences(Singleton):
     SECTION_DIAGRAM:          str = 'Diagram'
     SECTION_NAMES:            str = 'Names'
     SECTION_SEQUENCE_DIAGRAM: str = 'SequenceDiagrams'
+    SECTION_ASSOCIATIONS:     str = 'Associations'
     SECTION_DEBUG:            str = 'Debug'
 
-    SECTIONS: List[str] = [SECTION_OGL_PREFERENCES, SECTION_DIAGRAM, SECTION_NAMES, SECTION_SEQUENCE_DIAGRAM, SECTION_DEBUG]
+    SECTIONS: List[str] = [SECTION_OGL_PREFERENCES, SECTION_DIAGRAM, SECTION_NAMES, SECTION_SEQUENCE_DIAGRAM, SECTION_ASSOCIATIONS, SECTION_DEBUG]
 
     NOTE_TEXT:        str = 'note_text'
     NOTE_DIMENSIONS:  str = 'note_dimensions'
@@ -48,6 +49,7 @@ class OglPreferences(Singleton):
     CLASS_DIMENSIONS: str = 'class_dimensions'
     CLASS_BACKGROUND_COLOR: str = 'class_background_color'
     CLASS_TEXT_COLOR:       str = 'class_text_color'
+
     DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
     DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.WHITE.value
 
@@ -114,6 +116,14 @@ class OglPreferences(Singleton):
         INSTANCE_Y_POSITION: '50',
         INSTANCE_DIMENSIONS: OglDimensions(100, 400).__str__(),
     }
+
+    DIAMOND_SIZE: str = 'diamond_size'
+
+    ASSOCIATION_PREFERENCES: OGL_PREFS_NAME_VALUES = {
+        TEXT_FONT_SIZE: '12',
+        DIAMOND_SIZE:   '7',
+    }
+
     DEBUG_DIAGRAM_FRAME:           str = 'debug_diagram_frame'
     DEBUG_BASIC_SHAPE:             str = 'debug_basic_shape'              # If `True` turn on debug display code in basic Shape.py
 
@@ -417,6 +427,24 @@ class OglPreferences(Singleton):
         self._saveConfig()
 
     @property
+    def associationDiamondSize(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_ASSOCIATIONS, OglPreferences.DIAMOND_SIZE)
+
+    @associationDiamondSize.setter
+    def associationDiamondSize(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_ASSOCIATIONS, OglPreferences.DIAMOND_SIZE, str(newValue))
+        self._saveConfig()
+
+    @property
+    def associationTextFontSize(self) -> int:
+        return self._config.getint(OglPreferences.SECTION_ASSOCIATIONS, OglPreferences.TEXT_FONT_SIZE)
+
+    @associationTextFontSize.setter
+    def associationTextFontSize(self, newValue: int):
+        self._config.set(OglPreferences.SECTION_ASSOCIATIONS, OglPreferences.TEXT_FONT_SIZE, str(newValue))
+        self._saveConfig()
+
+    @property
     def debugDiagramFrame(self) -> bool:
         ans: bool = self._config.getboolean(OglPreferences.SECTION_DEBUG, OglPreferences.DEBUG_DIAGRAM_FRAME)
         return ans
@@ -471,7 +499,8 @@ class OglPreferences(Singleton):
                 OglPreferences.SECTION_DIAGRAM:          OglPreferences.DIAGRAM_PREFERENCES,
                 OglPreferences.SECTION_NAMES:            OglPreferences.NAME_PREFERENCES,
                 OglPreferences.SECTION_SEQUENCE_DIAGRAM: OglPreferences.SEQUENCE_DIAGRAM_PREFERENCES,
-                OglPreferences.SECTION_DEBUG:            OglPreferences.DEBUG_PREFERENCES
+                OglPreferences.SECTION_ASSOCIATIONS:     OglPreferences.ASSOCIATION_PREFERENCES,
+                OglPreferences.SECTION_DEBUG:            OglPreferences.DEBUG_PREFERENCES,
             }
             # loop through each section dictionary
             for sectionName in preferenceSections:

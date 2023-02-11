@@ -10,7 +10,7 @@ LICENSE = (HERE / 'LICENSE').read_text()
 
 setup(
     name="ogl",
-    version="0.60.50",
+    version="0.60.70",
     author='Humberto A. Sanchez II',
     author_email='Humberto.A.Sanchez.II@gmail.com',
     maintainer='Humberto A. Sanchez II',
@@ -25,6 +25,8 @@ setup(
         'ogl.events':           ['py.typed'],
         'ogl.preferences':      ['py.typed'],
         'ogl.resources':        ['py.typed'],
+        'ogl.resources.img':             ['py.typed'],
+        'ogl.resources.img.textdetails': ['py.typed'],
         'ogl.sd':               ['py.typed'],
         'ogl.ui':               ['py.typed'],
         'ogl.ui.valuecontrols': ['py.typed'],

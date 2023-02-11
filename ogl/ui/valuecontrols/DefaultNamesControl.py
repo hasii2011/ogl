@@ -46,7 +46,9 @@ class DefaultNamesControl(SizedPanel):
             NameData(label='Interface Name: ', callback=self._onInterfaceNameChanged, initialValue=p.interfaceName),
             NameData(label='Use Case Name: ',  callback=self._onUseCaseNameChanged,   initialValue=p.useCaseName),
             NameData(label='Actor Name: ',     callback=self._onActorNameChanged,     initialValue=p.actorName),
-            NameData(label='Method Name: ',    callback=self._onMethodNameChanged,    initialValue=p.methodName)
+            NameData(label='Method Name: ',    callback=self._onMethodNameChanged,    initialValue=p.methodName),
+            NameData(label='Field Name: ',     callback=self._onFieldNameChanged,     initialValue=p.fieldName),
+            NameData(label='Parameter Name: ', callback=self._onParameterNameChanged, initialValue=p.parameterName),
         ]
         for nd in self._nameData:
             nameData: NameData = cast(NameData, nd)
@@ -70,3 +72,11 @@ class DefaultNamesControl(SizedPanel):
     def _onMethodNameChanged(self, event: CommandEvent):
         newValue: str = event.GetString()
         self._preferences.methodName = newValue
+
+    def _onFieldNameChanged(self, event: CommandEvent):
+        newValue: str = event.GetString()
+        self._preferences.fieldName = newValue
+
+    def _onParameterNameChanged(self, event: CommandEvent):
+        newValue: str = event.GetString()
+        self._preferences.parameterName = newValue

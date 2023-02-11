@@ -26,6 +26,8 @@ from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
 from ogl.OglPosition import OglPosition
 from ogl.OglUtils import OglUtils
+from ogl.preferences.OglPreferences import OglPreferences
+
 
 SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
 SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
@@ -34,13 +36,12 @@ DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
 
 PI_6:         float = pi / 6
-DIAMOND_SIZE: int = 7
 
 
 class OglAssociation(OglLink):
 
-    TEXT_SHAPE_FONT_SIZE: int = 12
-
+    # TEXT_SHAPE_FONT_SIZE: int = 12
+    clsDiamondSize: int = OglPreferences().associationDiamondSize
     """
     Graphical link representation of an association, (simple line, no arrow).
     To get a new link,  use the `OglLinkFactory` and specify
@@ -56,7 +57,8 @@ class OglAssociation(OglLink):
             srcPos:     Position of source      Override location of input source
             dstPos:     Position of destination Override location of input destination
         """
-        self.oglAssociationLogger: Logger = getLogger(__name__)
+        self.oglAssociationLogger: Logger         = getLogger(__name__)
+        self._preferences:         OglPreferences = OglPreferences()
 
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
@@ -64,11 +66,9 @@ class OglAssociation(OglLink):
         self._sourceCardinality:      OglAssociationLabel = OglAssociationLabel()
         self._destinationCardinality: OglAssociationLabel = OglAssociationLabel()
 
-        self._defaultFont: Font = Font(OglAssociation.TEXT_SHAPE_FONT_SIZE, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
+        self._defaultFont: Font = Font(self._preferences.associationTextFontSize, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
 
         self.SetDrawArrow(False)
-
-        # self.__hackCenterLabelPosition(cenLblX, cenLblY)
 
     @property
     def centerLabel(self) -> OglAssociationLabel:
@@ -254,24 +254,25 @@ class OglAssociation(OglLink):
 
     @classmethod
     def calculateDiamondPoint0(cls, x2: float, y2: float, alpha1: float) -> DiamondPoint:
-        dpx0: float = x2 + DIAMOND_SIZE * cos(alpha1)
-        dpy0: float = y2 + DIAMOND_SIZE * sin(alpha1)
+
+        dpx0: float = x2 + OglAssociation.clsDiamondSize * cos(alpha1)
+        dpy0: float = y2 + OglAssociation.clsDiamondSize * sin(alpha1)
 
         return DiamondPoint((round(dpx0), round(dpy0)))
 
     @classmethod
     def calculateDiamondPoint2(cls, x2: float, y2: float, alpha2: float) -> DiamondPoint:
 
-        dpx2: float = x2 + DIAMOND_SIZE * cos(alpha2)
-        dpy2: float = y2 + DIAMOND_SIZE * sin(alpha2)
+        dpx2: float = x2 + OglAssociation.clsDiamondSize * cos(alpha2)
+        dpy2: float = y2 + OglAssociation.clsDiamondSize * sin(alpha2)
 
         return DiamondPoint((round(dpx2), round(dpy2)))
 
     @classmethod
     def calculateDiamondPoint3(cls, x2: float, y2: float, alpha: float) -> DiamondPoint:
 
-        dpx3: float = x2 + 2 * DIAMOND_SIZE * cos(alpha)
-        dpy3: float = y2 + 2 * DIAMOND_SIZE * sin(alpha)
+        dpx3: float = x2 + 2 * OglAssociation.clsDiamondSize * cos(alpha)
+        dpy3: float = y2 + 2 * OglAssociation.clsDiamondSize * sin(alpha)
 
         return DiamondPoint((round(dpx3), round(dpy3)))
 
