@@ -53,8 +53,6 @@ class OglPreferences(Singleton):
     DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
     DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.WHITE.value
 
-    SHOW_PARAMETERS:            str = 'Show_Parameters'
-
     # noinspection SpellCheckingInspection
     OGL_PREFERENCES: OGL_PREFS_NAME_VALUES = {
         NOTE_TEXT:              'This is the note text',
@@ -68,7 +66,6 @@ class OglPreferences(Singleton):
         CLASS_DIMENSIONS:        OglDimensions(100, 100).__str__(),
         CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
         CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
-        SHOW_PARAMETERS: 'False',
     }
 
     DEFAULT_GRID_LINE_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
@@ -80,11 +77,13 @@ class OglPreferences(Singleton):
     GRID_LINE_COLOR:          str = 'grid_line_color'
     GRID_LINE_STYLE:          str = 'grid_line_style'
     CENTER_DIAGRAM:           str = 'center_diagram'
+    SHOW_PARAMETERS:          str = 'show_parameters'
 
     DIAGRAM_PREFERENCES: OGL_PREFS_NAME_VALUES = {
         CENTER_DIAGRAM:          'False',
         BACKGROUND_GRID_ENABLED: 'True',
         SNAP_TO_GRID:            'True',
+        SHOW_PARAMETERS:         'False',
         BACKGROUND_GRID_INTERVAL: '25',
         GRID_LINE_COLOR:          DEFAULT_GRID_LINE_COLOR,
         GRID_LINE_STYLE:          DEFAULT_GRID_LINE_STYLE
@@ -95,7 +94,6 @@ class OglPreferences(Singleton):
     DEFAULT_NAME_USECASE:   str = 'default_name_usecase'
     DEFAULT_NAME_ACTOR:     str = 'default_name_actor'
     DEFAULT_NAME_METHOD:    str = 'default_name_method'
-
     DEFAULT_NAME_FIELD:     str = 'default_name_field'
     DEFAULT_NAME_PARAMETER: str = 'default_name_parameter'
 
@@ -335,15 +333,6 @@ class OglPreferences(Singleton):
         self._saveConfig()
 
     @property
-    def showParameters(self) -> bool:
-        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.SHOW_PARAMETERS)
-
-    @showParameters.setter
-    def showParameters(self, theNewValue: bool):
-        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.SHOW_PARAMETERS, str(theNewValue))
-        self._saveConfig()
-
-    @property
     def centerDiagram(self):
         centerDiagram: bool = self._config.getboolean(OglPreferences.SECTION_DIAGRAM, OglPreferences.CENTER_DIAGRAM)
         return centerDiagram
@@ -378,6 +367,15 @@ class OglPreferences(Singleton):
     @backgroundGridInterval.setter
     def backgroundGridInterval(self, theNewValue: int):
         self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.BACKGROUND_GRID_INTERVAL, str(theNewValue))
+        self._saveConfig()
+
+    @property
+    def showParameters(self) -> bool:
+        return self._config.getboolean(OglPreferences.SECTION_DIAGRAM, OglPreferences.SHOW_PARAMETERS)
+
+    @showParameters.setter
+    def showParameters(self, theNewValue: bool):
+        self._config.set(OglPreferences.SECTION_DIAGRAM, OglPreferences.SHOW_PARAMETERS, str(theNewValue))
         self._saveConfig()
 
     @property

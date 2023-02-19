@@ -46,8 +46,8 @@ class DlgOglPreferences(SizedDialog):
         diagramPreferencesPage:       DiagramPreferencesPage       = DiagramPreferencesPage(parent=book)
         defaultValuesPreferencesPage: DefaultValuesPreferencesPage = DefaultValuesPreferencesPage(parent=book)
 
-        book.AddPage(diagramPreferencesPage,       text=diagramPreferencesPage.name,       select=False)
-        book.AddPage(defaultValuesPreferencesPage, text=defaultValuesPreferencesPage.name, select=True)
+        book.AddPage(diagramPreferencesPage,       text=diagramPreferencesPage.name,       select=True)
+        book.AddPage(defaultValuesPreferencesPage, text=defaultValuesPreferencesPage.name, select=False)
 
         self._layoutStandardOkCancelButtonSizer()
         # self.Fit()

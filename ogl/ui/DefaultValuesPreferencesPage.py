@@ -76,12 +76,12 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
 
         associationPanel:  AssociationAttributesControl = AssociationAttributesControl(parent=toolBook)
 
-        toolBook.AddPage(notePanel,         text='Notes', select=False, imageId=next(imageIdGenerator))
+        toolBook.AddPage(notePanel,         text='Notes', select=True, imageId=next(imageIdGenerator))
         toolBook.AddPage(textPanel,         text='Text',  select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(classPanel,        text='Class', select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(defaultNamesPanel, text='Names', select=False, imageId=next(imageIdGenerator))
         toolBook.AddPage(sdPanel,           text='SD',    select=False, imageId=next(imageIdGenerator))
-        toolBook.AddPage(associationPanel,  text='Association', select=True, imageId=next(imageIdGenerator))
+        toolBook.AddPage(associationPanel,  text='Association', select=False, imageId=next(imageIdGenerator))
 
     def _setControlValues(self):
         pass

@@ -78,9 +78,12 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
 
         self._enableBackgroundGrid: CheckBox = cast(CheckBox, None)
         self._snapToGrid:           CheckBox = cast(CheckBox, None)
+        self._centerDiagramView:    CheckBox = cast(CheckBox, None)
+        self._showParameters:       CheckBox = cast(CheckBox, None)
         self._gridInterval:         SpinCtrl = cast(SpinCtrl, None)
         self._gridLineColor:        ComboBox = cast(ComboBox, None)
         self._gridStyleChoice:      Choice   = cast(Choice, None)
+
         self._layoutControls(self)
         self._setControlValues()
         self._bindCallbacks(parent=self)
@@ -93,10 +96,9 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
         horizontalPanel.SetSizerProps(expand=True, proportion=3)
         verticalPanel.SetSizerType('vertical')
 
-        self._enableBackgroundGrid = CheckBox(verticalPanel, label='Enable Background Grid')
-        self._snapToGrid           = CheckBox(verticalPanel, label='Snap Shapes to Grid')
+        self._layoutDiagramPreferences(verticalPanel=verticalPanel)
 
-        self._layoutGridIntervalControl(horizontalPanel)
+        self._layoutGridIntervalControl(sizedPanel=horizontalPanel)
 
         self._layoutGridOptions(panel=parentSizedPanel)
 
@@ -113,6 +115,9 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
 
         self._enableBackgroundGrid.SetValue(self._preferences.backgroundGridEnabled)
         self._snapToGrid.SetValue(self._preferences.snapToGrid)
+        self._centerDiagramView.SetValue(self._preferences.centerDiagram)
+        self._showParameters.SetValue(self._preferences.showParameters)
+
         self._gridInterval.SetValue(self._preferences.backgroundGridInterval)
         self._gridLineColor.SetValue(self._preferences.gridLineColor.value)
 
@@ -124,9 +129,23 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
 
         parent.Bind(EVT_CHECKBOX, self._onEnableBackgroundGridChanged,   self._enableBackgroundGrid)
         parent.Bind(EVT_CHECKBOX, self._onSnapToGridChanged,             self._snapToGrid)
+        parent.Bind(EVT_CHECKBOX, self._onCenterDiagramViewChanged,      self._centerDiagramView)
+        parent.Bind(EVT_CHECKBOX, self._onShowParametersChanged,         self._showParameters)
         parent.Bind(EVT_COMBOBOX, self._onGridLineColorSelectionChanged, self._gridLineColor)
         parent.Bind(EVT_SPINCTRL, self._onGridIntervalChanged,           self._gridInterval)
         parent.Bind(EVT_CHOICE,   self._onGridStyleChanged,              self._gridStyleChoice)
+
+    def _layoutDiagramPreferences(self, verticalPanel: SizedPanel):
+
+        self._enableBackgroundGrid = CheckBox(verticalPanel, label='Enable Background Grid')
+        self._snapToGrid           = CheckBox(verticalPanel, label='Snap Shapes to Grid')
+        self._centerDiagramView    = CheckBox(verticalPanel, label='Center Diagram View')
+        self._showParameters       = CheckBox(verticalPanel, label='Show Method Parameters')
+
+        self._enableBackgroundGrid.SetToolTip('Turn on a diagram grid in the UML Frame')
+        self._snapToGrid.SetToolTip('Snap class diagram shapes to the closest grid corner')
+        self._centerDiagramView.SetToolTip('Center the view in the virtual frame')
+        self._showParameters.SetToolTip('Global value to display method parameters;  Unless overridden by the class')
 
     def _layoutGridIntervalControl(self, sizedPanel):
         gridIntervalSSB: SizedStaticBox = SizedStaticBox(sizedPanel, label='Grid Interval')
@@ -164,18 +183,25 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
 
     def _onEnableBackgroundGridChanged(self, event: CommandEvent):
 
-        enabledValue: bool = event.IsChecked()
-        self.logger.warning(f'onEnableBackgroundGridChanged - {enabledValue=}')
-        self._preferences.backgroundGridEnabled = enabledValue
+        newValue: bool = event.IsChecked()
+        self.logger.debug(f'onEnableBackgroundGridChanged - {newValue=}')
+        self._preferences.backgroundGridEnabled = newValue
         self._resetSnapToGridControl()
 
     def _onSnapToGridChanged(self, event: CommandEvent):
 
-        enabledValue: bool = event.IsChecked()
-        self.logger.info(f'onSnapToGridChanged - {enabledValue=}')
-        self._preferences.snapToGrid = enabledValue
-        event.Skip(True)
+        newValue: bool = event.IsChecked()
+        self.logger.debug(f'onSnapToGridChanged - {newValue=}')
+        self._preferences.snapToGrid = newValue
 
+    def _onCenterDiagramViewChanged(self, event: CommandEvent):
+        newValue: bool = event.IsChecked()
+        self._preferences.centerDiagram = newValue
+
+    def _onShowParametersChanged(self, event: CommandEvent):
+        newValue: bool = event.IsChecked()
+        self._preferences.showParameters = newValue
+        
     def _onGridLineColorSelectionChanged(self, event: CommandEvent):
 
         colorValue:    str              = event.GetString()
