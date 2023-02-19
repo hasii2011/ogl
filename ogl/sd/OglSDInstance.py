@@ -110,8 +110,8 @@ class OglSDInstance(OglObject):
         # Set lifeline
         (myX, myY) = self.GetPosition()
         (w, h) = self.GetSize()
-        lineDst = self._lifeLine.GetDestination()
-        lineSrc = self._lifeLine.GetSource()
+        lineDst = self._lifeLine.destinationAnchor
+        lineSrc = self._lifeLine.sourceAnchor
         lineSrc.SetDraggable(True)
         lineDst.SetDraggable(True)
         lineSrc.SetPosition(w // 2 + myX, 0 + myY)

@@ -7,6 +7,7 @@ from typing import Union
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
 from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
@@ -131,6 +132,7 @@ class LineShape(Shape, Common):
         if self._diagram is not None:
             self._diagram.AddShape(control)
 
+    @deprecated(reason='Use .destinationAnchor property')
     def GetDestination(self):
         """
         Get the destination anchor.
@@ -139,6 +141,7 @@ class LineShape(Shape, Common):
         """
         return self._dstAnchor
 
+    @deprecated(reason='Use .destinationAnchor property')
     def SetDestination(self, anchor):
         """
         Set the destination anchor.
@@ -181,6 +184,7 @@ class LineShape(Shape, Common):
         """
         return self._arrowSize
 
+    @deprecated(reason='Use .sourceAnchor property')
     def GetSource(self):
         """
         Get the source anchor.
@@ -189,6 +193,7 @@ class LineShape(Shape, Common):
         """
         return self._srcAnchor
 
+    @deprecated(reason='Use .sourceAnchor property')
     def SetSource(self, anchor):
         """
         Set the source anchor.
