@@ -218,5 +218,5 @@ class OglSDMessage(OglLink):
         return srcAnchor, dstAnchor
 
     def __repr__(self) -> str:
-        msg: str = self._pyutSDMessage.getMessage()
+        msg: str = self._pyutSDMessage.message
         return f'OglSDMessage[id: {self._id} {msg=}]'

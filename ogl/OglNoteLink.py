@@ -32,8 +32,8 @@ class OglNoteLink(OglLink):
 
     def __repr__(self):
 
-        srcShape:  Shape = self.getSourceShape()
-        destShape: Shape = self.getDestinationShape()
+        srcShape:  Shape = self.sourceShape
+        destShape: Shape = self.destinationShape
         sourceId:  int   = srcShape.id
         destId:    int   = destShape.id
-        return f'OglNoteLink - from: id: {sourceId} {self.getSourceShape()}  to: id: {destId} {self.getDestinationShape()}'
+        return f'OglNoteLink - from: id: {sourceId} {self.sourceShape}  to: id: {destId} {self.destinationShape}'
