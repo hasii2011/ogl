@@ -49,9 +49,13 @@ from ogl.OglText import OglText
 
 from ogl.events.IOglEventEngine import IEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
+
 from ogl.preferences.OglPreferences import OglPreferences
 
 from tests.TestBase import TestBase
+from tests.demo.DemoEventEngine import DemoEventEngine
+from tests.demo.DemoEventEngine import EVT_SET_STATUS_TEXT
+from tests.demo.DemoEventEngine import SetStatusTextEvent
 from tests.demo.DemoUmlFrame import DemoUmlFrame
 from tests.demo.DlgOglPreferences import DlgOglPreferences
 
@@ -86,11 +90,14 @@ class DemoOglElements(App):
         self._frame:          SizedFrame   = cast(SizedFrame, None)
         self._diagramFrame:   DemoUmlFrame = cast(DemoUmlFrame, None)
         self._diagram:        Diagram      = cast(Diagram, None)
-        self._oglEventEngine: IEventEngine = cast(OglEventEngine, None)
+
+        self._oglEventEngine:  IEventEngine     = cast(OglEventEngine, None)
+        self._demoEventEngine: DemoEventEngine = cast(DemoEventEngine, None)
 
         self._ID_DISPLAY_OGL_CLASS:       int = wxNewIdRef()
         self._ID_DISPLAY_OGL_TEXT:        int = wxNewIdRef()
         self._ID_DISPLAY_OGL_COMPOSITION: int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_INTERFACE:   int = wxNewIdRef()
         self._ID_ZOOM_IN:                 int = wxNewIdRef()
         self._ID_ZOOM_OUT:                int = wxNewIdRef()
 
@@ -104,10 +111,11 @@ class DemoOglElements(App):
         self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE)
         self._frame.CreateStatusBar()  # should always do this when there's a resize border
 
-        self._oglEventEngine = OglEventEngine(listeningWindow=self._frame)
+        self._oglEventEngine  = OglEventEngine(listeningWindow=self._frame)
+        self._demoEventEngine = DemoEventEngine(listeningWindow=self._frame)
 
         sizedPanel: SizedPanel = self._frame.GetContentsPane()
-        self._diagramFrame = DemoUmlFrame(parent=sizedPanel, eventEngine=self._oglEventEngine)
+        self._diagramFrame = DemoUmlFrame(parent=sizedPanel, eventEngine=self._oglEventEngine, demoEventEngine=self._demoEventEngine)
         # noinspection PyUnresolvedReferences
         self._diagramFrame.SetSizerProps(expand=True, proportion=1)
 
@@ -122,6 +130,7 @@ class DemoOglElements(App):
         self._frame.SetAutoLayout(True)
         self._frame.Show(True)
 
+        self._demoEventEngine.registerListener(EVT_SET_STATUS_TEXT, callback=self._onSetStatusText)
         return True
 
     def _createApplicationMenuBar(self):
@@ -138,6 +147,7 @@ class DemoOglElements(App):
         viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,       item='Ogl Class',       helpString='Display an Ogl Class')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,        item='Ogl Text',        helpString='Display Ogl Text')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION, item='Ogl Composition', helpString='Display an Composition Link')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,   item='Ogl Interface',   helpString='Display Lollipop Interface')
 
         viewMenu.AppendSeparator()
         viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
@@ -152,6 +162,7 @@ class DemoOglElements(App):
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_COMPOSITION)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_INTERFACE)
 
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_IN)
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_OUT)
@@ -165,6 +176,8 @@ class DemoOglElements(App):
                 self._displayOglText()
             case self._ID_DISPLAY_OGL_COMPOSITION:
                 self._displayOglComposition()
+            case self._ID_DISPLAY_OGL_INTERFACE:
+                self._displayOglInterface()
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
 
@@ -237,6 +250,13 @@ class DemoOglElements(App):
 
         self._addToDiagram(oglComposition)
 
+    def _displayOglInterface(self):
+        pyutClass:       PyutClass     = PyutClass('ImplementingClass')
+        classDimensions: OglDimensions = self._oglPreferences.classDimensions
+        oglClass:        OglClass      = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
+
+        self._addToDiagram(oglObject=oglClass)
+
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
         y: int = self._y
@@ -259,6 +279,10 @@ class DemoOglElements(App):
         if random.random() < .5:
             return True
         return False
+
+    def _onSetStatusText(self, event: SetStatusTextEvent):
+        msg: str = event.statusMessage
+        self._frame.GetStatusBar().SetStatusText(msg)
 
 
 testApp: DemoOglElements = DemoOglElements(redirect=False)

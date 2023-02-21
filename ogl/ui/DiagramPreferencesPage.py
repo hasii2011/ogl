@@ -201,7 +201,7 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
     def _onShowParametersChanged(self, event: CommandEvent):
         newValue: bool = event.IsChecked()
         self._preferences.showParameters = newValue
-        
+
     def _onGridLineColorSelectionChanged(self, event: CommandEvent):
 
         colorValue:    str              = event.GetString()

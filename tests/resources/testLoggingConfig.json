@@ -30,7 +30,7 @@
             "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl.LineShape": {
+        "miniogl.LollipopLine": {
             "level":     "DEBUG",
             "propagate": "False"
         }

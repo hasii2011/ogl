@@ -7,7 +7,7 @@ from wx import BLACK_PEN
 from wx import RED_PEN
 from wx import DC
 
-from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.AttachmentSide import AttachmentSide
 from miniogl.Common import CommonLine
 from miniogl.Common import CommonPoint
 
@@ -24,7 +24,7 @@ class LollipopLine(Shape):
 
         super().__init__()
 
-        self.logger:             Logger      = getLogger(__name__)
+        self.lollipopLogger:     Logger      = getLogger(__name__)
         self._destinationAnchor: SelectAnchorPoint = cast(SelectAnchorPoint, None)
 
         if destinationAnchor is not None:
@@ -41,7 +41,7 @@ class LollipopLine(Shape):
 
     def lineCoordinates(self) -> CommonLine:
 
-        attachmentPoint: AttachmentLocation = self._destinationAnchor.attachmentPoint
+        attachmentPoint: AttachmentSide = self._destinationAnchor.attachmentPoint
 
         xDest, yDest = self._destinationAnchor.GetPosition()
         circleX, circleY, xSrc, ySrc = self._calculateWhereToDrawLollipop(attachmentPoint, xDest, yDest)
@@ -56,11 +56,11 @@ class LollipopLine(Shape):
             dc.SetPen(BLACK_PEN)
 
         xDest, yDest = self._destinationAnchor.GetPosition()
-        attachmentPoint: AttachmentLocation = self._destinationAnchor.attachmentPoint
+        attachmentPoint: AttachmentSide = self._destinationAnchor.attachmentPoint
 
         circleX, circleY, xSrc, ySrc = self._calculateWhereToDrawLollipop(attachmentPoint, xDest, yDest)
 
-        self.logger.debug(f'Source: ({xSrc},{ySrc}) - Dest ({xDest},{yDest})')
+        self.lollipopLogger.debug(f'Source: ({xSrc},{ySrc}) - Dest ({xDest},{yDest})')
         dc.DrawLine(xSrc, ySrc, xDest, yDest)
         dc.DrawCircle(circleX, circleY, LollipopLine.LOLLIPOP_CIRCLE_RADIUS)
 
@@ -81,19 +81,19 @@ class LollipopLine(Shape):
         ratio = panel.currentZoom
 
         lollipopLength: int = LollipopLine.LOLLIPOP_LINE_LENGTH * ratio
-        self.logger.debug(f'{lollipopLength}')
+        self.lollipopLogger.debug(f'({xDest},{yDest}) {lollipopLength=}')
 
-        if attachmentPoint == AttachmentLocation.EAST:
+        if attachmentPoint == AttachmentSide.EAST:
             xSrc:    int = int(xDest + lollipopLength)
             ySrc:    int = int(yDest)
             circleX: int = int(xDest + lollipopLength)
             circleY: int = int(yDest)
-        elif attachmentPoint == AttachmentLocation.WEST:
+        elif attachmentPoint == AttachmentSide.WEST:
             xSrc    = int(xDest - lollipopLength)
             ySrc    = int(yDest)
             circleX = int(xDest - lollipopLength)
             circleY = int(yDest)
-        elif attachmentPoint == AttachmentLocation.NORTH:
+        elif attachmentPoint == AttachmentSide.NORTH:
             xSrc    = int(xDest)
             ySrc    = int(yDest - lollipopLength)
             circleX = int(xDest)

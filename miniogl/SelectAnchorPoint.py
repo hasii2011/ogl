@@ -12,7 +12,7 @@ from miniogl.Shape import Shape
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ShapeEventHandler import ShapeEventHandler
 
-from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.AttachmentSide import AttachmentSide
 
 
 class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
@@ -22,7 +22,7 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
     to attach something
 
     """
-    def __init__(self, x: int, y: int, attachmentPoint: AttachmentLocation, parent: Shape | None):
+    def __init__(self, x: int, y: int, attachmentSide: AttachmentSide, parent: Shape | None):
         """
 
         Args:
@@ -33,17 +33,19 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
         super().__init__(x, y, parent)
 
         self.logger: Logger = getLogger(__name__)
-        self._attachmentPoint: AttachmentLocation = attachmentPoint
+        self._attachmentSide: AttachmentSide = attachmentSide
         self._pen:             Pen                = RED_PEN
-        self.SetDraggable(True)     # So it sticks on OglClass resize;  But now the user can move it !!
+        self.SetStayInside(True)
+        self.SetDraggable(False)     # So it sticks on OglClass resize;  But now the user can move it !!
+        self.SetStayOnBorder(True)
 
     @property
-    def attachmentPoint(self) -> AttachmentLocation:
-        return self._attachmentPoint
+    def attachmentPoint(self) -> AttachmentSide:
+        return self._attachmentSide
 
     @attachmentPoint.setter
-    def attachmentPoint(self, newValue: AttachmentLocation):
-        self._attachmentPoint = newValue
+    def attachmentPoint(self, newValue: AttachmentSide):
+        self._attachmentSide = newValue
 
     def setYouAreTheSelectedAnchor(self):
         self._pen = BLACK_PEN

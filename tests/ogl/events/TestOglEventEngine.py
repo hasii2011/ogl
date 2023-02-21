@@ -30,7 +30,7 @@ from wx.lib.sized_controls import SizedPanel
 
 from pyutmodel.PyutClass import PyutClass
 
-from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.AttachmentSide import AttachmentSide
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from ogl.OglClass import OglClass
@@ -58,6 +58,7 @@ WINDOW_HEIGHT: int = 500
 
 class TestOglEventEngine(App):
 
+    # noinspection PyAttributeOutsideInit
     def OnInit(self):
 
         TestBase.setUpLogging()
@@ -151,7 +152,7 @@ class TestOglEventEngine(App):
     def _onSendCreateLollipop(self, event: GenButtonEvent):
         pyutClass:       PyutClass         = PyutClass(name='Implementor')
         implementor:     OglClass          = OglClass(pyutClass=pyutClass)
-        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentPoint=AttachmentLocation.SOUTH, parent=implementor)
+        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentSide=AttachmentSide.SOUTH, parent=implementor)
 
         self._eventEngine.sendEvent(OglEventType.CreateLollipopInterface, implementor=implementor, attachmentPoint=attachmentPoint)
         # self._eventEngine.sendCreateLollipopInterfaceEvent(implementor=implementor, attachmentPoint=attachmentPoint)

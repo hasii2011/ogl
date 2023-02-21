@@ -13,7 +13,7 @@ from wx import ID_ANY
 
 from pyutmodel.PyutClass import PyutClass
 
-from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.AttachmentSide import AttachmentSide
 from miniogl.DiagramFrame import DiagramFrame
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
@@ -92,7 +92,7 @@ class TestOglEventEngine2(TestBase):
     def testIncorrectCreateLollipopInterfaceKeywordImplementor(self):
         pyutClass:       PyutClass         = PyutClass(name='Implementor')
         implementor:     OglClass          = OglClass(pyutClass=pyutClass)
-        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentPoint=AttachmentLocation.SOUTH, parent=implementor)
+        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentSide=AttachmentSide.SOUTH, parent=implementor)
 
         self.assertRaises(InvalidKeywordException,
                           lambda: self._eventEngine.sendEvent(OglEventType.CreateLollipopInterface, implementorBAD=implementor,
@@ -101,7 +101,7 @@ class TestOglEventEngine2(TestBase):
     def testIncorrectCreateLollipopInterfaceKeywordAttachmentPoint(self):
         pyutClass:       PyutClass         = PyutClass(name='Implementor')
         implementor:     OglClass          = OglClass(pyutClass=pyutClass)
-        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentPoint=AttachmentLocation.SOUTH, parent=implementor)
+        attachmentPoint: SelectAnchorPoint = SelectAnchorPoint(x=100, y=100, attachmentSide=AttachmentSide.SOUTH, parent=implementor)
 
         self.assertRaises(InvalidKeywordException,
                           lambda: self._eventEngine.sendEvent(OglEventType.CreateLollipopInterface, implementor=implementor,

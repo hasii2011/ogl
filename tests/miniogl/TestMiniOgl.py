@@ -25,7 +25,7 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.LineShape import LineShape
 from miniogl.ControlPoint import ControlPoint
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
-from miniogl.AttachmentLocation import AttachmentLocation
+from miniogl.AttachmentSide import AttachmentSide
 
 
 class TestMiniOglApp(App):
@@ -106,7 +106,7 @@ class TestMiniOglApp(App):
 
         eastX, eastY   = dw, dh // 2
 
-        dstAnchor = SelectAnchorPoint(parent=rectShape, attachmentPoint=AttachmentLocation.EAST, x=eastX, y=eastY)
+        dstAnchor = SelectAnchorPoint(parent=rectShape, attachmentSide=AttachmentSide.EAST, x=eastX, y=eastY)
         dstAnchor.SetDraggable(False)
 
         lollipopLine: LollipopLine = LollipopLine(dstAnchor)
