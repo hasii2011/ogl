@@ -2,9 +2,10 @@
 from logging import Logger
 from logging import getLogger
 
+from hasiicommon.Singleton import Singleton
+
 from pyutmodel.PyutLinkType import PyutLinkType
 
-from ogl.Singleton import Singleton
 from ogl.OglAssociation import OglAssociation
 from ogl.OglAggregation import OglAggregation
 from ogl.OglComposition import OglComposition

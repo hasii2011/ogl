@@ -12,14 +12,13 @@ from os import getenv as osGetEnv
 
 from configparser import ConfigParser
 
+from hasiicommon.Singleton import Singleton
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
 
 from ogl.OglDimensions import OglDimensions
 from ogl.OglTextFontFamily import OglTextFontFamily
-
-from ogl.Singleton import Singleton
 
 OGL_PREFS_NAME_VALUES = Dict[str, str]
 

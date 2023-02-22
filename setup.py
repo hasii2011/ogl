@@ -10,7 +10,7 @@ LICENSE = (HERE / 'LICENSE').read_text()
 
 setup(
     name="ogl",
-    version="0.70.10",
+    version="0.70.120",
     author='Humberto A. Sanchez II',
     author_email='Humberto.A.Sanchez.II@gmail.com',
     maintainer='Humberto A. Sanchez II',
@@ -41,5 +41,5 @@ setup(
         'ogl.sd',
         'ogl.ui', 'ogl.ui.valuecontrols',
     ],
-    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.4.0', 'hasiicommon==0.0.6', 'wxPython~=4.2.0'],
+    install_requires=['Deprecated~=1.2.13', 'pyutmodel~=1.4.0', 'hasiicommon==0.0.y', 'wxPython~=4.2.0'],
 )
