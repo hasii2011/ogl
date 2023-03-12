@@ -290,8 +290,8 @@ class OglLink(LineShape, ShapeEventHandler):
         Optimize line, so that the line length is minimized
         """
         # Get elements
-        srcAnchor = self.GetSource()
-        dstAnchor = self.GetDestination()
+        srcAnchor = self.sourceAnchor
+        dstAnchor = self.destinationAnchor
 
         srcX, srcY = self._srcShape.GetPosition()
         dstX, dstY = self._destShape.GetPosition()
