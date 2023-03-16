@@ -402,11 +402,11 @@ class OglLink(LineShape, ShapeEventHandler):
         #
         # Add it either before the destinationAnchor or the sourceAnchor
         #
-        lp: LinePoint = self.GetSource()
+        lp: LinePoint = self.sourceAnchor
         self.AddControl(control=cp, after=lp)
 
         frame = self._diagram.GetPanel()
-        frame.GetDiagram().AddShape(cp)
+        frame.diagram.AddShape(cp)
         frame.Refresh()
 
     def _removeBend(self, clickPoint: Tuple[int, int]):
