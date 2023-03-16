@@ -786,7 +786,7 @@ class DiagramFrame(ScrolledWindow):
             # obtain only one zoom factor.
             if self._zoomLevel < 0:
 
-                globalFactor = zoomFactor * self.GetCurrentZoom()
+                globalFactor = zoomFactor * self.currentZoom
                 self._zoomStack = []
                 self._zoomStack.append(globalFactor)
 
@@ -913,8 +913,8 @@ class DiagramFrame(ScrolledWindow):
         # perform the scrolling in the way to have the zoom area visible
         # and centred on the virtual screen.
         self.diagramFrameLogger.info(f'{virtualWidth=} {clientWidth=} {xUnit=}')
-        scrollX: int = (virtualWidth - clientWidth) /2 / xUnit
-        scrollY: int = (virtualHeight - clientHeight) /2 /yUnit
+        scrollX: int = (virtualWidth - clientWidth) / 2 / xUnit
+        scrollY: int = (virtualHeight - clientHeight) / 2 / yUnit
 
         self.Scroll(round(scrollX), round(scrollY))
 
