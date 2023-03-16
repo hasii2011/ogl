@@ -1,9 +1,8 @@
 from logging import Logger
+
 from logging import getLogger
 
 from os import linesep as osLineSep
-
-from pkg_resources import resource_filename
 
 from wx import BITMAP_TYPE_PNG
 from wx import DEFAULT_FRAME_STYLE
@@ -103,7 +102,7 @@ class TestOglEventEngine(App):
 
     def _createButton(self, parentPanel: SizedPanel, label: str, imageFileName: str) -> GenBitmapTextButton:
 
-        fqFileName: str    = resource_filename(TestBase.RESOURCES_TEST_IMAGES_PACKAGE_NAME, imageFileName)
+        fqFileName: str    = self._getFullyQualifiedImageFileName(imageFileName)
         selectPng:  Bitmap = Bitmap(fqFileName, BITMAP_TYPE_PNG)
 
         button: GenBitmapTextButton = GenBitmapTextButton(parentPanel, ID_ANY, None, label)
@@ -202,6 +201,11 @@ class TestOglEventEngine(App):
         # change colour of the panel to the selected colour ...
         self._sizedFrame.SetBackgroundColour(bgColor)
         self._sizedFrame.Refresh()
+
+    def _getFullyQualifiedImageFileName(self, imageFileName: str) -> str:
+
+        fqFileName: str = TestBase.getFullyQualifiedResourceFileName(TestBase.RESOURCES_TEST_IMAGES_PACKAGE_NAME, fileName=imageFileName)
+        return fqFileName
 
 
 testApp: App = TestOglEventEngine(redirect=False)

@@ -6,7 +6,8 @@ import logging.config
 
 from unittest import TestCase
 
-from pkg_resources import resource_filename
+from importlib.abc import Traversable
+from importlib.resources import files
 
 from wx import App
 from wx import Frame
@@ -50,7 +51,7 @@ class TestBase(TestCase):
     def setUpLogging(cls):
         """"""
 
-        loggingConfigFilename: str = cls.findLoggingConfig()
+        loggingConfigFilename: str = cls.getLoggingConfigurationFileName()
 
         with open(loggingConfigFilename, 'r') as loggingConfigurationFile:
             configurationDictionary = json.load(loggingConfigurationFile)
@@ -60,8 +61,14 @@ class TestBase(TestCase):
         logging.logThreads = False
 
     @classmethod
-    def findLoggingConfig(cls) -> str:
+    def getLoggingConfigurationFileName(cls) -> str:
 
-        fqFileName = resource_filename(TestBase.RESOURCES_PACKAGE_NAME, JSON_LOGGING_CONFIG_FILENAME)
-
+        fqFileName: str = cls.getFullyQualifiedResourceFileName(TestBase.RESOURCES_PACKAGE_NAME, fileName=JSON_LOGGING_CONFIG_FILENAME)
         return fqFileName
+
+    @classmethod
+    def getFullyQualifiedResourceFileName(cls, package: str, fileName: str) -> str:
+
+        traversable: Traversable = files(package) / fileName
+
+        return str(traversable)

@@ -244,7 +244,7 @@ class DemoOglElements(App):
         self._addToDiagram(oglObject=oglComposerClass)
         self._addToDiagram(oglObject=oglComposedClass)
 
-        pyutLink: PyutLink = PyutLink("", linkType=PyutLinkType.COMPOSITION, source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
+        pyutLink: PyutLink = PyutLink("link text", linkType=PyutLinkType.COMPOSITION, source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
 
         oglComposition: OglComposition = OglComposition(srcShape=oglComposerClass, pyutLink=pyutLink, dstShape=oglComposedClass)
 
