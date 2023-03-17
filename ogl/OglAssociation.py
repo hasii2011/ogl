@@ -22,15 +22,18 @@ from wx import WHITE_BRUSH
 
 from wx import Font
 
+from miniogl.LineShape import Segments
+
 from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
 from ogl.OglPosition import OglPosition
+
 from ogl.OglUtils import OglUtils
 from ogl.preferences.OglPreferences import OglPreferences
 
 
-SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
-SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
+# SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
+# SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
 
 DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
@@ -123,7 +126,7 @@ class OglAssociation(OglLink):
             filled:     True if the diamond must be filled, False otherwise
         """
         #
-        line = self.GetSegments()
+        line: Segments = self.segments
 
         # self.oglAssociationLogger.debug(f'{line=}')
         points: DiamondPoints = OglAssociation.calculateDiamondPoints(lineSegments=line)
@@ -139,6 +142,8 @@ class OglAssociation(OglLink):
 
     def _drawCenterLabel(self, dc: DC, sp: OglPosition, dp: OglPosition):
 
+        segments = self.segments
+        self.oglAssociationLogger.info(f'{segments=}')
         midPoint: OglPosition = OglUtils.computeMidPoint(srcPosition=sp, dstPosition=dp)
 
         saveFont: Font = dc.GetFont()
@@ -168,7 +173,7 @@ class OglAssociation(OglLink):
                 f'srcLblX={srcLblX:.2f} '
                 f'srcLblY={srcLblY:.2f}'
             )
-            self.oglAssociationLogger.info(info)
+            self.oglAssociationLogger.debug(info)
         saveFont: Font = dc.GetFont()
         dc.SetFont(self._defaultFont)
 
@@ -205,7 +210,7 @@ class OglAssociation(OglLink):
         return associationLabel
 
     @staticmethod
-    def calculateDiamondPoints(lineSegments: SegmentPoints) -> DiamondPoints:
+    def calculateDiamondPoints(lineSegments: Segments) -> DiamondPoints:
         """
         Made static so that we can unit test it;  Please the only instance variables needed
         are passed in

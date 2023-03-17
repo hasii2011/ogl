@@ -3,17 +3,11 @@ from typing import cast
 
 from logging import Logger
 from logging import getLogger
-import logging
-import logging.config
-
-import json
 
 from os import remove as osRemove
 from os import path as osPath
 
 from shutil import copyfile
-
-from pkg_resources import resource_filename
 
 from unittest import TestCase
 
@@ -36,26 +30,6 @@ class TestOglPreferences(TestCase):
     BACKUP_SUFFIX: str = '.backup'
 
     clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpLogging(cls):
-        """"""
-
-        loggingConfigFilename: str = cls.findLoggingConfig()
-
-        with open(loggingConfigFilename, 'r') as loggingConfigurationFile:
-            configurationDictionary = json.load(loggingConfigurationFile)
-
-        logging.config.dictConfig(configurationDictionary)
-        logging.logProcesses = False
-        logging.logThreads = False
-
-    @classmethod
-    def findLoggingConfig(cls) -> str:
-
-        fqFileName = resource_filename(TestBase.RESOURCES_PACKAGE_NAME, JSON_LOGGING_CONFIG_FILENAME)
-
-        return fqFileName
 
     @classmethod
     def setUpClass(cls):

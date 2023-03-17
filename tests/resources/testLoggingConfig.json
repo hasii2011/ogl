@@ -23,15 +23,19 @@
             "propagate": "False"
         },
         "__main__": {
-            "level": "INFO",
+            "level": "WARNING",
+            "propagate": "False"
+        },
+        "ogl.OglAssociation": {
+            "level":     "INFO",
             "propagate": "False"
         },
         "miniogl": {
             "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl.LollipopLine": {
-            "level":     "DEBUG",
+        "miniogl.LineShape": {
+            "level":     "INFO",
             "propagate": "False"
         }
     }

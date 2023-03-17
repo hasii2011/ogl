@@ -1,4 +1,5 @@
 
+from typing import cast
 from typing import List
 from typing import NewType
 from typing import Tuple
@@ -21,6 +22,8 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
 
 ControlPoints = NewType('ControlPoints', List[LinePoint])
+SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
+Segments      = NewType('Segments', List[SegmentPoint])
 
 
 class LineShape(Shape, Common):
@@ -67,6 +70,26 @@ class LineShape(Shape, Common):
     def destinationAnchor(self, theNewValue: AnchorPoint):
         self._dstAnchor = theNewValue
 
+    @property
+    def segments(self) -> Segments:
+        """
+        The source anchor is the first, The destination anchor is the last.   The
+        control points if any are the intermediate SegmentPoint
+
+        Returns:  The SegmentPoint describe the line, including the intermediate control points
+        where the line bends
+        """
+        sp: SegmentPoint = cast(SegmentPoint, self._srcAnchor.GetPosition())
+        dp: SegmentPoint = cast(SegmentPoint, self._dstAnchor.GetPosition())
+        LineShape.lineShapeLogger.debug(f'{self._controls=}')
+        segments: Segments = Segments([])
+        segments.append(sp)
+        for cp in self._controls:
+            lp: LinePoint = cast(LinePoint, cp)
+            segments.append(cast(SegmentPoint, lp.GetPosition()))
+        segments.append(dp)
+        return segments
+
     def SetSpline(self, state):
         """
         Use a spline instead of a line.
@@ -92,7 +115,7 @@ class LineShape(Shape, Common):
 
         @return (double, double)
         """
-        points = self.GetSegments()
+        points = self.segments
         middle = len(points) // 2
         if len(points) % 2 == 0:
             # even number of points, take the two at the center
@@ -204,6 +227,7 @@ class LineShape(Shape, Common):
         self._srcAnchor = anchor
         anchor.AddLine(self)
 
+    @deprecated(reason='Use the .segments property')
     def GetSegments(self):
         """
         Return a list of tuples which are the coordinates of the control points.
@@ -238,7 +262,7 @@ class LineShape(Shape, Common):
 
             super().Draw(dc=dc, withChildren=withChildren)
 
-            line = self.GetSegments()
+            line = self.segments
 
             if self._selected:
                 dc.SetPen(RED_PEN)
