@@ -26,16 +26,13 @@
             "level": "WARNING",
             "propagate": "False"
         },
-        "ogl.OglAssociation": {
-            "level":     "INFO",
-            "propagate": "False"
-        },
         "miniogl": {
             "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl.LineShape": {
-            "level":     "INFO",
+        "ogl.OglAssociation": {
+            "level":     "DEBUG",
+            "handlers":  ["consoleHandler"],
             "propagate": "False"
         }
     }

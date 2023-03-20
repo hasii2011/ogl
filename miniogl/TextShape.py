@@ -2,6 +2,7 @@
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
 from wx import BLACK
 from wx import WHITE
 from wx import PENSTYLE_SOLID
@@ -35,10 +36,10 @@ class TextShape(RectangleShape):
         """
         self._text:  str    = ''
 
-        super().__init__(x, y, 0, 0, parent)
+        super().__init__(x, y, 100, 100, parent)
 
         self._color: Colour = BLACK
-        self.SetText(text)
+        self.text = text
 
         self._drawFrame: bool = False
         self._resizable: bool = False
@@ -61,12 +62,31 @@ class TextShape(RectangleShape):
         super().Attach(diagram)
         self._textBack = self._diagram.GetPanel().GetBackgroundColour()
 
+    @property
+    def text(self) -> str:
+        """
+        Returns:  The text that the text shape displays
+        """
+        return self._text
+
+    @text.setter
+    def text(self, newValue: str):
+        """
+        Set the text that the shape displays
+
+        Args:
+              newValue
+        """
+        self._text = newValue
+
+    @deprecated(reason='Use the .text property')
     def GetText(self) -> str:
         """
         Returns:  The text that the text shape displays
         """
         return self._text
 
+    @deprecated(reason='Use the .text property')
     def SetText(self, text: str):
         """
         Set the text that the shape displays
@@ -179,7 +199,7 @@ class TextShape(RectangleShape):
 
         # get the ratio between the model and the shape (view) from
         # the diagram frame where the shape is displayed.
-        ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
+        ratio = self.GetDiagram().GetPanel().currentZoom
 
         # TextShape.clsLogger.debug(f'UpdateModel - ratio: {ratio}')
         if self.GetFont() is not None:

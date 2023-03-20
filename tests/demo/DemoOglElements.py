@@ -267,7 +267,7 @@ class DemoOglElements(App):
 
     def _addToDiagram(self, oglObject: Union[OglObject, OglLink]):
 
-        oglObject.SetDraggable(True)
+        oglObject.draggable = True
         x, y = self._getPosition()
         oglObject.SetPosition(x, y)
         self._diagram.AddShape(oglObject, withModelUpdate=True)

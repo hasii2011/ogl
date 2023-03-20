@@ -36,7 +36,7 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
         self._attachmentSide: AttachmentSide = attachmentSide
         self._pen:             Pen                = RED_PEN
         self.SetStayInside(True)
-        self.SetDraggable(False)     # So it sticks on OglClass resize;  But now the user can move it !!
+        self.draggable = False     # So it sticks on OglClass resize;  But now the user can move it !!
         self.SetStayOnBorder(True)
 
     @property

@@ -128,8 +128,8 @@ class OglLink(LineShape, ShapeEventHandler):
         srcAnchor.SetVisible(False)
         dstAnchor.SetVisible(False)
         OglLink.clsLogger.debug(f'src anchor pos: {srcAnchor.GetPosition()} dst anchor pos {dstAnchor.GetPosition()}')
-        srcAnchor.SetDraggable(True)
-        dstAnchor.SetDraggable(True)
+        srcAnchor.draggable = True
+        dstAnchor.draggable = True
         # Init
         LineShape.__init__(self, srcAnchor, dstAnchor)
         # Set up painting colors

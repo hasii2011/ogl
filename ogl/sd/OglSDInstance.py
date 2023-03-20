@@ -38,7 +38,7 @@ class OglSDInstance(OglObject):
 
         self._instanceYPosition: int = self._prefs.instanceYPosition  # User super class version
 
-        self.SetDraggable(True)
+        self.draggable = True
         self.SetVisible(True)
         self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
@@ -112,12 +112,12 @@ class OglSDInstance(OglObject):
         (w, h) = self.GetSize()
         lineDst = self._lifeLine.destinationAnchor
         lineSrc = self._lifeLine.sourceAnchor
-        lineSrc.SetDraggable(True)
-        lineDst.SetDraggable(True)
+        lineSrc.draggable = True
+        lineDst.draggable = True
         lineSrc.SetPosition(w // 2 + myX, 0 + myY)
         lineDst.SetPosition(w // 2 + myX, height + myY)
-        lineSrc.SetDraggable(False)
-        lineDst.SetDraggable(False)
+        lineSrc.draggable = False
+        lineDst.draggable = False
 
         from ogl.sd.OglSDMessage import OglSDMessage
         # Update all OglSDMessage positions
@@ -145,7 +145,7 @@ class OglSDInstance(OglObject):
             withChildren:  defaulted to True because of the child shapes
         """
         # Update labels
-        self._instanceName.SetText(self._pyutObject.instanceName)
+        self._instanceName.text = self._pyutObject.instanceName
         # Call parent's Draw method
         if self.IsSelected():
             self.SetVisible(True)
@@ -173,13 +173,13 @@ class OglSDInstance(OglObject):
         (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
         for el in [src, dst]:
             el.SetVisible(False)
-            el.SetDraggable(False)
+            el.draggable = False
 
         lifeLineShape: LineShape = LineShape(src, dst)
 
         lifeLineShape.SetParent(self)
         lifeLineShape.SetDrawArrow(False)
-        lifeLineShape.SetDraggable(True)
+        lifeLineShape.draggable = True
         lifeLineShape.SetPen(BLACK_DASHED_PEN)
         lifeLineShape.SetVisible(True)
 
@@ -194,7 +194,7 @@ class OglSDInstance(OglObject):
         """
         instanceBox: RectangleShape = RectangleShape(0, 0, 100, 50)
 
-        instanceBox.SetDraggable(False)
+        instanceBox.draggable = False
         instanceBox.Resize = self.OnInstanceBoxResize   # type: ignore
         instanceBox.SetResizable(True)
         instanceBox.SetParent(self)

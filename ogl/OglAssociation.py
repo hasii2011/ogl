@@ -1,4 +1,5 @@
 
+from typing import cast
 from typing import List
 from typing import NewType
 from typing import Tuple
@@ -12,12 +13,14 @@ from math import atan
 from math import cos
 from math import sin
 
+from pyutmodel.PyutLink import PyutLink
 from wx import BLACK_BRUSH
 from wx import BLACK_PEN
 from wx import DC
 from wx import FONTFAMILY_DEFAULT
 from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
+from wx import Size
 from wx import WHITE_BRUSH
 
 from wx import Font
@@ -28,12 +31,8 @@ from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
 from ogl.OglPosition import OglPosition
 
-from ogl.OglUtils import OglUtils
+# from ogl.OglUtils import OglUtils
 from ogl.preferences.OglPreferences import OglPreferences
-
-
-# SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
-# SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
 
 DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
@@ -43,7 +42,6 @@ PI_6:         float = pi / 6
 
 class OglAssociation(OglLink):
 
-    # TEXT_SHAPE_FONT_SIZE: int = 12
     clsDiamondSize: int = OglPreferences().associationDiamondSize
     """
     Graphical link representation of an association, (simple line, no arrow).
@@ -65,13 +63,39 @@ class OglAssociation(OglLink):
 
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
-        self._centerLabel:            OglAssociationLabel = OglAssociationLabel()
+        self._centerLabel:            OglAssociationLabel = OglAssociationLabel(text=self._link.name, oglPosition=OglPosition(x=0, y=0))
         self._sourceCardinality:      OglAssociationLabel = OglAssociationLabel()
         self._destinationCardinality: OglAssociationLabel = OglAssociationLabel()
 
         self._defaultFont: Font = Font(self._preferences.associationTextFontSize, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
 
+        from miniogl.TextShape import TextShape
+        self._centerTextShape: TextShape = cast(TextShape, None)
+
         self.SetDrawArrow(False)
+
+    @property
+    def pyutObject(self) -> PyutLink:
+        """
+        Override
+        Returns:  The data model
+        """
+        return self._link
+
+    @pyutObject.setter
+    def pyutObject(self, pyutLink: PyutLink):
+        """
+        Override in order to update the UI
+        Args:
+            pyutLink:
+        """
+        self.oglAssociationLogger.debug(f'{pyutLink=}')
+        self._link = pyutLink
+        self.centerLabel.text            = pyutLink.name
+        self.sourceCardinality.text      = pyutLink.sourceCardinality
+        self.destinationCardinality.text = pyutLink.destinationCardinality
+
+        self.oglAssociationLogger.debug(f'{self.centerLabel=}')
 
     @property
     def centerLabel(self) -> OglAssociationLabel:
@@ -97,7 +121,7 @@ class OglAssociation(OglLink):
     def destinationCardinality(self, newValue: OglAssociationLabel):
         self._destinationCardinality = newValue
 
-    def Draw(self, dc: DC, withChildren: bool = False):
+    def Draw(self, dc: DC, withChildren: bool = True):
         """
         Called to draw the link content.
         We are going to draw all of our stuff, cardinality, Link name, etc.
@@ -114,8 +138,10 @@ class OglAssociation(OglLink):
         oglDp: OglPosition = OglPosition(x=dp[0], y=dp[1])
 
         self._drawSourceCardinality(dc=dc, sp=oglSp, dp=oglDp)
-        self._drawCenterLabel(dc=dc, sp=oglSp, dp=oglDp)
+        # self._drawCenterLabel(dc=dc, sp=oglSp, dp=oglDp)
         self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
+
+        self._createCenterLabel(dc)
 
     def drawDiamond(self, dc: DC, filled: bool = False):
         """
@@ -140,19 +166,27 @@ class OglAssociation(OglLink):
         dc.DrawPolygon(points)
         dc.SetBrush(WHITE_BRUSH)
 
-    def _drawCenterLabel(self, dc: DC, sp: OglPosition, dp: OglPosition):
+    def _createCenterLabel(self, dc: DC):
 
-        segments = self.segments
-        self.oglAssociationLogger.info(f'{segments=}')
-        midPoint: OglPosition = OglUtils.computeMidPoint(srcPosition=sp, dstPosition=dp)
+        centerText: str = self.centerLabel.text
+        if centerText != '':
+            if self._centerTextShape is None:
+                saveFont: Font = dc.GetFont()
+                dc.SetFont(self._defaultFont)
 
-        saveFont: Font = dc.GetFont()
-        dc.SetFont(self._defaultFont)
+                labelPosition: OglPosition = self._centerLabel.oglPosition
+                self.oglAssociationLogger.debug(f'********** {labelPosition=} ************')
+                self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=centerText, font=self._defaultFont)
+                self._centerTextShape.draggable = True
 
-        centerText: str = self._link.name
-        dc.DrawText(centerText, midPoint.x, midPoint.y)
-        dc.SetFont(saveFont)
-        self._centerLabel = self.__updateAssociationLabel(self._centerLabel, x=midPoint.x, y=midPoint.y, text=centerText)
+                dc.SetFont(saveFont)
+            else:
+                textSize: Size = dc.GetTextExtent(centerText)
+                self._centerTextShape.SetSize(width=textSize.width, height=textSize.height)
+                self.oglAssociationLogger.debug(f'{textSize=}')
+                x, y = self._centerTextShape.GetRelativePosition()
+                self._centerLabel.oglPosition = OglPosition(x=x, y=y)
+                self._centerTextShape.text = centerText
 
     def _drawSourceCardinality(self, dc: DC, sp: OglPosition, dp: OglPosition):
 

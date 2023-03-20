@@ -35,7 +35,7 @@ class OglComposition(OglAssociation):
             dc:     Device Context
             withChildren:   Draw the children or not
         """
-        OglAssociation.Draw(self, dc)
+        super().Draw(dc, withChildren=withChildren)
         self.drawDiamond(dc, True)
 
     def __repr__(self):
