@@ -13,17 +13,17 @@ from math import atan
 from math import cos
 from math import sin
 
-from pyutmodel.PyutLink import PyutLink
 from wx import BLACK_BRUSH
 from wx import BLACK_PEN
 from wx import DC
 from wx import FONTFAMILY_DEFAULT
 from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
-from wx import Size
 from wx import WHITE_BRUSH
 
 from wx import Font
+
+from pyutmodel.PyutLink import PyutLink
 
 from miniogl.LineShape import Segments
 
@@ -31,12 +31,8 @@ from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
 from ogl.OglPosition import OglPosition
 
-# from ogl.OglUtils import OglUtils
 from ogl.preferences.OglPreferences import OglPreferences
 
-
-TEXT_HEIGHT_ADJUSTMENT: int = 12
-TEXT_WIDTH_ADJUSTMENT:  int = 24
 
 DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
@@ -145,7 +141,7 @@ class OglAssociation(OglLink):
 
         self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
 
-        self._createCenterLabel(dc)
+        self._createCenterLabel()
 
     def drawDiamond(self, dc: DC, filled: bool = False):
         """
@@ -170,12 +166,10 @@ class OglAssociation(OglLink):
         dc.DrawPolygon(points)
         dc.SetBrush(WHITE_BRUSH)
 
-    def _createCenterLabel(self, dc: DC):
+    def _createCenterLabel(self):
         """
         Lazily create association name label;  After first time update the internal OglAssociationLabel
         and the textShape
-        Args:
-            dc:
         """
         linkName: str = self._link.name
         if linkName != '':
@@ -186,13 +180,6 @@ class OglAssociation(OglLink):
                 self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=linkName, font=self._defaultFont)
                 self._centerTextShape.draggable = True
             else:
-                textSize:       Size = dc.GetTextExtent(linkName)
-                adjustedWidth:  int  = textSize.GetWidth()  + TEXT_WIDTH_ADJUSTMENT
-                adjustedHeight: int  = textSize.GetHeight() + TEXT_HEIGHT_ADJUSTMENT
-
-                self.oglAssociationLogger.debug(f'{textSize=} {adjustedWidth=} {adjustedHeight=}')
-                self._centerTextShape.SetSize(width=adjustedWidth, height=adjustedHeight)
-
                 # update our state
                 x, y = self._centerTextShape.GetRelativePosition()
                 self._centerLabel.oglPosition = OglPosition(x=x, y=y)

@@ -72,7 +72,7 @@ class Shape:
             from miniogl.LineShape import LineShape
             if isinstance(self, (TextShape, LineShape)) is False:
                 t: TextShape = self.AddText(0, -10, str(self._id))
-                t.SetColor(RED)
+                t.color = RED
 
     @property
     def id(self) -> int:

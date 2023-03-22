@@ -6,6 +6,7 @@ from deprecated import deprecated
 
 from wx import BLACK
 from wx import RED
+from wx import Size
 from wx import WHITE
 from wx import PENSTYLE_SOLID
 from wx import PENSTYLE_DOT
@@ -28,6 +29,9 @@ TEXT_X_MARGIN: int = 3
 
 DEFAULT_WIDTH:  int = 100
 DEFAULT_HEIGHT: int = 24
+
+TEXT_HEIGHT_ADJUSTMENT: int = 12
+TEXT_WIDTH_ADJUSTMENT:  int = 24
 
 
 class TextShape(RectangleShape):
@@ -170,6 +174,7 @@ class TextShape(RectangleShape):
             else:
                 dc.SetTextForeground(self._textColor)
 
+            self._computeTextSize(dc=dc)
             self._drawText(dc)
 
             if withChildren:
@@ -241,6 +246,15 @@ class TextShape(RectangleShape):
             event:
         """
         TextShape.clsLogger.debug("Unhandled left up")
+
+    def _computeTextSize(self, dc: DC):
+
+        textSize:       Size = dc.GetTextExtent(self.text)
+        adjustedWidth:  int  = textSize.GetWidth()  + TEXT_WIDTH_ADJUSTMENT
+        adjustedHeight: int  = textSize.GetHeight() + TEXT_HEIGHT_ADJUSTMENT
+
+        self.clsLogger.debug(f'{textSize=} {adjustedWidth=} {adjustedHeight=}')
+        self.SetSize(width=adjustedWidth, height=adjustedHeight)
 
     def _drawText(self, dc: DC):
 
