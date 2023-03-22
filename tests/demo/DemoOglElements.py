@@ -76,7 +76,7 @@ INITIAL_X:   int = 100
 INITIAL_Y:   int = 100
 
 INCREMENT_X: int = INITIAL_X + 20
-INCREMENT_Y: int = INITIAL_Y + 40
+INCREMENT_Y: int = INITIAL_Y + 100
 
 
 class DemoOglElements(App):
@@ -244,7 +244,10 @@ class DemoOglElements(App):
         self._addToDiagram(oglObject=oglComposerClass)
         self._addToDiagram(oglObject=oglComposedClass)
 
-        pyutLink: PyutLink = PyutLink("", linkType=PyutLinkType.COMPOSITION, source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
+        pyutLink: PyutLink = PyutLink("Relationship", linkType=PyutLinkType.COMPOSITION,
+                                      cardSrc='Source Cardinality',
+                                      cardDest='Destination Cardinality',
+                                      source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
 
         oglComposition: OglComposition = OglComposition(srcShape=oglComposerClass, pyutLink=pyutLink, dstShape=oglComposedClass)
 
@@ -267,7 +270,7 @@ class DemoOglElements(App):
 
     def _addToDiagram(self, oglObject: Union[OglObject, OglLink]):
 
-        oglObject.SetDraggable(True)
+        oglObject.draggable = True
         x, y = self._getPosition()
         oglObject.SetPosition(x, y)
         self._diagram.AddShape(oglObject, withModelUpdate=True)

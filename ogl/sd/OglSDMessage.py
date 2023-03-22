@@ -109,7 +109,7 @@ class OglSDMessage(OglLink):
         textShape: TextShape = self._messageLabel
         # Don't draw blank messages
         if text.strip() != "":
-            textShape.SetText(text)
+            textShape.text = text
             textShape.SetVisible(True)
         else:
             textShape.SetVisible(False)
@@ -212,8 +212,8 @@ class OglSDMessage(OglLink):
         dstAnchor.SetStayInside(True)
         srcAnchor.SetVisible(True)
         dstAnchor.SetVisible(True)
-        srcAnchor.SetDraggable(True)
-        dstAnchor.SetDraggable(True)
+        srcAnchor.draggable = True
+        dstAnchor.draggable = True
 
         return srcAnchor, dstAnchor
 

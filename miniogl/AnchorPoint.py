@@ -27,7 +27,7 @@ class AnchorPoint(LinePoint):
         self._protected:    bool = True  # protected by default
         self._stayInside:   bool = True
         self._stayOnBorder: bool = True
-        self.SetDraggable(False)
+        self.draggable = False
 
     def SetStayInside(self, state: bool):
         """

@@ -72,7 +72,7 @@ class Shape:
             from miniogl.LineShape import LineShape
             if isinstance(self, (TextShape, LineShape)) is False:
                 t: TextShape = self.AddText(0, -10, str(self._id))
-                t.SetColor(RED)
+                t.color = RED
 
     @property
     def id(self) -> int:
@@ -81,6 +81,38 @@ class Shape:
     @id.setter
     def id(self, newValue: int):
         self._id = newValue
+
+    @property
+    def draggable(self) -> bool:
+        """
+        Returns:  `True` if shape is draggable else `False`
+        """
+        return self._draggable
+
+    @draggable.setter
+    def draggable(self, draggable: bool):
+        """
+
+        Args:
+            draggable:  If `False`, the shape will not be movable.
+        """
+        self._draggable = draggable
+
+    @property
+    def selected(self) -> bool:
+        """
+        `True` if the shape is selected else `False`
+        """
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        """
+
+        Args:
+            state: `True` if it is selected else `False`
+        """
+        self._selected = state
 
     def SetPen(self, pen: Pen):
         """
@@ -448,6 +480,7 @@ class Shape:
         """
         return False
 
+    @deprecated(reason='Use .draggable property')
     def IsDraggable(self):
         """
         True if the shape can be dragged.
@@ -464,6 +497,7 @@ class Shape:
         """
         return self._protected
 
+    @deprecated(reason='Use the .selected property')
     def IsSelected(self):
         """
         True if the shape is selected.
@@ -480,6 +514,7 @@ class Shape:
         """
         return self._visible
 
+    @deprecated(reason='Use the .selected property')
     def SetSelected(self, state: bool = True):
         """
         Set the shape selected state
@@ -509,6 +544,7 @@ class Shape:
         for anchor in self._anchors:
             anchor.SetMoving(state)
 
+    @deprecated(reason='Use .draggable property')
     def SetDraggable(self, drag):
         """
         If False, the shape won't be movable.
@@ -709,6 +745,7 @@ class Shape:
             x,: position of the text, relative to the origin of the shape
             y : position of the text, relative to the origin of the shape
             text: text to add
+
             font: font to use
 
         Returns:  TextShape : the created shape
@@ -716,7 +753,7 @@ class Shape:
         """
         from miniogl.TextShape import TextShape
 
-        textShape: TextShape = TextShape(x, y, text, self, font=font)
+        textShape: TextShape = TextShape(x, y, text, parent=self, font=font)
         if self._diagram is not None:
             self._diagram.AddShape(textShape)
         # Shape.clsLogger.debug(f'_CreateTextShape - {textShape=} added at {x=} {y=}')

@@ -18,7 +18,7 @@ function checkStatus {
     status=$1
     testName=$2
 
-    echo "checkStatus ${testName} -- ${status}"
+    # echo "checkStatus ${testName} -- ${status}"
     if [ "${status}" -ne 0 ]
     then
         exit "${status}"
@@ -27,21 +27,19 @@ function checkStatus {
 
 function independentlyRunSomeTests {
 
-  python3 -Wdefault -m unittest tests.miniogl.TestRectangleShape
+  python3 -Wdefault -m unittest tests.miniogl.TestRectangleShape -q
   status=$?
   checkStatus ${status} TestRectangleShape
 
-  python3 -Wdefault -m unittest tests.ogl.TestOglInterface2
+  python3 -Wdefault -m unittest tests.ogl.TestOglInterface2 -q
   status=$?
   checkStatus ${status} TestOglInterface2
 
-  python3 -Wdefault -m unittest tests.ogl.TestLinkRepr
+  python3 -Wdefault -m unittest tests.ogl.TestLinkRepr -q
   status=$?
   checkStatus ${status} TestLinkRepr
 }
 changeToProjectRoot
-
-echo "Travis Build directory: ${TRAVIS_BUILD_DIR}"
 
 python3 -Wdefault -m tests.TestAll
 status=$?

@@ -128,8 +128,8 @@ class OglLink(LineShape, ShapeEventHandler):
         srcAnchor.SetVisible(False)
         dstAnchor.SetVisible(False)
         OglLink.clsLogger.debug(f'src anchor pos: {srcAnchor.GetPosition()} dst anchor pos {dstAnchor.GetPosition()}')
-        srcAnchor.SetDraggable(True)
-        dstAnchor.SetDraggable(True)
+        srcAnchor.draggable = True
+        dstAnchor.draggable = True
         # Init
         LineShape.__init__(self, srcAnchor, dstAnchor)
         # Set up painting colors
@@ -402,11 +402,11 @@ class OglLink(LineShape, ShapeEventHandler):
         #
         # Add it either before the destinationAnchor or the sourceAnchor
         #
-        lp: LinePoint = self.GetSource()
+        lp: LinePoint = self.sourceAnchor
         self.AddControl(control=cp, after=lp)
 
         frame = self._diagram.GetPanel()
-        frame.GetDiagram().AddShape(cp)
+        frame.diagram.AddShape(cp)
         frame.Refresh()
 
     def _removeBend(self, clickPoint: Tuple[int, int]):

@@ -1,4 +1,5 @@
 
+from typing import cast
 from typing import List
 from typing import NewType
 from typing import Tuple
@@ -22,15 +23,16 @@ from wx import WHITE_BRUSH
 
 from wx import Font
 
+from pyutmodel.PyutLink import PyutLink
+
+from miniogl.LineShape import Segments
+
 from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
 from ogl.OglPosition import OglPosition
-from ogl.OglUtils import OglUtils
+
 from ogl.preferences.OglPreferences import OglPreferences
 
-
-SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
-SegmentPoints = NewType('SegmentPoints', List[SegmentPoint])
 
 DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
@@ -40,7 +42,6 @@ PI_6:         float = pi / 6
 
 class OglAssociation(OglLink):
 
-    # TEXT_SHAPE_FONT_SIZE: int = 12
     clsDiamondSize: int = OglPreferences().associationDiamondSize
     """
     Graphical link representation of an association, (simple line, no arrow).
@@ -62,13 +63,39 @@ class OglAssociation(OglLink):
 
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
-        self._centerLabel:            OglAssociationLabel = OglAssociationLabel()
+        self._centerLabel:            OglAssociationLabel = OglAssociationLabel(text=self._link.name, oglPosition=OglPosition(x=0, y=0))
         self._sourceCardinality:      OglAssociationLabel = OglAssociationLabel()
         self._destinationCardinality: OglAssociationLabel = OglAssociationLabel()
 
         self._defaultFont: Font = Font(self._preferences.associationTextFontSize, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
 
+        from miniogl.TextShape import TextShape
+        self._centerTextShape: TextShape = cast(TextShape, None)
+
         self.SetDrawArrow(False)
+
+    @property
+    def pyutObject(self) -> PyutLink:
+        """
+        Override
+        Returns:  The data model
+        """
+        return self._link
+
+    @pyutObject.setter
+    def pyutObject(self, pyutLink: PyutLink):
+        """
+        Override in order to update the UI
+        Args:
+            pyutLink:
+        """
+        self.oglAssociationLogger.debug(f'{pyutLink=}')
+        self._link = pyutLink
+        self.centerLabel.text            = pyutLink.name
+        self.sourceCardinality.text      = pyutLink.sourceCardinality
+        self.destinationCardinality.text = pyutLink.destinationCardinality
+
+        self.oglAssociationLogger.debug(f'{self.centerLabel=}')
 
     @property
     def centerLabel(self) -> OglAssociationLabel:
@@ -94,7 +121,7 @@ class OglAssociation(OglLink):
     def destinationCardinality(self, newValue: OglAssociationLabel):
         self._destinationCardinality = newValue
 
-    def Draw(self, dc: DC, withChildren: bool = False):
+    def Draw(self, dc: DC, withChildren: bool = True):
         """
         Called to draw the link content.
         We are going to draw all of our stuff, cardinality, Link name, etc.
@@ -111,8 +138,10 @@ class OglAssociation(OglLink):
         oglDp: OglPosition = OglPosition(x=dp[0], y=dp[1])
 
         self._drawSourceCardinality(dc=dc, sp=oglSp, dp=oglDp)
-        self._drawCenterLabel(dc=dc, sp=oglSp, dp=oglDp)
+
         self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
+
+        self._createCenterLabel()
 
     def drawDiamond(self, dc: DC, filled: bool = False):
         """
@@ -123,7 +152,7 @@ class OglAssociation(OglLink):
             filled:     True if the diamond must be filled, False otherwise
         """
         #
-        line = self.GetSegments()
+        line: Segments = self.segments
 
         # self.oglAssociationLogger.debug(f'{line=}')
         points: DiamondPoints = OglAssociation.calculateDiamondPoints(lineSegments=line)
@@ -137,17 +166,24 @@ class OglAssociation(OglLink):
         dc.DrawPolygon(points)
         dc.SetBrush(WHITE_BRUSH)
 
-    def _drawCenterLabel(self, dc: DC, sp: OglPosition, dp: OglPosition):
+    def _createCenterLabel(self):
+        """
+        Lazily create association name label;  After first time update the internal OglAssociationLabel
+        and the textShape
+        """
+        linkName: str = self._link.name
+        if linkName != '':
+            if self._centerTextShape is None:
 
-        midPoint: OglPosition = OglUtils.computeMidPoint(srcPosition=sp, dstPosition=dp)
-
-        saveFont: Font = dc.GetFont()
-        dc.SetFont(self._defaultFont)
-
-        centerText: str = self._link.name
-        dc.DrawText(centerText, midPoint.x, midPoint.y)
-        dc.SetFont(saveFont)
-        self._centerLabel = self.__updateAssociationLabel(self._centerLabel, x=midPoint.x, y=midPoint.y, text=centerText)
+                labelPosition: OglPosition = self._centerLabel.oglPosition
+                self.oglAssociationLogger.debug(f'********** {labelPosition=} ************')
+                self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=linkName, font=self._defaultFont)
+                self._centerTextShape.draggable = True
+            else:
+                # update our state
+                x, y = self._centerTextShape.GetRelativePosition()
+                self._centerLabel.oglPosition = OglPosition(x=x, y=y)
+                self._centerTextShape.text = linkName
 
     def _drawSourceCardinality(self, dc: DC, sp: OglPosition, dp: OglPosition):
 
@@ -168,7 +204,7 @@ class OglAssociation(OglLink):
                 f'srcLblX={srcLblX:.2f} '
                 f'srcLblY={srcLblY:.2f}'
             )
-            self.oglAssociationLogger.info(info)
+            self.oglAssociationLogger.debug(info)
         saveFont: Font = dc.GetFont()
         dc.SetFont(self._defaultFont)
 
@@ -205,7 +241,7 @@ class OglAssociation(OglLink):
         return associationLabel
 
     @staticmethod
-    def calculateDiamondPoints(lineSegments: SegmentPoints) -> DiamondPoints:
+    def calculateDiamondPoints(lineSegments: Segments) -> DiamondPoints:
         """
         Made static so that we can unit test it;  Please the only instance variables needed
         are passed in

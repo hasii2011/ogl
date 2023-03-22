@@ -23,15 +23,24 @@
             "propagate": "False"
         },
         "__main__": {
-            "level": "INFO",
+            "level": "WARNING",
             "propagate": "False"
         },
         "miniogl": {
             "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl.LollipopLine": {
+        "miniogl.DiagramFrame": {
+            "level":     "WARNING",
+            "propagate": "False"
+        },
+        "miniogl.TextShape": {
             "level":     "DEBUG",
+            "propagate": "False"
+        },
+        "ogl.OglAssociation": {
+            "level":     "INFO",
+            "handlers":  ["consoleHandler"],
             "propagate": "False"
         }
     }
