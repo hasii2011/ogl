@@ -177,27 +177,26 @@ class OglAssociation(OglLink):
         Args:
             dc:
         """
-        centerText: str = self.centerLabel.text
-        if centerText != '':
+        linkName: str = self._link.name
+        if linkName != '':
             if self._centerTextShape is None:
-                saveFont: Font = dc.GetFont()
-                dc.SetFont(self._defaultFont)
 
                 labelPosition: OglPosition = self._centerLabel.oglPosition
                 self.oglAssociationLogger.debug(f'********** {labelPosition=} ************')
-                self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=centerText, font=self._defaultFont)
+                self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=linkName, font=self._defaultFont)
                 self._centerTextShape.draggable = True
-
-                dc.SetFont(saveFont)
             else:
-                textSize: Size = dc.GetTextExtent(centerText)
-                width: int = textSize.GetWidth() + TEXT_WIDTH_ADJUSTMENT
-                height: int = textSize.GetHeight() + TEXT_HEIGHT_ADJUSTMENT
-                self._centerTextShape.SetSize(width=width, height=height)
-                self.oglAssociationLogger.debug(f'{textSize=}')
+                textSize:       Size = dc.GetTextExtent(linkName)
+                adjustedWidth:  int  = textSize.GetWidth()  + TEXT_WIDTH_ADJUSTMENT
+                adjustedHeight: int  = textSize.GetHeight() + TEXT_HEIGHT_ADJUSTMENT
+
+                self.oglAssociationLogger.debug(f'{textSize=} {adjustedWidth=} {adjustedHeight=}')
+                self._centerTextShape.SetSize(width=adjustedWidth, height=adjustedHeight)
+
+                # update our state
                 x, y = self._centerTextShape.GetRelativePosition()
                 self._centerLabel.oglPosition = OglPosition(x=x, y=y)
-                self._centerTextShape.text = centerText
+                self._centerTextShape.text = linkName
 
     def _drawSourceCardinality(self, dc: DC, sp: OglPosition, dp: OglPosition):
 
