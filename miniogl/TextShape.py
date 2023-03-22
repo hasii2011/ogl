@@ -23,6 +23,9 @@ from miniogl.RectangleShape import RectangleShape
 from miniogl.TextShapeModel import TextShapeModel
 
 
+TEXT_Y_MARGIN: int = 2
+TEXT_X_MARGIN: int = 3
+
 DEFAULT_WIDTH:  int = 100
 DEFAULT_HEIGHT: int = 24
 
@@ -152,7 +155,7 @@ class TextShape(RectangleShape):
             if self.GetFont() is not None:
                 dc.SetFont(self.GetFont())
 
-            dc.DrawText(self._text, x+3, y+2)
+            dc.DrawText(self._text, x + TEXT_X_MARGIN, y + TEXT_Y_MARGIN)
             dc.SetFont(saveFont)
 
             if withChildren:

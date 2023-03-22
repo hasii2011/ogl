@@ -34,6 +34,10 @@ from ogl.OglPosition import OglPosition
 # from ogl.OglUtils import OglUtils
 from ogl.preferences.OglPreferences import OglPreferences
 
+
+TEXT_HEIGHT_ADJUSTMENT: int = 12
+TEXT_WIDTH_ADJUSTMENT:  int = 24
+
 DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
 DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
 
@@ -187,8 +191,8 @@ class OglAssociation(OglLink):
                 dc.SetFont(saveFont)
             else:
                 textSize: Size = dc.GetTextExtent(centerText)
-                width: int = textSize.GetWidth() + 24
-                height: int = textSize.GetHeight() + 12
+                width: int = textSize.GetWidth() + TEXT_WIDTH_ADJUSTMENT
+                height: int = textSize.GetHeight() + TEXT_HEIGHT_ADJUSTMENT
                 self._centerTextShape.SetSize(width=width, height=height)
                 self.oglAssociationLogger.debug(f'{textSize=}')
                 x, y = self._centerTextShape.GetRelativePosition()
