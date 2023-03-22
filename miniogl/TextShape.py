@@ -3,12 +3,17 @@ from logging import Logger
 from logging import getLogger
 
 from deprecated import deprecated
+
 from wx import BLACK
+from wx import PENSTYLE_DOT
+from wx import RED
 from wx import WHITE
 from wx import PENSTYLE_SOLID
 
 from wx import Font
 from wx import Colour
+from wx import MouseEvent
+from wx import Pen
 
 from wx import DC
 from wx import MemoryDC
@@ -16,6 +21,10 @@ from wx import MemoryDC
 from miniogl.Shape import Shape
 from miniogl.RectangleShape import RectangleShape
 from miniogl.TextShapeModel import TextShapeModel
+
+
+DEFAULT_WIDTH:  int = 100
+DEFAULT_HEIGHT: int = 24
 
 
 class TextShape(RectangleShape):
@@ -36,17 +45,20 @@ class TextShape(RectangleShape):
         """
         self._text:  str    = ''
 
-        super().__init__(x, y, 100, 100, parent)
+        super().__init__(x, y, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT, parent=parent)
 
-        self._color: Colour = BLACK
         self.text = text
 
         self._drawFrame: bool = False
         self._resizable: bool = False
+
+        self._color:     Colour = BLACK
         self._textBack:  Colour = WHITE    # text background colour
+        self._redColor:  Colour = RED
+        self._font:      Font   = font
+        self._selectedPen: Pen = Pen(colour=RED, width=1, style=PENSTYLE_DOT)
 
         self._model: TextShapeModel = TextShapeModel(self)
-        self._font:  Font = font
 
     def Attach(self, diagram):
         """
@@ -124,18 +136,23 @@ class TextShape(RectangleShape):
             withChildren
         """
         if self._visible:
-            RectangleShape.Draw(self, dc, False)
-            dc.SetTextForeground(self._color)
+            super().Draw(dc=dc, withChildren=False)
+            if self._selected:
+                dc.SetPen(self._selectedPen)
+                dc.SetTextForeground(self._redColor)
+                self.DrawBorder(dc=dc)
+            else:
+                dc.SetTextForeground(self._color)
+
             dc.SetBackgroundMode(PENSTYLE_SOLID)
             dc.SetTextBackground(self._textBack)
             x, y = self.GetPosition()
-
             # to draw the text shape with its own font size
             saveFont: Font = dc.GetFont()
             if self.GetFont() is not None:
                 dc.SetFont(self.GetFont())
 
-            dc.DrawText(self._text, x, y)
+            dc.DrawText(self._text, x+3, y+2)
             dc.SetFont(saveFont)
 
             if withChildren:
@@ -213,6 +230,25 @@ class TextShape(RectangleShape):
 
         """
         return self._font
+
+    # noinspection PyUnusedLocal
+    def OnLeftDown(self, event: MouseEvent):
+        """
+        Callback for left clicks.
+        Args:
+            event:
+        """
+        self._selected = True
+
+    # noinspection PyUnusedLocal
+    def OnLeftUp(self, event: MouseEvent):
+        """
+        Callback for left clicks.
+
+        Args:
+            event:
+        """
+        TextShape.clsLogger.debug("Unhandled left up")
 
     def __repr__(self):
         x, y = self.GetPosition()

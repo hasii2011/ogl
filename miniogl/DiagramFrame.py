@@ -70,7 +70,11 @@ from miniogl.DlgDebugDiagramFrame import DlgDebugDiagramFrame
 
 class DiagramFrame(ScrolledWindow):
     """
-    TODO: T Deprecate all the Get/Set methods and make the properties
+    TODO: Deprecate all the Get/Set methods and make them properties
+
+    Note:  This really seems more like an OGL class rather than a miniogl class; Notice,
+    GenericHandler depends on the ShapeEventHandler pseudo interface;  That is one of the
+    base classes for OglObject
     """
 
     diagramFrameLogger: Logger = getLogger(__name__)
@@ -245,7 +249,7 @@ class DiagramFrame(ScrolledWindow):
         shape = self.FindShape(x, y)
         event.m_x, event.m_y = x, y
 
-        self.diagramFrameLogger.debug(f'GenericHandler - `{shape=}` `{methodName=}` x,y: {x},{y}')
+        self.diagramFrameLogger.info(f'GenericHandler - `{shape=}` `{methodName=}` x,y: {x},{y}')
         # if the shape found is a ShapeEventHandler
         if shape is not None and isinstance(shape, ShapeEventHandler):
             getattr(shape, methodName)(event)
@@ -278,7 +282,7 @@ class DiagramFrame(ScrolledWindow):
         self._lastMousePosition = (x, y)
 
         realShape: Shape = cast(Shape, shape)
-        if not event.ControlDown() and not realShape.IsSelected():
+        if not event.ControlDown() and not realShape.selected:
             shapes = self._diagram.GetShapes()
             shapes.remove(shape)
             if isinstance(shape, SizerShape):
@@ -294,11 +298,11 @@ class DiagramFrame(ScrolledWindow):
             # the sizer won't be deselected (because they are detached when they are deselected)
             # deselect every other shape
             for s in shapes:
-                s.SetSelected(False)
+                s.selected = False
                 s.SetMoving(False)
 
             self._selectedShapes = [cast(Shape, shape)]
-            cast(Shape, shape).SetSelected(True)
+            cast(Shape, shape).selected = True
             cast(Shape, shape).SetMoving(True)
             self._clickedShape = cast(Shape, None)
             self.Refresh()
@@ -366,14 +370,14 @@ class DiagramFrame(ScrolledWindow):
             self.PrepareBackground()
         self._moving = True
         clicked = self._clickedShape
-        if clicked and not clicked.IsSelected():
+        if clicked and not clicked.selected:
             self._selectedShapes.append(clicked)
             clicked.SetSelected(True)
             clicked.SetMoving(True)
         self._clickedShape = cast(Shape, None)
         for shape in self._selectedShapes:
             parent = shape.GetParent()
-            if parent is not None and parent.IsSelected() and not isinstance(shape, SizerShape):
+            if parent is not None and parent.selected is True and not isinstance(shape, SizerShape):
                 continue
             ox, oy = self._lastMousePosition
             dx, dy = x - ox, y - oy
@@ -482,7 +486,7 @@ class DiagramFrame(ScrolledWindow):
         Deselect all shapes in the frame.
         """
         for shape in self._diagram.GetShapes():
-            shape.SetSelected(False)
+            shape.selected = False
             shape.SetMoving(False)
         self._selectedShapes = []
 

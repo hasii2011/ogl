@@ -5,8 +5,8 @@ from logging import Logger
 from logging import getLogger
 
 from wx import BLACK_PEN
-from wx import Colour
-from wx import ColourDatabase
+from wx import RED_PEN
+
 from wx import EVT_MENU
 from wx import FONTSTYLE_ITALIC
 from wx import FONTSTYLE_NORMAL
@@ -15,13 +15,14 @@ from wx import FONTWEIGHT_NORMAL
 
 from wx import Bitmap
 from wx import CommandEvent
+from wx import Colour
+from wx import ColourDatabase
+
 from wx import DC
 from wx import Font
 from wx import Menu
 from wx import MenuItem
 from wx import MouseEvent
-
-from wx import RED_PEN
 
 
 from miniogl.DiagramFrame import DiagramFrame

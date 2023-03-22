@@ -89,13 +89,13 @@ class DlgDebugDiagramFrame(Dialog):
         border.Fit(self)
         border.SetSizeHints(self)
 
+        self._timer: Timer = Timer(self)
+
         self.Bind(EVT_BUTTON, self.__OnCmdOk, id=ID_OK)
         self.Bind(EVT_CLOSE,  self.__OnClose)
+        self.Bind(EVT_TIMER,  self._onTimer, self._timer)
 
     def startMonitor(self):
-
-        self._timer: Timer = Timer(self)
-        self.Bind(EVT_TIMER, self._onTimer, self._timer)
         self._timer.Start(DlgDebugDiagramFrame.DEBUG_TIMER_UPDATE_MSECS)
 
     # noinspection PyUnusedLocal

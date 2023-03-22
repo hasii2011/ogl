@@ -2,6 +2,8 @@
 from typing import Tuple
 from typing import cast
 
+from deprecated import deprecated
+
 from wx import DC
 
 from miniogl.Shape import Shape
@@ -42,6 +44,21 @@ class RectangleShape(Shape):
         self._model: RectangleShapeModel = RectangleShapeModel(self)
         self._model.SetPosition(x=x, y=y)
         self._model.SetSize(width=width, height=height)
+
+    @property
+    def selected(self) -> bool:
+        """
+        Override Shape
+
+        Returns: 'True' if selected 'False' otherwise
+        """
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        self._selected = state
+        if self._resizable:
+            self.ShowSizers(state)
 
     def SetResizable(self, state: bool):
         """
@@ -171,6 +188,7 @@ class RectangleShape(Shape):
     def GetHeight(self):
         return self._height
 
+    @deprecated(reason='Use the .selected property')
     def SetSelected(self, state: bool = True):
         """
         Select the shape.

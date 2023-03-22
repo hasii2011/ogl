@@ -98,6 +98,22 @@ class Shape:
         """
         self._draggable = draggable
 
+    @property
+    def selected(self) -> bool:
+        """
+        `True` if the shape is selected else `False`
+        """
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        """
+
+        Args:
+            state: `True` if it is selected else `False`
+        """
+        self._selected = state
+
     def SetPen(self, pen: Pen):
         """
         Set the pen used to draw the shape.
@@ -481,6 +497,7 @@ class Shape:
         """
         return self._protected
 
+    @deprecated(reason='Use the .selected property')
     def IsSelected(self):
         """
         True if the shape is selected.
@@ -497,6 +514,7 @@ class Shape:
         """
         return self._visible
 
+    @deprecated(reason='Use the .selected property')
     def SetSelected(self, state: bool = True):
         """
         Set the shape selected state

@@ -366,7 +366,7 @@ class OglClass(OglObject):
         else:
             assert False, 'Unknown display type'
 
-    def _drawClassHeader(self, dc: DC, draw: bool=False, initialX=None, initialY=None, calcWidth: bool=False):
+    def _drawClassHeader(self, dc: DC, draw: bool = False, initialX=None, initialY=None, calcWidth: bool = False):
         """
         Calculate the class header position and size and display it if
         a draw is True

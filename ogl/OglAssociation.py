@@ -138,7 +138,7 @@ class OglAssociation(OglLink):
         oglDp: OglPosition = OglPosition(x=dp[0], y=dp[1])
 
         self._drawSourceCardinality(dc=dc, sp=oglSp, dp=oglDp)
-        # self._drawCenterLabel(dc=dc, sp=oglSp, dp=oglDp)
+
         self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
 
         self._createCenterLabel(dc)
@@ -167,7 +167,12 @@ class OglAssociation(OglLink):
         dc.SetBrush(WHITE_BRUSH)
 
     def _createCenterLabel(self, dc: DC):
-
+        """
+        Lazily create association name label;  After first time update the internal OglAssociationLabel
+        and the textShape
+        Args:
+            dc:
+        """
         centerText: str = self.centerLabel.text
         if centerText != '':
             if self._centerTextShape is None:
@@ -182,7 +187,9 @@ class OglAssociation(OglLink):
                 dc.SetFont(saveFont)
             else:
                 textSize: Size = dc.GetTextExtent(centerText)
-                self._centerTextShape.SetSize(width=textSize.width, height=textSize.height)
+                width: int = textSize.GetWidth() + 24
+                height: int = textSize.GetHeight() + 12
+                self._centerTextShape.SetSize(width=width, height=height)
                 self.oglAssociationLogger.debug(f'{textSize=}')
                 x, y = self._centerTextShape.GetRelativePosition()
                 self._centerLabel.oglPosition = OglPosition(x=x, y=y)

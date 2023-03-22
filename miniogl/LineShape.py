@@ -437,6 +437,7 @@ class LineShape(Shape, Common):
         Args:
             state:
         """
-        Shape.SetSelected(self, state)
+        # Shape.selected = state
+        self._selected = state
         for ctrl in self._controls:
             ctrl.SetVisible(state)
