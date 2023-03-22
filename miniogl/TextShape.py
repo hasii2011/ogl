@@ -5,10 +5,10 @@ from logging import getLogger
 from deprecated import deprecated
 
 from wx import BLACK
-from wx import PENSTYLE_DOT
 from wx import RED
 from wx import WHITE
 from wx import PENSTYLE_SOLID
+from wx import PENSTYLE_DOT
 
 from wx import Font
 from wx import Colour
@@ -46,19 +46,18 @@ class TextShape(RectangleShape):
             parent:     parent shape
             font:       Font to use
         """
-        self._text:  str    = ''
-
         super().__init__(x, y, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT, parent=parent)
 
-        self.text = text
+        self.text: str = text
 
         self._drawFrame: bool = False
         self._resizable: bool = False
 
-        self._color:     Colour = BLACK
-        self._textBack:  Colour = WHITE    # text background colour
-        self._redColor:  Colour = RED
-        self._font:      Font   = font
+        self._textColor:            Colour = BLACK
+        self._textBackgroundColor:  Colour = WHITE
+
+        self._redColor:    Colour = RED
+        self._font:        Font   = font
         self._selectedPen: Pen = Pen(colour=RED, width=1, style=PENSTYLE_DOT)
 
         self._model: TextShapeModel = TextShapeModel(self)
@@ -75,7 +74,7 @@ class TextShape(RectangleShape):
         """
         # RectangleShape.Attach(self, diagram)
         super().Attach(diagram)
-        self._textBack = self._diagram.GetPanel().GetBackgroundColour()
+        self._textBackgroundColor = self._diagram.GetPanel().GetBackgroundColour()
 
     @property
     def text(self) -> str:
@@ -93,6 +92,30 @@ class TextShape(RectangleShape):
               newValue
         """
         self._text = newValue
+
+    @property
+    def color(self) -> Colour:
+        """
+        Returns The text color
+        """
+        return self._textColor
+
+    @color.setter
+    def color(self, color: Colour):
+        """
+        Sets the color of the text.
+
+        Args:
+             color
+        """
+        self._textColor = color
+
+    @property
+    def font(self) -> Font:
+        """
+        Returns:  The text shape's private font
+        """
+        return self._font
 
     @deprecated(reason='Use the .text property')
     def GetText(self) -> str:
@@ -119,7 +142,7 @@ class TextShape(RectangleShape):
         Args:
              color
         """
-        self._textBack = color
+        self._textBackgroundColor = color
 
     def GetTextBackground(self) -> Colour:
         """
@@ -128,7 +151,7 @@ class TextShape(RectangleShape):
         Returns:
              the text background color
         """
-        return self._textBack
+        return self._textBackgroundColor
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """
@@ -145,18 +168,9 @@ class TextShape(RectangleShape):
                 dc.SetTextForeground(self._redColor)
                 self.DrawBorder(dc=dc)
             else:
-                dc.SetTextForeground(self._color)
+                dc.SetTextForeground(self._textColor)
 
-            dc.SetBackgroundMode(PENSTYLE_SOLID)
-            dc.SetTextBackground(self._textBack)
-            x, y = self.GetPosition()
-            # to draw the text shape with its own font size
-            saveFont: Font = dc.GetFont()
-            if self.GetFont() is not None:
-                dc.SetFont(self.GetFont())
-
-            dc.DrawText(self._text, x + TEXT_X_MARGIN, y + TEXT_Y_MARGIN)
-            dc.SetFont(saveFont)
+            self._drawText(dc)
 
             if withChildren:
                 self.DrawChildren(dc)
@@ -172,23 +186,6 @@ class TextShape(RectangleShape):
             RectangleShape.DrawBorder(self, dc)
         else:
             Shape.DrawBorder(self, dc)
-
-    def GetColor(self) -> Colour:
-        """
-        Return the text color
-
-        Returns wx.Colour
-        """
-        return self._color
-
-    def SetColor(self, color: Colour):
-        """
-        Set the color of the text.
-
-        Args:
-             color
-        """
-        self._color = color
 
     def UpdateFromModel(self):
         """
@@ -222,17 +219,9 @@ class TextShape(RectangleShape):
         ratio = self.GetDiagram().GetPanel().currentZoom
 
         # TextShape.clsLogger.debug(f'UpdateModel - ratio: {ratio}')
-        if self.GetFont() is not None:
-            fontSize = self.GetFont().GetPointSize() // ratio
+        if self.font is not None:
+            fontSize = self.font.GetPointSize() // ratio
             self.GetModel().SetFontSize(fontSize)
-
-    def GetFont(self) -> Font:
-        """
-
-        Returns:  The font used by the text shape
-
-        """
-        return self._font
 
     # noinspection PyUnusedLocal
     def OnLeftDown(self, event: MouseEvent):
@@ -252,6 +241,21 @@ class TextShape(RectangleShape):
             event:
         """
         TextShape.clsLogger.debug("Unhandled left up")
+
+    def _drawText(self, dc: DC):
+
+        dc.SetBackgroundMode(PENSTYLE_SOLID)
+        dc.SetTextBackground(self._textBackgroundColor)
+
+        x, y = self.GetPosition()
+        # draw the text shape with its own font
+        saveFont: Font = dc.GetFont()
+
+        if self.font is not None:
+            dc.SetFont(self.font)
+        dc.DrawText(self._text, x + TEXT_X_MARGIN, y + TEXT_Y_MARGIN)
+
+        dc.SetFont(saveFont)
 
     def __repr__(self):
         x, y = self.GetPosition()
