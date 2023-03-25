@@ -34,8 +34,14 @@ from ogl.OglPosition import OglPosition
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
-DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
+DiamondPoint    = NewType('DiamondPoint', Tuple[int, int])
+DiamondPoints   = NewType('DiamondPoints', List[DiamondPoint])
+"""
+The compute function calculates a position for a cardinality label
+The parameters are the dx,dy of the source and anchor points and the link length
+returns OglPosition
+"""
+ComputeFunction = Callable[[int, int, int], OglPosition]
 
 PI_6:         float = pi / 6
 
@@ -233,7 +239,7 @@ class OglAssociation(OglLink):
 
             return OglPosition(x=x, y=y)
 
-        return self._computePosition(sp=sp, dp=dp, calculatorFunction=computeDestination)
+        return self._computePosition(sp=sp, dp=dp, computeFunction=computeDestination)
 
     def _computeSourcePosition(self, sp: OglPosition, dp: OglPosition) -> OglPosition:
 
@@ -243,14 +249,14 @@ class OglAssociation(OglLink):
 
             return OglPosition(x=x, y=y)
 
-        return self._computePosition(sp=sp, dp=dp, calculatorFunction=computeSource)
+        return self._computePosition(sp=sp, dp=dp, computeFunction=computeSource)
 
-    def _computePosition(self, sp: OglPosition, dp: OglPosition, calculatorFunction: Callable) -> OglPosition:
+    def _computePosition(self, sp: OglPosition, dp: OglPosition, computeFunction: ComputeFunction) -> OglPosition:
 
-        dx, dy            = self._computeDxDy(srcPosition=sp, destPosition=dp)
-        linkLength: float = self._computeLinkLength(srcPosition=sp, destPosition=dp)
+        dx, dy          = self._computeDxDy(srcPosition=sp, destPosition=dp)
+        linkLength: int = self._computeLinkLength(srcPosition=sp, destPosition=dp)
 
-        oglPosition: OglPosition = calculatorFunction(dx, dy, linkLength)
+        oglPosition: OglPosition = computeFunction(dx, dy, linkLength)
 
         if self.oglAssociationLogger.isEnabledFor(DEBUG):
             info = (
