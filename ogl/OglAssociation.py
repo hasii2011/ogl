@@ -1,4 +1,4 @@
-
+from typing import Callable
 from typing import cast
 from typing import List
 from typing import NewType
@@ -6,7 +6,7 @@ from typing import Tuple
 
 from logging import Logger
 from logging import getLogger
-from logging import INFO
+from logging import DEBUG
 
 from math import pi
 from math import atan
@@ -26,6 +26,7 @@ from wx import Font
 from pyutmodel.PyutLink import PyutLink
 
 from miniogl.LineShape import Segments
+from miniogl.TextShape import TextShape
 
 from ogl.OglAssociationLabel import OglAssociationLabel
 from ogl.OglLink import OglLink
@@ -33,9 +34,14 @@ from ogl.OglPosition import OglPosition
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-
-DiamondPoint  = NewType('DiamondPoint', Tuple[int, int])
-DiamondPoints = NewType('DiamondPoints', List[DiamondPoint])
+DiamondPoint    = NewType('DiamondPoint', Tuple[int, int])
+DiamondPoints   = NewType('DiamondPoints', List[DiamondPoint])
+"""
+The compute function calculates a position for a cardinality label
+The parameters are the dx,dy of the source and anchor points and the link length
+returns OglPosition
+"""
+ComputeFunction = Callable[[int, int, int], OglPosition]
 
 PI_6:         float = pi / 6
 
@@ -63,14 +69,15 @@ class OglAssociation(OglLink):
 
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
-        self._centerLabel:            OglAssociationLabel = OglAssociationLabel(text=self._link.name, oglPosition=OglPosition(x=0, y=0))
+        self._associationNameLabel:   OglAssociationLabel = OglAssociationLabel(text=self._link.name, oglPosition=OglPosition(x=0, y=0))
         self._sourceCardinality:      OglAssociationLabel = OglAssociationLabel()
         self._destinationCardinality: OglAssociationLabel = OglAssociationLabel()
 
         self._defaultFont: Font = Font(self._preferences.associationTextFontSize, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
 
-        from miniogl.TextShape import TextShape
-        self._centerTextShape: TextShape = cast(TextShape, None)
+        self._associationNameTextShape:        TextShape = cast(TextShape, None)
+        self._sourceCardinalityTextShape:      TextShape = cast(TextShape, None)
+        self._destinationCardinalityTextShape: TextShape = cast(TextShape, None)
 
         self.SetDrawArrow(False)
 
@@ -99,11 +106,11 @@ class OglAssociation(OglLink):
 
     @property
     def centerLabel(self) -> OglAssociationLabel:
-        return self._centerLabel
+        return self._associationNameLabel
 
     @centerLabel.setter
     def centerLabel(self, newValue: OglAssociationLabel):
-        self._centerLabel = newValue
+        self._associationNameLabel = newValue
 
     @property
     def sourceCardinality(self) -> OglAssociationLabel:
@@ -135,13 +142,22 @@ class OglAssociation(OglLink):
         dp: Tuple[int, int] = self._dstAnchor.GetPosition()
 
         oglSp: OglPosition = OglPosition(x=sp[0], y=sp[1])
-        oglDp: OglPosition = OglPosition(x=dp[0], y=dp[1])
+        oglDp: OglPosition = self._computeDestinationPosition(sp=OglPosition.tupleToOglPosition(sp), dp=OglPosition.tupleToOglPosition(dp))
 
-        self._drawSourceCardinality(dc=dc, sp=oglSp, dp=oglDp)
+        if self._link.name != '' and self._associationNameTextShape is None:
+            self._createAssociationName()
+        elif self._associationNameTextShape is not None:
+            self._updateAssociationState()
 
-        self._drawDestinationCardinality(dc=dc, sp=oglSp, dp=oglDp)
+        if self._link.sourceCardinality != '' and self._sourceCardinalityTextShape is None:
+            self._createSourceCardinality(sp=oglSp)
+        elif self._sourceCardinalityTextShape is not None:
+            self._updateSourceCardinalityState()
 
-        self._createCenterLabel()
+        if self._link.destinationCardinality != '' and self._destinationCardinalityTextShape is None:
+            self._createDestinationCardinality(dp=oglDp)
+        elif self._destinationCardinalityTextShape is not None:
+            self._updateDestinationCardinalityState()
 
     def drawDiamond(self, dc: DC, filled: bool = False):
         """
@@ -166,79 +182,93 @@ class OglAssociation(OglLink):
         dc.DrawPolygon(points)
         dc.SetBrush(WHITE_BRUSH)
 
-    def _createCenterLabel(self):
+    def _createAssociationName(self):
         """
-        Lazily create association name label;  After first time update the internal OglAssociationLabel
-        and the textShape
+        Create association name text shape;
         """
-        linkName: str = self._link.name
-        if linkName != '':
-            if self._centerTextShape is None:
+        self._associationNameTextShape = self._createTextShapeFromAssociationLabel(associationLabel=self._associationNameLabel)
 
-                labelPosition: OglPosition = self._centerLabel.oglPosition
-                self.oglAssociationLogger.debug(f'********** {labelPosition=} ************')
-                self._centerTextShape = self._createTextShape(x=labelPosition.x, y=labelPosition.y, text=linkName, font=self._defaultFont)
-                self._centerTextShape.draggable = True
-            else:
-                # update our state
-                x, y = self._centerTextShape.GetRelativePosition()
-                self._centerLabel.oglPosition = OglPosition(x=x, y=y)
-                self._centerTextShape.text = linkName
+    def _createSourceCardinality(self, sp: OglPosition):
 
-    def _drawSourceCardinality(self, dc: DC, sp: OglPosition, dp: OglPosition):
+        self._sourceCardinalityTextShape = self._createTextShapeFromAssociationLabel(associationLabel=self._sourceCardinality)
 
-        dx, dy            = self._computeDxDy(srcPosition=sp, destPosition=dp)
+        srcX, srcY = self._sourceCardinalityTextShape.ConvertCoordToRelative(x=sp.x, y=sp.y)
+        self._sourceCardinalityTextShape.SetRelativePosition(x=srcX, y=srcY)
+        self._sourceCardinality.oglPosition = OglPosition(x=srcX, y=srcY)
 
-        linkLength: float = self._computeLinkLength(srcPosition=sp, destPosition=dp)
+    def _createDestinationCardinality(self, dp: OglPosition):
+        self._destinationCardinalityTextShape = self._createTextShapeFromAssociationLabel(associationLabel=self._destinationCardinality)
 
-        srcLblX: int = round((20 * dx / linkLength - dx * 5 / linkLength) + sp.x)
-        srcLblY: int = round((20 * dy / linkLength + dy * 5 / linkLength) + sp.y)
+        dstX, dstY = self._destinationCardinalityTextShape.ConvertCoordToRelative(x=dp.x, y=dp.y)
+        self._destinationCardinalityTextShape.SetRelativePosition(x=dstX, y=dstY)
+        self._destinationCardinality.oglPosition = OglPosition(x=dstX, y=dstY)
 
-        if self.oglAssociationLogger.isEnabledFor(INFO):
+    def _createTextShapeFromAssociationLabel(self, associationLabel: OglAssociationLabel) -> TextShape:
+
+        oglPosition:    OglPosition = associationLabel.oglPosition
+        labelTextShape: TextShape   = self._createTextShape(x=oglPosition.x, y=oglPosition.y, text=associationLabel.text, font=self._defaultFont)
+
+        labelTextShape.draggable = True
+
+        return labelTextShape
+
+    def _updateAssociationState(self):
+
+        x, y = self._associationNameTextShape.GetRelativePosition()
+
+        self._associationNameLabel.oglPosition = OglPosition(x=x, y=y)
+        self._associationNameTextShape.text = self._link.name
+
+    def _updateSourceCardinalityState(self):
+        x, y = self._sourceCardinalityTextShape.GetRelativePosition()
+
+        self._sourceCardinality.oglPosition = OglPosition(x=x, y=y)
+        self._sourceCardinalityTextShape.text = self._link.sourceCardinality
+
+    def _updateDestinationCardinalityState(self):
+        x, y = self._sourceCardinalityTextShape.GetRelativePosition()
+
+        self.destinationCardinality.oglPosition = OglPosition(x=x, y=y)
+        self._destinationCardinalityTextShape.text = self._link.destinationCardinality
+
+    def _computeDestinationPosition(self, sp: OglPosition, dp: OglPosition) -> OglPosition:
+
+        def computeDestination(dx, dy, linkLength) -> OglPosition:
+            x: int = round((-20 * dx / linkLength + dx * 5 / linkLength) + dp.x)
+            y: int = round((-20 * dy / linkLength - dy * 5 / linkLength) + dp.y)
+
+            return OglPosition(x=x, y=y)
+
+        return self._computePosition(sp=sp, dp=dp, computeFunction=computeDestination)
+
+    def _computeSourcePosition(self, sp: OglPosition, dp: OglPosition) -> OglPosition:
+
+        def computeSource(dx, dy, linkLength):
+            x: int = round((20 * dx / linkLength - dx * 5 / linkLength) + sp.x)
+            y: int = round((20 * dy / linkLength + dy * 5 / linkLength) + sp.y)
+
+            return OglPosition(x=x, y=y)
+
+        return self._computePosition(sp=sp, dp=dp, computeFunction=computeSource)
+
+    def _computePosition(self, sp: OglPosition, dp: OglPosition, computeFunction: ComputeFunction) -> OglPosition:
+
+        dx, dy          = self._computeDxDy(srcPosition=sp, destPosition=dp)
+        linkLength: int = self._computeLinkLength(srcPosition=sp, destPosition=dp)
+
+        oglPosition: OglPosition = computeFunction(dx, dy, linkLength)
+
+        if self.oglAssociationLogger.isEnabledFor(DEBUG):
             info = (
                 f'{sp=} '
                 f'{dp=} '
                 f'{dx=} '
                 f'{dy=} '
                 f'linkLength={linkLength:.2f} '
-                f'srcLblX={srcLblX:.2f} '
-                f'srcLblY={srcLblY:.2f}'
+                f'{oglPosition=}'
             )
             self.oglAssociationLogger.debug(info)
-        saveFont: Font = dc.GetFont()
-        dc.SetFont(self._defaultFont)
-
-        sourceCardinalityText: str = self._link.sourceCardinality
-        dc.DrawText(sourceCardinalityText, srcLblX, srcLblY)
-        dc.SetFont(saveFont)
-        self._sourceCardinality = self.__updateAssociationLabel(self._sourceCardinality, x=srcLblX, y=srcLblY, text=sourceCardinalityText)
-
-    def _drawDestinationCardinality(self, dc: DC, sp: OglPosition, dp: OglPosition):
-
-        dx, dy            = self._computeDxDy(srcPosition=sp, destPosition=dp)
-
-        linkLength: float = self._computeLinkLength(srcPosition=sp, destPosition=dp)
-
-        dstLblX: int = round((-20 * dx / linkLength + dy * 5 / linkLength) + dp.x)
-        dstLblY: int = round((-20 * dy / linkLength - dy * 5 / linkLength) + dp.y)
-
-        saveFont: Font = dc.GetFont()
-        dc.SetFont(self._defaultFont)
-
-        destinationCardinalityText: str = self._link.destinationCardinality
-        dc.DrawText(destinationCardinalityText, dstLblX, dstLblY)
-        self._destinationCardinality = self.__updateAssociationLabel(self._destinationCardinality,
-                                                                     x=dstLblX, y=dstLblY,
-                                                                     text=destinationCardinalityText)
-        dc.SetFont(saveFont)
-
-    def __updateAssociationLabel(self, associationLabel: OglAssociationLabel, x: int, y: int, text: str) -> OglAssociationLabel:
-
-        associationLabel.oglPosition.x = x
-        associationLabel.oglPosition.y = y
-        associationLabel.text          = text
-
-        return associationLabel
+        return oglPosition
 
     @staticmethod
     def calculateDiamondPoints(lineSegments: Segments) -> DiamondPoints:
