@@ -337,7 +337,7 @@ class DiagramFrame(ScrolledWindow):
             if not event.ControlDown():
                 self.DeselectAllShapes()
                 self._selectedShapes = [clicked]
-                clicked.SetSelected(True)
+                clicked.selected = True
                 clicked.SetMoving(True)
             else:
                 sel = not clicked.IsSelected()
