@@ -210,9 +210,9 @@ class OglClass(OglObject):
         self.SetSize(w, h)
 
         # to automatically replace the sizer objects at a correct place
-        if self.IsSelected():
-            self.SetSelected(False)
-            self.SetSelected(True)
+        if self.selected is True:
+            self.selected = False
+            self.selected = True
 
     def OnRightDown(self, event: MouseEvent):
         """
