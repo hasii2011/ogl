@@ -91,10 +91,10 @@ class OglSDMessage(OglLink):
         """
         Define the positions on lifeline (y)
         """
-        src = self.GetSource()
-        dst = self.GetDestination()
-        srcY = self._pyutSDMessage.getSrcY() + src.GetParent().GetSegments()[0][1]
-        dstY = self._pyutSDMessage.getDstY() + dst.GetParent().GetSegments()[0][1]
+        src = self.sourceAnchor
+        dst = self.destinationAnchor
+        srcY = self._pyutSDMessage.sourceY      + src.GetParent().GetSegments()[0][1]
+        dstY = self._pyutSDMessage.destinationY + dst.GetParent().GetSegments()[0][1]
         srcX = 0
         dstX = 0
 

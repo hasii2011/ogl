@@ -147,7 +147,7 @@ class OglSDInstance(OglObject):
         # Update labels
         self._instanceName.text = self._pyutObject.instanceName
         # Call parent's Draw method
-        if self.IsSelected():
+        if self.selected is True:
             self.SetVisible(True)
             self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
 

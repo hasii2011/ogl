@@ -12,7 +12,7 @@ from os import getenv as osGetEnv
 
 from configparser import ConfigParser
 
-from hasiicommon.Singleton import Singleton
+from hasiihelper.Singleton import Singleton
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
