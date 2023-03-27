@@ -26,6 +26,10 @@
             "level": "WARNING",
             "propagate": "False"
         },
+        "hasiihelper.UnitTestBase": {
+            "level":     "WARNING",
+            "propagate": "False"
+        },
         "miniogl": {
             "level":     "WARNING",
             "propagate": "False"

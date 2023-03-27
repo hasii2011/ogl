@@ -1,9 +1,5 @@
 
-from typing import cast
 from typing import Tuple
-
-from logging import Logger
-from logging import getLogger
 
 from unittest import TestSuite
 from unittest import main as unitTestMain
@@ -11,7 +7,7 @@ from unittest import main as unitTestMain
 from unittest.mock import Mock
 from unittest.mock import PropertyMock
 
-from wx import App
+from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
 
 from pyutmodel.PyutInterface import PyutInterface
 
@@ -21,39 +17,22 @@ from miniogl.AttachmentSide import AttachmentSide
 from ogl.OglInterface2 import OglInterface2
 from ogl.OglPosition import OglPosition
 
-from tests.TestBase import TestBase
 
-
-class TestOglInterface2(TestBase):
+class TestOglInterface2(UnitTestBaseW):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-
-        TestBase.setUpLogging()
-        TestOglInterface2.clsLogger = getLogger(__name__)
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
-
     def setUp(self):
-        self.logger: Logger = TestOglInterface2.clsLogger
-
-        self.app: App = App()
-
+        super().setUp()
         self._pyutInterface:    PyutInterface     = PyutInterface()
         self._destinationAnchor: SelectAnchorPoint = SelectAnchorPoint(250, 250, AttachmentSide.NORTH, None)
 
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
+        super().tearDown()
 
     def testEqual(self):
 
         oglInterface: OglInterface2 = OglInterface2(pyutInterface=self._pyutInterface,  destinationAnchor=self._destinationAnchor)
+        # noinspection SpellCheckingInspection
         doppleGanger: OglInterface2 = oglInterface
 
         self.assertEqual(oglInterface, doppleGanger, 'Magic method __equ__ does not appear to be working anymore')

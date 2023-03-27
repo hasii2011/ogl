@@ -1,41 +1,24 @@
 
 from typing import cast
 
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from tests.TestBase import TestBase
+from hasiihelper.UnitTestBase import UnitTestBase
 
 from miniogl.Shape import Shape
 from miniogl.AnchorPoint import AnchorPoint
 
 
-class TestAnchorPoint(TestBase):
+class TestAnchorPoint(UnitTestBase):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-
-        TestBase.setUpLogging()
-        TestAnchorPoint.clsLogger = getLogger(__name__)
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
-
     def setUp(self):
-        self.logger: Logger = TestAnchorPoint.clsLogger
-
         super().setUp()
         self.anchorPoint: AnchorPoint = AnchorPoint(x=93, y=276, parent=cast(Shape, None))
 
     def tearDown(self):
-        super().tearDown()
+        pass
 
     EXPECTED_X: int = 268
     EXPECTED_Y: int = 1044

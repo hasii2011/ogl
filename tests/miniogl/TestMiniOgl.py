@@ -82,7 +82,7 @@ class TestMiniOglApp(App):
 
         lineShape: LineShape = LineShape(anchor1, anchor2)
         lineShape.SetDrawArrow(False)
-        lineShape.SetDraggable(True)
+        lineShape.draggable = True
         lineShape.SetSpline(False)
 
         controlPoint: ControlPoint = ControlPoint(50, 150, None)
@@ -99,7 +99,7 @@ class TestMiniOglApp(App):
         diagramFrame: Diagram = self._diagramFrame.diagram
 
         rectShape: RectangleShape = RectangleShape(400, 50, 130, 80)
-        rectShape.SetDraggable(True)
+        rectShape.draggable = True
         diagramFrame.AddShape(rectShape)
 
         dw, dh     = rectShape.GetSize()
@@ -107,7 +107,7 @@ class TestMiniOglApp(App):
         eastX, eastY   = dw, dh // 2
 
         dstAnchor = SelectAnchorPoint(parent=rectShape, attachmentSide=AttachmentSide.EAST, x=eastX, y=eastY)
-        dstAnchor.SetDraggable(False)
+        dstAnchor.draggable = False
 
         lollipopLine: LollipopLine = LollipopLine(dstAnchor)
 

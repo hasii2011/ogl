@@ -1,21 +1,14 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from wx import App
-from wx import Frame
-from wx import ID_ANY
+from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
 
 from pyutmodel.PyutClass import PyutClass
 
 from miniogl.AttachmentSide import AttachmentSide
-from miniogl.DiagramFrame import DiagramFrame
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
+from tests.miniogl.TestMiniOglCommon import Point
 
 from ogl.OglClass import OglClass
 
@@ -23,42 +16,21 @@ from ogl.events.OglEventEngine import OglEventEngine
 from ogl.events.OglEvents import OglEventType
 from ogl.events.InvalidKeywordException import InvalidKeywordException
 
-from tests.TestBase import TestBase
-from tests.miniogl.TestMiniOglCommon import Point
 
-
-class TestOglEventEngine2(TestBase):
+class TestOglEventEngine2(UnitTestBaseW):
     """
     This is a unit test for the above;  It differs from TestOglEventEngine in that that
     module is an interactive UI
     This unit test mainly verifies that improperly using an incorrect kwargs keyword
     appropriately fails
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglEventEngine2.clsLogger = getLogger(__name__)
 
     def setUp(self):
-        self.logger: Logger = TestOglEventEngine2.clsLogger
-        self.app: App = App()
-        #  Create frame
-        baseFrame: Frame = Frame(None, ID_ANY, "", size=(10, 10))
-        # noinspection PyTypeChecker
-        umlFrame = DiagramFrame(baseFrame)
-        umlFrame.Show(True)
-
-        self._umlFrame: DiagramFrame = umlFrame
-
-        self._eventEngine: OglEventEngine = OglEventEngine(listeningWindow=self._umlFrame)
+        super().setUp()
+        self._eventEngine: OglEventEngine = OglEventEngine(listeningWindow=self._listeningWindow)
 
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
-        del self._umlFrame
-        del self._eventEngine
+        super().tearDown()
 
     def testIncorrectShapeToCutEventKeyword(self):
 

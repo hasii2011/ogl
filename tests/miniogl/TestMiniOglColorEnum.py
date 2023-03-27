@@ -1,41 +1,21 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from wx import App
 from wx import Colour
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
-
 from tests.TestBase import TestBase
 
 
 class TestMiniOglColorEnum(TestBase):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestMiniOglColorEnum.clsLogger = getLogger(__name__)
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
-
     def setUp(self):
-        self.logger: Logger = TestMiniOglColorEnum.clsLogger
-        self.app            = App()
-
+        super().setUp()
+        
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
+        super().tearDown()
 
     def testBlack(self):
         c: Colour = MiniOglColorEnum.toWxColor(MiniOglColorEnum.BLACK)

@@ -9,6 +9,8 @@ from unittest import TestSuite
 from unittest import main as unitTestMain
 from unittest.mock import MagicMock
 
+from hasiihelper.UnitTestBase import UnitTestBase
+
 from tests.TestBase import TestBase
 
 from miniogl.ControlPoint import ControlPoint
@@ -18,21 +20,14 @@ from ogl.OglPosition import OglPosition
 from ogl.OglLink import OglLink
 
 
-class TestOglLink(TestBase):
+class TestOglLink(UnitTestBase):
     """
     """
     MOCK_SOURCE_POSITION:       OglPosition = OglPosition(x=100, y=100)
     MOCK_DESTINATION_POSITION:  OglPosition = OglPosition(x=500, y=500)
 
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglLink.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestOglLink.clsLogger
+        super().setUp()
 
     def tearDown(self):
         pass

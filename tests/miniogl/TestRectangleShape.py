@@ -1,13 +1,6 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
-
-from wx import App
 
 from tests.TestBase import TestBase
 
@@ -23,22 +16,13 @@ CANONICAL_HEIGHT: int = 100
 class TestRectangleShape(TestBase):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestRectangleShape.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestRectangleShape.clsLogger
-        self.app:    App    = App()
+        super().setUp()
 
         self._rectangleShape: RectangleShape = RectangleShape(x=CANONICAL_X, y=CANONICAL_Y, width=CANONICAL_WIDTH, height=CANONICAL_HEIGHT, parent=None)
 
     def tearDown(self):
-        self.app.OnExit()
-        del self.app
+        super().tearDown()
 
     def testInsideTrue(self):
 

@@ -1,45 +1,30 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from os import remove as osRemove
 from os import path as osPath
 
 from shutil import copyfile
 
-from unittest import TestCase
 
 from unittest import TestSuite
+
 from unittest import main as unitTestMain
+
+from hasiihelper.UnitTestBase import UnitTestBase
 
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
 from ogl.OglDimensions import OglDimensions
-from tests.TestBase import TestBase
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-JSON_LOGGING_CONFIG_FILENAME: str = "testLoggingConfig.json"
-TEST_DIRECTORY:               str = 'tests'
 
-
-class TestOglPreferences(TestCase):
+class TestOglPreferences(UnitTestBase):
     """
     """
     BACKUP_SUFFIX: str = '.backup'
 
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglPreferences.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestOglPreferences.clsLogger
+        super().setUp()
         self.oglPreferences: OglPreferences = OglPreferences()
-
         self._backupPrefs()
 
     def tearDown(self):

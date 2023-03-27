@@ -1,9 +1,6 @@
 
 from typing import cast
 
-from logging import Logger
-from logging import getLogger
-
 from dataclasses import dataclass
 
 from unittest import TestSuite
@@ -45,21 +42,13 @@ class TestLinkRepr(TestBase):
     a single inherited method with lots of common code, I felt good about
     combining them here
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestLinkRepr.clsLogger = getLogger(__name__)
 
     def setUp(self):
         super().setUp()
-        self.logger: Logger = TestLinkRepr.clsLogger
-
         self._linkClasses: LinkClasses = self._createLinkClasses()
 
     def tearDown(self):
-        super().tearDown()
+        pass
 
     def testOglInterfaceRepr(self):
 

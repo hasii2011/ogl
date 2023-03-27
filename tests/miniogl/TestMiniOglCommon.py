@@ -9,6 +9,8 @@ from dataclasses import dataclass
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
+from hasiihelper.UnitTestBase import UnitTestBase
+
 from tests.TestBase import TestBase
 
 from miniogl.Common import Common
@@ -28,18 +30,13 @@ class TestLine:
     end:   Point = Point(0, 0)
 
 
-class TestMiniOglCommon(TestBase):
+class TestMiniOglCommon(UnitTestBase):
     """
     """
     clsLogger: Logger = cast(Logger, None)
 
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestMiniOglCommon.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger:   Logger   = TestMiniOglCommon.clsLogger
+        super().setUp()
         self.common:   Common   = Common()
         self.testLine: TestLine = TestLine(start=Point(100, 100), end=Point(100, 200))
 

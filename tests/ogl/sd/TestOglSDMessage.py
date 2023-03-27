@@ -1,37 +1,24 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
+from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
+
 from pyutmodel.PyutSDInstance import PyutSDInstance
 from pyutmodel.PyutSDMessage import PyutSDMessage
-
-from tests.TestBase import TestBase
 
 from ogl.sd.OglSDInstance import OglSDInstance
 from ogl.sd.OglSDMessage import OglSDMessage
 
 
-class TestOglSDMessage(TestBase):
+class TestOglSDMessage(UnitTestBaseW):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglSDMessage.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestOglSDMessage.clsLogger
         super().setUp()
 
     def tearDown(self):
-        pass
+        super().tearDown()
 
     def testBasicCreation(self):
 

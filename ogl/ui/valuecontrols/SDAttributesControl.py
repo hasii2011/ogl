@@ -2,12 +2,15 @@ from logging import Logger
 from logging import getLogger
 from typing import cast
 
-from hasiicommon.Dimensions import Dimensions
+from hasiihelper.Dimensions import Dimensions
+
 from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
+
 from wx import CommandEvent
 from wx import EVT_TEXT
 from wx import SpinCtrl
 from wx import Window
+
 from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 

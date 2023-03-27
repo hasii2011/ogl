@@ -2,7 +2,7 @@
 from logging import Logger
 from logging import getLogger
 
-from hasiicommon.Singleton import Singleton
+from hasiihelper.Singleton import Singleton
 
 from pyutmodel.PyutLinkType import PyutLinkType
 

@@ -1,37 +1,22 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from wx import App
+from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
 
-from tests.TestBase import TestBase
-
-from ogl.OglClass import OglClass
 from pyutmodel.PyutClass import PyutClass
 
+from ogl.OglClass import OglClass
 
-class TestOglClass(TestBase):
+
+class TestOglClass(UnitTestBaseW):
     WELL_KNOWN_ID: int = 0xDeadBeef
 
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglClass.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.app: App = App()
-
-        self.logger: Logger = TestOglClass.clsLogger
+        super().setUp()
 
     def tearDown(self):
-        pass
+        super().tearDown()
 
     def testRepr(self):
         pyutClass: PyutClass = PyutClass(name='TestReprClass')

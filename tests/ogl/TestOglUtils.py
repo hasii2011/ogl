@@ -1,33 +1,21 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
+
+from hasiihelper.UnitTestBase import UnitTestBase
 
 from ogl.OglPosition import OglPosition
 
 from ogl.OglUtils import OglUtils
 
-from tests.TestBase import TestBase
 
-
-class TestOglUtils(TestBase):
+class TestOglUtils(UnitTestBase):
     """
     """
     TEST_GRID_INTERVAL: int = 25
 
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglUtils.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestOglUtils.clsLogger
+        super().setUp()
 
     def tearDown(self):
         pass

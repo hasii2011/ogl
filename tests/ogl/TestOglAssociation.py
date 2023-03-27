@@ -1,34 +1,22 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from unittest import TestSuite
 from unittest import main as unitTestMain
+
+from hasiihelper.UnitTestBase import UnitTestBase
 
 from miniogl.LineShape import SegmentPoint
 from miniogl.LineShape import Segments
 
 from ogl.OglAssociation import DiamondPoints
 
-from tests.TestBase import TestBase
-
 from ogl.OglAssociation import OglAssociation
 
 
-class TestOglAssociation(TestBase):
+class TestOglAssociation(UnitTestBase):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
-    @classmethod
-    def setUpClass(cls):
-        TestBase.setUpLogging()
-        TestOglAssociation.clsLogger = getLogger(__name__)
-
     def setUp(self):
-        self.logger: Logger = TestOglAssociation.clsLogger
+        super().setUp()
 
     def tearDown(self):
         pass
