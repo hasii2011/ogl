@@ -13,6 +13,8 @@ from wx import WHITE_BRUSH
 
 from pyutmodel.PyutLink import PyutLink
 
+from miniogl.TextShape import TextShape
+
 from ogl.OglLink import OglLink
 from ogl.OglClass import OglClass
 
@@ -55,10 +57,11 @@ class OglInterface(OglLink):
         """
         Update the labels according to the link.
         """
-        def prepareLabel(textShape, text):
+        def prepareLabel(textShape: TextShape, text):
             # If label should be drawn
             if text.strip() != "":
-                textShape.SetText(text)
+                # textShape.SetText(text)
+                textShape.text = text
                 # textShape.Show(True)
                 textShape.SetVisible(True)
             else:
