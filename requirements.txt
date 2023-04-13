@@ -12,7 +12,7 @@ types-setuptools==67.6.0.7
 typing_extensions==4.5.0
 Deprecated~=1.2.13
 
-pyutmodel==1.4.2
+pyutmodel~=1.4.3
 hasiihelper==0.2.0
 hasiicommon==0.2.2
 wxPython~=4.2.0
