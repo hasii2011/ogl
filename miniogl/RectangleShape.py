@@ -195,7 +195,8 @@ class RectangleShape(Shape):
 
         @param state
         """
-        Shape.SetSelected(self, state)
+        # Shape.SetSelected(self, state)
+        self.selected = state
         if self._resizable:
             self.ShowSizers(state)
 

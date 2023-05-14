@@ -179,4 +179,6 @@ class OglObject(RectangleShape, ShapeEventHandler):
         # mediator: Mediator = Mediator()
         # if mediator.getCurrentAction() != ACTION_ZOOM_OUT:
         # TODO:  I took this out because could never cause this to happen;  Conveniently, this removes all mediator calls
-        RectangleShape.SetSelected(self, state)
+        # RectangleShape.SetSelected(self, state)
+        self.selected = state
+

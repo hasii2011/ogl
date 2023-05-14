@@ -1,3 +1,4 @@
+
 from typing import List
 from typing import Tuple
 
@@ -7,14 +8,8 @@ from logging import getLogger
 from deprecated import deprecated
 
 from wx import BLACK_PEN
-
-from wx import CANCEL
-from wx import CENTRE
 from wx import DC
-from wx import ID_OK
-from wx import OK
 from wx import RED_PEN
-from wx import TextEntryDialog
 
 from pyutmodel.PyutSDMessage import PyutSDMessage
 
@@ -178,16 +173,6 @@ class OglSDMessage(OglLink):
 
         links = dst.links
         links.remove(self)
-
-    def OnLeftDClick(self, event):
-        """
-        Callback for left double clicks.
-
-        """
-        dlg = TextEntryDialog(None, "Message", "Enter message name", self._pyutSDMessage.getMessage(), OK | CANCEL | CENTRE)
-        if dlg.ShowModal() == ID_OK:
-            self._pyutSDMessage.setMessage(dlg.GetValue())
-        dlg.Destroy()
 
     def _createAnchorPoints(self, srcShape: OglSDInstance, dstShape: OglSDInstance,
                             pyutSDMessage: PyutSDMessage) -> Tuple[AnchorPoint, AnchorPoint]:

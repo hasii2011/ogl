@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<PyutProject version="10" CodePath="">
+	<PyutDocument type="CLASS_DIAGRAM" title="SimpleActorDiagram" scrollPositionX="0" scrollPositionY="0" pixelsPerUnitX="20" pixelsPerUnitY="20">
+		<GraphicActor width="80" height="100" x="639" y="190">
+			<Actor id="1" name="BasicActor" filename=""/>
+		</GraphicActor>
+	</PyutDocument>
+</PyutProject>
