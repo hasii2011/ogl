@@ -12,6 +12,8 @@ from wx import EVT_COMBOBOX
 from wx import CheckBox
 from wx import ComboBox
 from wx import CommandEvent
+from wx import EVT_TEXT
+from wx import TextCtrl
 from wx import Window
 
 from wx.lib.sized_controls import SizedPanel
@@ -33,6 +35,10 @@ class TextAttributesControl(SizedPanel):
         self._preferences: OglPreferences = OglPreferences()
         super().__init__(parent)
 
+        self.SetSizerType('vertical')
+
+        self._textDefaultText: TextCtrl = self._createDefaultTextPanel(self)
+
         self._textDimensions: DimensionsControl = DimensionsControl(sizedPanel=self,
                                                                     displayText='Text Width/Height',
                                                                     valueChangedCallback=self._onTextDimensionsChanged,
@@ -50,6 +56,7 @@ class TextAttributesControl(SizedPanel):
 
     def _setControlValues(self):
 
+        self._textDefaultText.SetValue(self._preferences.textValue)
         self._textDimensions.dimensions = self._preferences.textDimensions
         self._boldText.SetValue(self._preferences.textBold)
         self._italicizeText.SetValue(self._preferences.textItalicize)
@@ -57,11 +64,23 @@ class TextAttributesControl(SizedPanel):
 
     def _bindControls(self):
 
+        self.Bind(EVT_TEXT,     self._onDefaultTextValueChanged,   self._textDefaultText)
         self.Bind(EVT_CHECKBOX, self._onTextBoldValueChanged,      self._boldText)
         self.Bind(EVT_CHECKBOX, self._onTextItalicizeValueChanged, self._italicizeText)
 
         self.Bind(EVT_COMBOBOX, self._onFontSelectionChanged,     self._fontSelector)
         self.Bind(EVT_COMBOBOX, self._onFontSizeSelectionChanged, self._fontSizeSelector)
+
+    def _createDefaultTextPanel(self, parent: SizedPanel):
+        directoryPanel: SizedStaticBox = SizedStaticBox(parent, label='Default Text')
+
+        directoryPanel.SetSizerType('horizontal')
+        directoryPanel.SetSizerProps(expand=True, proportion=1)
+
+        textCtrl: TextCtrl = TextCtrl(directoryPanel)
+        textCtrl.SetSizerProps(expand=True, proportion=5)
+
+        return textCtrl
 
     def _createTextStylePanel(self, parent: SizedPanel):
 
@@ -88,6 +107,9 @@ class TextAttributesControl(SizedPanel):
         fontSizes: List[str] = ['8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20']
         self._fontSizeSelector = ComboBox(fontPanel, choices=fontSizes, style=CB_READONLY)
         self._fontSizeSelector.SetSizerProps(expand=True, proportion=1)
+
+    def _onDefaultTextValueChanged(self, event: CommandEvent):
+        self._preferences.textValue = self._textDefaultText.GetValue()
 
     def _onTextDimensionsChanged(self, newValue: OglDimensions):
         self._preferences.textDimensions = newValue

@@ -30,7 +30,7 @@ class DlgOglPreferences(SizedDialog):
     def __init__(self, parent):
 
         style:   int  = DEFAULT_DIALOG_STYLE | RESIZE_BORDER
-        dlgSize: Size = Size(440, 400)
+        dlgSize: Size = Size(460, 440)
 
         super().__init__(parent, title='Ogl Preferences', size=dlgSize, style=style)
 
