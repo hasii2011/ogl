@@ -62,7 +62,7 @@ class OglPreferences(Singleton):
         TEXT_FONT_FAMILY:       'Swiss',
         TEXT_FONT_SIZE:         '14',
         TEXT_VALUE:             'Donec eleifend luctus enim vel mollis',
-        CLASS_DIMENSIONS:        OglDimensions(100, 100).__str__(),
+        CLASS_DIMENSIONS:        OglDimensions(150, 75).__str__(),
         CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
         CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
     }
