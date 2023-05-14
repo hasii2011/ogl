@@ -1,5 +1,8 @@
+
 import pathlib
+
 from setuptools import setup
+from ogl import __version__ as oglVersion
 
 # The directory containing this file
 HERE = pathlib.Path(__file__).parent
@@ -8,9 +11,10 @@ HERE = pathlib.Path(__file__).parent
 README = (HERE / "README.md").read_text()
 LICENSE = (HERE / 'LICENSE').read_text()
 
+
 setup(
     name="ogl",
-    version="0.70.30",
+    version=oglVersion,
     author='Humberto A. Sanchez II',
     author_email='Humberto.A.Sanchez.II@gmail.com',
     maintainer='Humberto A. Sanchez II',

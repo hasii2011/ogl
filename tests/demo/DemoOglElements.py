@@ -10,6 +10,7 @@ import random
 
 from pyutmodel.PyutLink import PyutLink
 from pyutmodel.PyutLinkType import PyutLinkType
+
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
@@ -39,6 +40,8 @@ from pyutmodel.PyutField import PyutFields
 from pyutmodel.PyutMethod import PyutMethods
 
 from miniogl.Diagram import Diagram
+
+from ogl import __version__ as oglVersion
 
 from ogl.OglClass import OglClass
 from ogl.OglComposition import OglComposition
@@ -106,6 +109,7 @@ class DemoOglElements(App):
         self._oglPreferences: OglPreferences = OglPreferences()
 
         super().__init__(redirect)
+        print(f'Ogl Version: {oglVersion}')
 
     def OnInit(self):
         self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE)
