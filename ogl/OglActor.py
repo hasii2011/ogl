@@ -1,7 +1,10 @@
 
+from typing import Tuple
+
 from wx import DC
 
 from ogl.OglObject import OglObject
+
 from pyutmodel.PyutActor import PyutActor
 
 
@@ -40,6 +43,7 @@ class OglActor(OglObject):
             pyutObject = pyutActor
 
         super().__init__(pyutObject, w, h)
+
         self._drawFrame = False
 
     def Draw(self, dc: DC, withChildren: bool = False):
@@ -52,61 +56,99 @@ class OglActor(OglObject):
 
         """
         OglObject.Draw(self, dc)
-        # Get current font
         dc.SetFont(self._defaultFont)
-
         # Gets the minimum bounding box for the shape
         width, height = self.GetSize()
-
         # Calculate the top center of the shape
         x, y = self.GetPosition()
-
         # drawing is restricted in the specified region of the device
         dc.SetClippingRegion(x, y, width, height)
 
         # Our sweet actor size
-        actorWidth  = width
-        actorHeight = int(0.8 * (height - 2.0 * MARGIN))  # 80 % of total height
-        sizer = min(actorHeight, actorWidth)
+        actorWidth:   int = width
+        actorHeight:  int = round(0.8 * (height - 2.0 * MARGIN))  # 80 % of total height
+        actorMinSize: int = min(actorHeight, actorWidth)
 
-        # Draw our actor head
-        centerX = x + width  // 2
-        centerY = y + height // 2
+        centerX, centerY, y = self._drawActorHead(dc=dc, actorMinSize=actorMinSize, height=height, width=width, x=x, y=y)
+        x, y                = self._drawBodyAndArms(dc=dc, actorMinSize=actorMinSize, actorHeight=actorHeight, actorWidth=actorWidth, centerX=centerX, y=y)
+        self._drawActorFeet(dc, actorHeight, actorWidth, x, y)
+        self._drawBuddyName(dc, actorHeight, centerY,  height, x)
 
-        x = int(centerX - 0.2 * sizer)
+        dc.DestroyClippingRegion()
+
+    def _drawBuddyName(self, dc: DC, actorHeight: int, centerY: int, height: int, x: int):
+        """
+        Args:
+            dc:
+            actorHeight:
+            centerY:
+            height:
+            x:
+        """
+
+        textWidth, textHeight = dc.GetTextExtent(self.pyutObject.name)
+
+        y = round(centerY + 0.5 * height - MARGIN - 0.1 * actorHeight)
+
+        dc.DrawText(self.pyutObject.name, round(x - 0.5 * textWidth), y)
+
+    def _drawActorHead(self, dc: DC, actorMinSize: int, height: int, width: int, x: int, y: int) -> Tuple[int, int, int]:
+        """
+        Draw our actor head
+        Args:
+            dc:
+            height:
+            actorMinSize:
+            width:
+            x:
+            y:
+
+        Returns:  The center coordinates (centerX, centerY) and the adjusted y position
+        """
+        centerX: int = x + width // 2
+        centerY: int = y + height // 2
+
+        x = round(centerX - 0.2 * actorMinSize)
         y += MARGIN
-        percentageSizer: int = int(0.4 * sizer)
-        # dc.DrawEllipse(x, y, 0.4 * sizer, 0.4 * sizer)
-        dc.DrawEllipse(x, y, percentageSizer, percentageSizer)
 
-        # Draw body and arms
-        x = centerX
-        y += round(0.4 * sizer)
-        # dc.DrawLine(x, y, x, y + 0.3 * actorHeight)
-        # dc.DrawLine(x - 0.25 * actorWidth, y + 0.15 * actorHeight,
-        #             x + 0.25 * actorWidth, y + 0.15 * actorHeight)
+        percentageOfMinSize: int = round(0.4 * actorMinSize)
+        dc.DrawEllipse(x, y, percentageOfMinSize, percentageOfMinSize)
+
+        return centerX, centerY, y
+
+    def _drawBodyAndArms(self, dc: DC, actorMinSize: int, actorHeight, actorWidth, centerX, y: int) -> Tuple[int, int]:
+        """
+        Draw body and arms
+        Args:
+            dc:
+            actorMinSize:
+            actorHeight:
+            actorWidth:
+            centerX:
+            y:
+
+        Returns: Updated x, y positions as a tuple
+        """
+        x: int = centerX
+        y += round(0.4 * actorMinSize)
+
         dc.DrawLine(x, y, x, y + round(0.3 * actorHeight))
         dc.DrawLine(round(x - 0.25 * actorWidth), round(y + 0.15 * actorHeight),
                     round(x + 0.25 * actorWidth), round(y + 0.15 * actorHeight))
+        return x, y
 
-        # And the feet
-        # y += round(0.3 * actorHeight)
-        # dc.DrawLine(x, y, x - 0.25 * actorWidth, y + 0.3 * actorHeight)
-        # dc.DrawLine(x, y, x + 0.25 * actorWidth, y + 0.3 * actorHeight)
+    def _drawActorFeet(self, dc: DC, actorHeight: int, actorWidth: int, x: int, y: int):
+        """
 
+        Args:
+            dc:
+            actorHeight:
+            actorWidth:
+            x:
+            y:
+        """
         actorFeetPercentage: int = round(0.3 * actorHeight)
         y += round(actorFeetPercentage)
-        # dc.DrawLine(x, y, x - 0.25 * actorWidth, y + actorFeetPercentage)
-        # dc.DrawLine(x, y, x + 0.25 * actorWidth, y + actorFeetPercentage)
+
         dc.DrawLine(x, y, x - round(0.25 * actorWidth), y + actorFeetPercentage)
         dc.DrawLine(x, y, x + round(0.25 * actorWidth), y + actorFeetPercentage)
-
-        # Draw our buddy name
-        textWidth, textHeight = dc.GetTextExtent(self.pyutObject.name)
-
-        # y = centerY + 0.5 * height - MARGIN - 0.1 * actorHeight
-        y = round(centerY + 0.5 * height - MARGIN - 0.1 * actorHeight)
-
-        # dc.DrawText(self.getPyutObject().getName(), x - 0.5 * textWidth, y)
-        dc.DrawText(self.pyutObject.name, round(x - 0.5 * textWidth), y)
-        dc.DestroyClippingRegion()

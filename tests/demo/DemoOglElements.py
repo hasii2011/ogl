@@ -8,8 +8,10 @@ from logging import getLogger
 
 import random
 
+from pyutmodel.PyutActor import PyutActor
 from pyutmodel.PyutLink import PyutLink
 from pyutmodel.PyutLinkType import PyutLinkType
+from pyutmodel.PyutUseCase import PyutUseCase
 
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
@@ -42,6 +44,7 @@ from pyutmodel.PyutMethod import PyutMethods
 from miniogl.Diagram import Diagram
 
 from ogl import __version__ as oglVersion
+from ogl.OglActor import OglActor
 
 from ogl.OglClass import OglClass
 from ogl.OglComposition import OglComposition
@@ -49,6 +52,7 @@ from ogl.OglDimensions import OglDimensions
 from ogl.OglLink import OglLink
 from ogl.OglObject import OglObject
 from ogl.OglText import OglText
+from ogl.OglUseCase import OglUseCase
 
 from ogl.events.IOglEventEngine import IEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
@@ -101,6 +105,8 @@ class DemoOglElements(App):
         self._ID_DISPLAY_OGL_TEXT:        int = wxNewIdRef()
         self._ID_DISPLAY_OGL_COMPOSITION: int = wxNewIdRef()
         self._ID_DISPLAY_OGL_INTERFACE:   int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_ACTOR:       int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_USE_CASE:    int = wxNewIdRef()
         self._ID_ZOOM_IN:                 int = wxNewIdRef()
         self._ID_ZOOM_OUT:                int = wxNewIdRef()
 
@@ -152,6 +158,8 @@ class DemoOglElements(App):
         viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,        item='Ogl Text',        helpString='Display Ogl Text')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION, item='Ogl Composition', helpString='Display an Composition Link')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,   item='Ogl Interface',   helpString='Display Lollipop Interface')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_USE_CASE,    item='Ogl Use Case',    helpString='Display Ogl Use Case')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_ACTOR,       item='Ogl Actor',       helpString='Display Ogl Actor')
 
         viewMenu.AppendSeparator()
         viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
@@ -167,6 +175,8 @@ class DemoOglElements(App):
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_COMPOSITION)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_INTERFACE)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_USE_CASE)
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_ACTOR)
 
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_IN)
         self.Bind(EVT_MENU, self._onZoom, id=self._ID_ZOOM_OUT)
@@ -182,6 +192,10 @@ class DemoOglElements(App):
                 self._displayOglComposition()
             case self._ID_DISPLAY_OGL_INTERFACE:
                 self._displayOglInterface()
+            case self._ID_DISPLAY_OGL_USE_CASE:
+                self._displayOglUseCase()
+            case self._ID_DISPLAY_OGL_ACTOR:
+                self._displayOglActor()
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
 
@@ -263,6 +277,18 @@ class DemoOglElements(App):
         oglClass:        OglClass      = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
 
         self._addToDiagram(oglObject=oglClass)
+
+    def _displayOglUseCase(self):
+        pyutUseCase: PyutUseCase = PyutUseCase(name='Use Case')
+        oglUseCase:  OglUseCase  = OglUseCase(pyutUseCase=pyutUseCase)
+
+        self._addToDiagram(oglObject=oglUseCase)
+
+    def _displayOglActor(self):
+        pyutActor: PyutActor = PyutActor(actorName='Actor Name')
+        oglActor:  OglActor  = OglActor(pyutActor=pyutActor)
+
+        self._addToDiagram(oglObject=oglActor)
 
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x

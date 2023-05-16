@@ -13,6 +13,8 @@ class ShapeEventHandler:
         """
         Let a shape receive mouse events directly.
         """
+        pass
+
     def OnLeftDown(self, event: MouseEvent):
         """
         Callback for left clicks.

@@ -50,8 +50,7 @@ class OglObject(RectangleShape, ShapeEventHandler):
             height:     Initial height
         """
         self._pyutObject = pyutObject
-        RectangleShape.__init__(self, 0, 0, width, height)
-
+        super().__init__(0, 0, width, height)
         # Default font
         self._defaultFont: Font           = Font(DEFAULT_FONT_SIZE, FONTFAMILY_SWISS, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
         self._prefs:       OglPreferences = OglPreferences()
@@ -181,4 +180,3 @@ class OglObject(RectangleShape, ShapeEventHandler):
         # TODO:  I took this out because could never cause this to happen;  Conveniently, this removes all mediator calls
         # RectangleShape.SetSelected(self, state)
         self.selected = state
-

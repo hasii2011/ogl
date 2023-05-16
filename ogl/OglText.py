@@ -1,4 +1,5 @@
 
+from typing import List
 from typing import cast
 
 from logging import Logger
@@ -23,7 +24,6 @@ from wx import Font
 from wx import Menu
 from wx import MenuItem
 from wx import MouseEvent
-
 
 from miniogl.DiagramFrame import DiagramFrame
 
@@ -87,7 +87,7 @@ class OglText(OglObject):
         self._textFont:  Font            = self._defaultFont.GetBaseFont()
         self._textFont.SetFamily(OglUtils.oglFontFamilyToWxFontFamily(self._textFontFamily))
 
-        self._redColor:   Colour  = ColourDatabase().Find('Red')
+        self._redColor:   Colour = ColourDatabase().Find('Red')
         self._blackColor: Colour = ColourDatabase().Find('Black')
 
         self.__initializeTextDisplay()
@@ -153,7 +153,6 @@ class OglText(OglObject):
 
         x: int = event.GetX()
         y: int = event.GetY()
-        self.logger.debug(f'OglClass - x,y: {x},{y}')
 
         frame.PopupMenu(self._menu, x, y)
 
@@ -166,13 +165,10 @@ class OglText(OglObject):
             withChildren:   Redraw children or not
         """
         if self._selected:
-            dc.SetPen(RED_PEN)
             dc.SetTextForeground(self._redColor)
-        else:
-            dc.SetPen(BLACK_PEN)
-            dc.SetTextForeground(self._blackColor)
 
-        OglObject.Draw(self, dc)
+        # OglObject.Draw(self, dc)
+        super().Draw(dc)
         dc.SetFont(self._textFont)
 
         w, h = self.GetSize()
@@ -181,8 +177,8 @@ class OglText(OglObject):
 
         dc.SetClippingRegion(baseX, baseY, w, h)
 
-        noteContent = self.pyutObject.content
-        lines = OglUtils.lineSplitter(noteContent, dc, w - 2 * OglText.MARGIN)
+        textContent: str       = self.pyutObject.content
+        lines:       List[str] = OglUtils.lineSplitter(textContent, dc, w - 2 * OglText.MARGIN)
 
         x = baseX + OglText.MARGIN
         y = baseY + OglText.MARGIN
@@ -191,6 +187,7 @@ class OglText(OglObject):
             dc.DrawText(lines[line], x, y + line * (dc.GetCharHeight() + 5))
 
         dc.DestroyClippingRegion()
+        dc.SetTextForeground(self._blackColor)      # reset back after done
 
     def _createMenu(self) -> Menu:
 
