@@ -4,7 +4,6 @@ from os import path as osPath
 
 from shutil import copyfile
 
-
 from unittest import TestSuite
 
 from unittest import main as unitTestMain
@@ -12,6 +11,7 @@ from unittest import main as unitTestMain
 from hasiihelper.UnitTestBase import UnitTestBase
 
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
+
 from ogl.OglDimensions import OglDimensions
 
 from ogl.preferences.OglPreferences import OglPreferences
@@ -113,8 +113,8 @@ def suite() -> TestSuite:
     import unittest
 
     testSuite: TestSuite = TestSuite()
-    # noinspection PyUnresolvedReferences
-    testSuite.addTest(unittest.makeSuite(TestOglPreferences))
+
+    testSuite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(testCaseClass=TestOglPreferences))
 
     return testSuite
 

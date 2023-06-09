@@ -16,7 +16,7 @@ from tests.TestBase import TestBase
 class TestTemplate(TestBase):
     """
     You need to change the name of this class to Test`xxxx`
-    Where `xxxx' is the name of the class that you want to test.
+    Where `xxxx` is the name of the class that you want to test.
 
     See existing tests for more information.
     """
@@ -46,8 +46,8 @@ def suite() -> TestSuite:
     import unittest
 
     testSuite: TestSuite = TestSuite()
-    # noinspection PyUnresolvedReferences
-    testSuite.addTest(unittest.makeSuite(TestTemplate))
+
+    testSuite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(testCaseClass=TestTemplate))
 
     return testSuite
 

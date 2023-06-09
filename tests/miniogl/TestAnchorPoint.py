@@ -60,12 +60,10 @@ class TestAnchorPoint(UnitTestBase):
 
 
 def suite() -> TestSuite:
-    """You need to change the name of the test class here also."""
     import unittest
 
     testSuite: TestSuite = TestSuite()
-    # noinspection PyUnresolvedReferences
-    testSuite.addTest(unittest.makeSuite(TestAnchorPoint))
+    testSuite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(testCaseClass=TestAnchorPoint))
 
     return testSuite
 

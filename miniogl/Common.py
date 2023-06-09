@@ -2,6 +2,7 @@
 from typing import Tuple
 
 from dataclasses import dataclass
+from dataclasses import field
 
 from math import sqrt
 
@@ -13,11 +14,17 @@ class CommonPoint:
     y: int = 0
 
 
+def createCommonPointFactory() -> CommonPoint:
+    """
+    """
+    return CommonPoint(0, 0)
+
+
 @dataclass
 class CommonLine:
 
-    start: CommonPoint = CommonPoint(0, 0)
-    end:   CommonPoint = CommonPoint(0, 0)
+    start: CommonPoint = field(default_factory=createCommonPointFactory)
+    end:   CommonPoint = field(default_factory=createCommonPointFactory)
 
 
 class Common:

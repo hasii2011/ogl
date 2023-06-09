@@ -1,17 +1,11 @@
 
-from typing import cast
-
-from logging import Logger
-from logging import getLogger
-
 from dataclasses import dataclass
+from dataclasses import field
 
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
 from hasiihelper.UnitTestBase import UnitTestBase
-
-from tests.TestBase import TestBase
 
 from miniogl.Common import Common
 
@@ -23,25 +17,29 @@ class Point:
     y: float = 0.0
 
 
+def createOglPointFactory() -> Point:
+    """
+    """
+    return Point(0, 0)
+
+
 @dataclass
 class TestLine:
 
-    start: Point = Point(0, 0)
-    end:   Point = Point(0, 0)
+    start: Point = field(default_factory=createOglPointFactory)
+    end:   Point = field(default_factory=createOglPointFactory)
 
 
 class TestMiniOglCommon(UnitTestBase):
     """
     """
-    clsLogger: Logger = cast(Logger, None)
-
     def setUp(self):
         super().setUp()
         self.common:   Common   = Common()
         self.testLine: TestLine = TestLine(start=Point(100, 100), end=Point(100, 200))
 
     def tearDown(self):
-        pass
+        super().tearDown()
 
     def testInsideSegment(self):
 
@@ -123,12 +121,11 @@ class TestMiniOglCommon(UnitTestBase):
 
 
 def suite() -> TestSuite:
-    """You need to change the name of the test class here also."""
     import unittest
 
     testSuite: TestSuite = TestSuite()
-    # noinspection PyUnresolvedReferences
-    testSuite.addTest(unittest.makeSuite(TestMiniOglCommon))
+
+    testSuite.addTest(unittest.defaultTestLoader.loadTestsFromTestCase(testCaseClass=TestMiniOglCommon))
 
     return testSuite
 

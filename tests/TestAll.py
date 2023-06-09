@@ -26,7 +26,7 @@ class TestAll:
     The class that can run our unit tests in various formats
     """
     #
-    NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine',
+    NOT_TESTS: List[str] = ['TestAll', 'TestBase', 'TestTemplate', 'miniogl/TestMiniOgl', 'ogl/events/TestOglEventEngine',
                             # These are just independently run
                             'miniogl/TestRectangleShape',
                             'ogl/TestOglInterface2',
