@@ -39,7 +39,3 @@ I continue to use GitHub because it offers the services I need for free.  But, I
 
 Any use of this project's code by GitHub Copilot, past or present, is done without my permission.  I do not consent to GitHub's use of this project's
 code in Copilot.
-
-A repository owner may opt out of Copilot by changing Settings --> GitHub Copilot.
-
-I have done so.

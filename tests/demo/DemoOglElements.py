@@ -18,6 +18,7 @@ from wx import EVT_MENU
 from wx import ID_EXIT
 from wx import ID_PREFERENCES
 from wx import OK
+from wx import FRAME_FLOAT_ON_PARENT
 
 from wx import App
 from wx import CommandEvent
@@ -118,7 +119,7 @@ class DemoOglElements(App):
         print(f'Ogl Version: {oglVersion}')
 
     def OnInit(self):
-        self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE)
+        self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE | FRAME_FLOAT_ON_PARENT)
         self._frame.CreateStatusBar()  # should always do this when there's a resize border
 
         self._oglEventEngine  = OglEventEngine(listeningWindow=self._frame)
@@ -269,7 +270,10 @@ class DemoOglElements(App):
 
         oglComposition: OglComposition = OglComposition(srcShape=oglComposerClass, pyutLink=pyutLink, dstShape=oglComposedClass)
 
+        oglComposition.createDefaultAssociationLabels()
         self._addToDiagram(oglComposition)
+        oglComposition.addLabelsToDiagram()
+        self._diagramFrame.Refresh()
 
     def _displayOglInterface(self):
         pyutClass:       PyutClass     = PyutClass('ImplementingClass')

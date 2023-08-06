@@ -21,8 +21,9 @@ setup(
     maintainer_email='humberto.a.sanchez.ii@gmail.com',
     description='External Pyut Graphical Shapes',
     long_description=README,
-    long_description_content_type="text/markdown",
-    url="https://github.com/hasii2011/ogl",
+    long_description_content_type='text/markdown',
+    license=LICENSE,
+    url='https://github.com/hasii2011/ogl',
     package_data={
         'miniogl':              ['py.typed'],
         'ogl':                  ['py.typed'],

@@ -39,7 +39,7 @@
             "propagate": "False"
         },
         "miniogl.TextShape": {
-            "level":     "DEBUG",
+            "level":     "WARNING",
             "propagate": "False"
         },
         "ogl.OglAssociation": {
