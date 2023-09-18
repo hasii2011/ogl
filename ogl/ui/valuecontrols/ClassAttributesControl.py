@@ -1,15 +1,16 @@
 
-from logging import Logger
-from logging import getLogger
 from typing import List
 from typing import cast
 
-from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
-from wx import Choice
-from wx import CommandEvent
+from logging import Logger
+from logging import getLogger
+
 from wx import EVT_CHOICE
 from wx import EVT_TEXT
 from wx import ID_ANY
+
+from wx import Choice
+from wx import CommandEvent
 from wx import StaticText
 from wx import TextCtrl
 from wx import Window
@@ -18,8 +19,12 @@ from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
+
 from ogl.OglDimensions import OglDimensions
+
 from ogl.preferences.OglPreferences import OglPreferences
+
+from codeallyadvanced.ui.widgets.DimensionsControl import DimensionsControl
 
 
 class ClassAttributesControl(SizedPanel):

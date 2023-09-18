@@ -1,5 +1,6 @@
 
-from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
+
+from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 
 class TestBase(UnitTestBaseW):

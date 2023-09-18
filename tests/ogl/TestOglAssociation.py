@@ -2,7 +2,7 @@
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from hasiihelper.UnitTestBase import UnitTestBase
+from codeallybasic.UnitTestBase import UnitTestBase
 
 from miniogl.LineShape import SegmentPoint
 from miniogl.LineShape import Segments
