@@ -8,18 +8,18 @@ from logging import getLogger
 from wx import CB_READONLY
 from wx import EVT_CHECKBOX
 from wx import EVT_COMBOBOX
+from wx import EVT_TEXT
 
 from wx import CheckBox
 from wx import ComboBox
 from wx import CommandEvent
-from wx import EVT_TEXT
 from wx import TextCtrl
 from wx import Window
 
 from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 
-from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
+from codeallyadvanced.ui.widgets.DimensionsControl import DimensionsControl
 
 from ogl.OglDimensions import OglDimensions
 from ogl.OglTextFontFamily import OglTextFontFamily
@@ -108,6 +108,7 @@ class TextAttributesControl(SizedPanel):
         self._fontSizeSelector = ComboBox(fontPanel, choices=fontSizes, style=CB_READONLY)
         self._fontSizeSelector.SetSizerProps(expand=True, proportion=1)
 
+    # noinspection PyUnusedLocal
     def _onDefaultTextValueChanged(self, event: CommandEvent):
         self._preferences.textValue = self._textDefaultText.GetValue()
 

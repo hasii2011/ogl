@@ -2,7 +2,7 @@
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
+from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 from pyutmodel.PyutSDInstance import PyutSDInstance
 from pyutmodel.PyutSDMessage import PyutSDMessage

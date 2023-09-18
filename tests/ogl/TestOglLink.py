@@ -6,7 +6,7 @@ from unittest import TestSuite
 from unittest import main as unitTestMain
 from unittest.mock import MagicMock
 
-from hasiihelper.UnitTestBase import UnitTestBase
+from codeallybasic.UnitTestBase import UnitTestBase
 
 from miniogl.ControlPoint import ControlPoint
 from miniogl.LineShape import ControlPoints

@@ -1,20 +1,24 @@
-from logging import Logger
-from logging import getLogger
+
 from typing import cast
 
-from hasiihelper.Dimensions import Dimensions
+from logging import Logger
+from logging import getLogger
 
-from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
+from wx import EVT_TEXT
 
 from wx import CommandEvent
-from wx import EVT_TEXT
 from wx import SpinCtrl
 from wx import Window
 
 from wx.lib.sized_controls import SizedPanel
 from wx.lib.sized_controls import SizedStaticBox
 
+from codeallybasic.Dimensions import Dimensions
+
+from codeallyadvanced.ui.widgets.DimensionsControl import DimensionsControl
+
 from ogl.OglDimensions import OglDimensions
+
 from ogl.preferences.OglPreferences import OglPreferences
 
 

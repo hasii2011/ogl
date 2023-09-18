@@ -7,7 +7,7 @@ from unittest import main as unitTestMain
 from unittest.mock import Mock
 from unittest.mock import PropertyMock
 
-from hasiicommon.ui.UnitTestBaseW import UnitTestBaseW
+from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 from pyutmodel.PyutInterface import PyutInterface
 

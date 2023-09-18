@@ -5,7 +5,7 @@ from dataclasses import field
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from hasiihelper.UnitTestBase import UnitTestBase
+from codeallybasic.UnitTestBase import UnitTestBase
 
 from miniogl.Common import Common
 

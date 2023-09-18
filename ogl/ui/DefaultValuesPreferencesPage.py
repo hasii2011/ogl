@@ -1,3 +1,4 @@
+
 from typing import List
 
 from wx import BK_DEFAULT
@@ -10,13 +11,13 @@ from wx import Window
 from wx.lib.embeddedimage import PyEmbeddedImage
 from wx.lib.sized_controls import SizedPanel
 
-from hasiicommon.resources.images.DefaultPreferences import embeddedImage as DefaultPreferences
+from codeallyadvanced.resources.images.DefaultPreferences import embeddedImage as DefaultPreferences
 
-from hasiicommon.resources.images.icons.embedded16.ImgToolboxNote import embeddedImage as ImgToolboxNote
-from hasiicommon.resources.images.icons.embedded16.ImgToolboxText import embeddedImage as ImgToolboxText
-from hasiicommon.resources.images.icons.embedded16.ImgToolboxClass import embeddedImage as ImgToolboxClass
-from hasiicommon.resources.images.icons.embedded16.ImgToolboxSequenceDiagramInstance import embeddedImage as ImgToolboxSequenceDiagramInstance
-from hasiicommon.resources.images.icons.embedded16.ImgToolboxRelationshipComposition import embeddedImage as ImgToolboxRelationshipComposition
+from codeallyadvanced.resources.images.icons.embedded16.ImgToolboxNote import embeddedImage as ImgToolboxNote
+from codeallyadvanced.resources.images.icons.embedded16.ImgToolboxText import embeddedImage as ImgToolboxText
+from codeallyadvanced.resources.images.icons.embedded16.ImgToolboxClass import embeddedImage as ImgToolboxClass
+from codeallyadvanced.resources.images.icons.embedded16.ImgToolboxSequenceDiagramInstance import embeddedImage as ImgToolboxSequenceDiagramInstance
+from codeallyadvanced.resources.images.icons.embedded16.ImgToolboxRelationshipComposition import embeddedImage as ImgToolboxRelationshipComposition
 
 from ogl.ui.valuecontrols.AssociationAttributesControl import AssociationAttributesControl
 from ogl.ui.valuecontrols.ClassAttributesControl import ClassAttributesControl

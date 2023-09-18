@@ -1,23 +1,25 @@
 
+
 from logging import Logger
 from logging import getLogger
 
 from wx import EVT_TEXT
 from wx import ID_ANY
+from wx import TE_MULTILINE
 
 from wx import CommandEvent
 from wx import StaticText
-from wx import TE_MULTILINE
 from wx import TextCtrl
 from wx import Window
 
 from wx.lib.sized_controls import SizedPanel
 
-from hasiihelper.Dimensions import Dimensions
+from codeallybasic.Dimensions import Dimensions
 
-from hasiicommon.ui.widgets.DimensionsControl import DimensionsControl
+from codeallyadvanced.ui.widgets.DimensionsControl import DimensionsControl
 
 from ogl.OglDimensions import OglDimensions
+
 from ogl.preferences.OglPreferences import OglPreferences
 
 
