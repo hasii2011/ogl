@@ -29,7 +29,7 @@ jobs:
             pip install --upgrade pip
             pip install wheel
             pip install setuptools
-            pip install buildlackey~=1.3.3
+            pip install buildlackey~=1.5.0
             pip install six==1.16.0
             pip install html-testRunner~=1.2.1
             pip install attrdict3
@@ -41,4 +41,4 @@ jobs:
       - run:
             name: run tests
             command: | 
-              runtests -i tests/unittest.tst
+              unittests
