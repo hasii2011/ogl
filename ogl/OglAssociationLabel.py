@@ -1,3 +1,4 @@
+from wx import DC
 
 from miniogl.TextShape import TextShape
 
@@ -16,3 +17,11 @@ class OglAssociationLabel(TextShape):
         """
         Saved relative position that is continually updated
         """
+
+    def Draw(self, dc: DC, withChildren: bool = True):
+
+        super().Draw(dc=dc, withChildren=withChildren)
+
+        if self.IsMoving() is True:
+            # TODO report position via an event
+            pass

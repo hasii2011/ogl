@@ -28,7 +28,7 @@ from miniogl.SelectAnchorPoint import SelectAnchorPoint
 from miniogl.AttachmentSide import AttachmentSide
 
 
-class TestMiniOglApp(App):
+class AppTestMiniOglApp(App):
 
     FRAME_ID:      int = 0xDeadBeef
     WINDOW_WIDTH:  int = 900
@@ -36,12 +36,12 @@ class TestMiniOglApp(App):
 
     def OnInit(self):
 
-        frameTop: Frame = Frame(parent=None, id=TestMiniOglApp.FRAME_ID, title="Test MiniOgl",
-                                size=(TestMiniOglApp.WINDOW_WIDTH, TestMiniOglApp.WINDOW_HEIGHT), style=DEFAULT_FRAME_STYLE)
+        frameTop: Frame = Frame(parent=None, id=AppTestMiniOglApp.FRAME_ID, title="Test MiniOgl",
+                                size=(AppTestMiniOglApp.WINDOW_WIDTH, AppTestMiniOglApp.WINDOW_HEIGHT), style=DEFAULT_FRAME_STYLE)
         frameTop.Show(True)
 
         diagramFrame: DiagramFrame = DiagramFrame(frameTop)
-        diagramFrame.SetSize((TestMiniOglApp.WINDOW_WIDTH, TestMiniOglApp.WINDOW_HEIGHT))
+        diagramFrame.SetSize((AppTestMiniOglApp.WINDOW_WIDTH, AppTestMiniOglApp.WINDOW_HEIGHT))
         diagramFrame.SetScrollbars(10, 10, 100, 100)
 
         button = Button(frameTop, 1003, "Draw Me")
@@ -134,6 +134,6 @@ class TestMiniOglApp(App):
         status: bool = img.SaveFile(filename, imageType)
 
 
-testApp: App = TestMiniOglApp(redirect=False)
+testApp: App = AppTestMiniOglApp(redirect=False)
 
 testApp.MainLoop()

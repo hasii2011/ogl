@@ -13,6 +13,8 @@ DiagramFrameModifiedEvent, EVT_DIAGRAM_FRAME_MODIFIED = NewEvent()
 RequestLollipopLocationEvent, EVT_REQUEST_LOLLIPOP_LOCATION = NewEvent()
 CreateLollipopInterfaceEvent, EVT_CREATE_LOLLIPOP_INTERFACE = NewEvent()
 
+DebugOglAssociationLabelEvent, EVT_DEBUG_OGL_ASSOCIATION_LABEL = NewEvent()
+
 
 class OglEventType(Enum):
     """
@@ -24,3 +26,5 @@ class OglEventType(Enum):
     DiagramFrameModified    = 'DiagramFrameModified'
     RequestLollipopLocation = 'RequestLollipopLocation'
     CreateLollipopInterface = 'CreateLollipopInterface'
+
+    DebugOglAssociationLabel = 'DebugOglAssociationLabel'

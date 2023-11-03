@@ -26,6 +26,7 @@ from ogl.events.OglEvents import CutOglClassEvent
 from ogl.events.OglEvents import DiagramFrameModifiedEvent
 from ogl.events.OglEvents import RequestLollipopLocationEvent
 from ogl.events.OglEvents import ShapeSelectedEvent
+
 from ogl.events.ShapeSelectedEventData import ShapeSelectedEventData
 
 CUT_OGL_CLASS_PARAMETER:                    str = 'shapeToCut'
@@ -70,6 +71,8 @@ class OglEventEngine(IEventEngine):
                     self._sendSelectedShapeEvent(**kwargs)
                 case OglEventType.CreateLollipopInterface:
                     self._sendCreateLollipopInterfaceEvent(**kwargs)
+                case OglEventType.DebugOglAssociationLabel:
+                    self._sendDebugOglAssociationEvent(**kwargs)
                 case _:
                     self.logger.warning(f'Unknown Ogl Event Type: {eventType}')
         except KeyError as ke:
@@ -110,3 +113,6 @@ class OglEventEngine(IEventEngine):
 
         eventToPost: CreateLollipopInterfaceEvent = CreateLollipopInterfaceEvent(implementor=implementor, attachmentPoint=attachmentPoint)
         PostEvent(dest=self._listeningWindow, event=eventToPost)
+
+    def _sendDebugOglAssociationEvent(self, **kwargs):
+        pass
