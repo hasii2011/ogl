@@ -1,10 +1,11 @@
+from logging import Logger
+from logging import getLogger
+
 from wx import DC
 
 from miniogl.TextShape import TextShape
 
 from wx import Font
-
-from ogl.OglPosition import OglPosition
 
 
 class OglAssociationLabel(TextShape):
@@ -13,7 +14,8 @@ class OglAssociationLabel(TextShape):
 
         super().__init__(x=x, y=y, text=text, parent=parent, font=font)
 
-        self._oglPosition: OglPosition = OglPosition(x=x, y=x)
+        self.labelLogger: Logger = getLogger(__name__)
+        # self._oglPosition: OglPosition = OglPosition(x=x, y=x)
         """
         Saved relative position that is continually updated
         """
@@ -23,5 +25,6 @@ class OglAssociationLabel(TextShape):
         super().Draw(dc=dc, withChildren=withChildren)
 
         if self.IsMoving() is True:
-            # TODO report position via an event
-            pass
+            pos = self.GetPosition()
+            rPos = self.GetRelativePosition()
+            self.labelLogger.debug(f'{pos=} {rPos=}')

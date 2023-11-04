@@ -42,8 +42,8 @@
             "level":     "WARNING",
             "propagate": "False"
         },
-        "ogl.OglAssociation": {
-            "level":     "INFO",
+        "ogl.OglAssociationLabel": {
+            "level":     "DEBUG",
             "handlers":  ["consoleHandler"],
             "propagate": "False"
         }
