@@ -93,7 +93,7 @@ class OglInterface(OglLink):
         """
         self.updateLabels()
         if self._visible:
-            line = self.GetSegments()
+            line = self.segments
             if self._selected:
                 dc.SetPen(RED_PEN)
 

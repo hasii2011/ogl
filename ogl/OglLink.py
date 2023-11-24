@@ -270,16 +270,14 @@ class OglLink(LineShape, ShapeEventHandler):
         from ogl.OglClass import OglClass
         from ogl.OglNote import OglNote
         try:
-            # self.getSourceShape().links.remove(self)
-            src: Union[OglClass, OglNote] = self.getSourceShape()
+            src: Union[OglClass, OglNote] = self.sourceShape
             links: List[OglLink] = src.links
             links.remove(self)
         except ValueError as ve:
             self.clsLogger.warning(f'Ignoring source removal error: {ve}')
 
         try:
-            # self.getDestinationShape().links.remove(self)
-            dest: Union[OglClass, OglNote] = self.getDestinationShape()
+            dest: Union[OglClass, OglNote] = self.destinationShape
             links = dest.links
             links.remove(self)
         except ValueError as ee:

@@ -21,7 +21,7 @@ class AttachmentSide(Enum):
         Args:
             strValue:   A serialized string value
 
-        Returns:  The visibility enumeration
+        Returns:  The attachment side enumeration
         """
         canonicalStr: str = strValue.strip(' ')
 

@@ -90,6 +90,24 @@ class LineShape(Shape, Common):
         segments.append(dp)
         return segments
 
+    @property
+    def spline(self) -> bool:
+        """
+        Returns:    True if a spline is drawn instead of a line.
+        """
+        return self._spline
+
+    @spline.setter
+    def spline(self, state: bool):
+        """
+        Use a spline instead of a line.
+
+        Args:
+            state:  True for a spline
+        """
+        self._spline = state
+
+    @deprecated(reason='Use the .spline property')
     def SetSpline(self, state):
         """
         Use a spline instead of a line.
@@ -98,6 +116,7 @@ class LineShape(Shape, Common):
         """
         self._spline = state
 
+    @deprecated(reason='Use the .spline property')
     def GetSpline(self):
         """
         Return True if a spline is drawn instead of a line.
@@ -126,7 +145,7 @@ class LineShape(Shape, Common):
             # odd number, take the middle point
             return points[middle]
 
-    def AddControl(self, control: ControlPoint, after: Union[ControlPoint, LinePoint] | None):
+    def AddControl(self, control: Union[ControlPoint, LinePoint], after: Union[ControlPoint, LinePoint] | None):
         """
         Add a control point to the line.
         The control point can be appended (last before the destination anchor)
