@@ -5,9 +5,6 @@ from typing import cast
 from logging import Logger
 from logging import getLogger
 
-from wx import BLACK_PEN
-from wx import RED_PEN
-
 from wx import EVT_MENU
 from wx import FONTSTYLE_ITALIC
 from wx import FONTSTYLE_NORMAL

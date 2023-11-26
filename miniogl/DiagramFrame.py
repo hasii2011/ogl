@@ -62,6 +62,8 @@ from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.SizerShape import SizerShape
 from miniogl.ControlPoint import ControlPoint
 from miniogl.RectangleShape import RectangleShape
+from ogl.events.IOglEventEngine import IOglEventEngine
+from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 
@@ -76,6 +78,7 @@ class DiagramFrame(ScrolledWindow):
     GenericHandler depends on the ShapeEventHandler pseudo interface;  That is one of the
     base classes for OglObject
     """
+    DEFAULT_FONT_SIZE: int = 12
 
     diagramFrameLogger: Logger = getLogger(__name__)
 
@@ -128,10 +131,11 @@ class DiagramFrame(ScrolledWindow):
         self.__workingBitmap    = Bitmap(w, h)   # double buffering
         self.__backgroundBitmap = Bitmap(w, h)
 
-        DEFAULT_FONT_SIZE = 12
-        self._defaultFont = Font(DEFAULT_FONT_SIZE, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
+        self._defaultFont = Font(DiagramFrame.DEFAULT_FONT_SIZE, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
         self.SetBackgroundColour(WHITE)
-        self._prefs: OglPreferences = OglPreferences()
+
+        self._prefs:          OglPreferences  = OglPreferences()
+        self._oglEventEngine: IOglEventEngine = OglEventEngine(listeningWindow=self)
 
         # Mouse events
         self.Bind(EVT_LEFT_DOWN,     self.OnLeftDown)
@@ -222,6 +226,10 @@ class DiagramFrame(ScrolledWindow):
     @maxZoomFactor.setter
     def maxZoomFactor(self, newValue: float):
         self._maxZoomFactor = newValue
+
+    @property
+    def eventEngine(self) -> IOglEventEngine:
+        return self._oglEventEngine
 
     def getEventPosition(self, event: MouseEvent):
         """
@@ -910,7 +918,7 @@ class DiagramFrame(ScrolledWindow):
         # resize the virtual screen in order to match with the zoom
         virtualWidth  = round(virtualWidth * zoomFactor)
         virtualHeight = round(virtualHeight * zoomFactor)
-        
+
         virtualSize:   Size = Size(virtualWidth, virtualHeight)
         self.SetVirtualSize(virtualSize)
 

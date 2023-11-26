@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 from miniogl.Shape import Shape
 
-from ogl.events.IOglEventEngine import IEventEngine
+from ogl.events.IOglEventEngine import IOglEventEngine
 
 from ogl.events.OglEvents import OglEventType
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
@@ -37,7 +37,7 @@ CREATE_LOLLIPOP_IMPLEMENTOR_PARAMETER:      str = 'implementor'
 CREATE_LOLLIPOP_ATTACHMENT_POINT_PARAMETER: str = 'attachmentPoint'
 
 
-class OglEventEngine(IEventEngine):
+class OglEventEngine(IOglEventEngine):
     """
     The rationale for this class is to isolate the underlying implementation
     of events.  Currently, it depends on the wxPython event loop.  This leaves

@@ -55,16 +55,19 @@ from ogl.OglObject import OglObject
 from ogl.OglText import OglText
 from ogl.OglUseCase import OglUseCase
 
-from ogl.events.IOglEventEngine import IEventEngine
+from ogl.events.IOglEventEngine import IOglEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 
 from tests.TestBase import TestBase
+
 from tests.demo.DemoEventEngine import DemoEventEngine
 from tests.demo.DemoEventEngine import EVT_SET_STATUS_TEXT
 from tests.demo.DemoEventEngine import SetStatusTextEvent
+
 from tests.demo.DemoUmlFrame import DemoUmlFrame
+
 from tests.demo.DlgOglPreferences import DlgOglPreferences
 
 
@@ -99,7 +102,7 @@ class DemoOglElements(App):
         self._diagramFrame:   DemoUmlFrame = cast(DemoUmlFrame, None)
         self._diagram:        Diagram      = cast(Diagram, None)
 
-        self._oglEventEngine:  IEventEngine     = cast(OglEventEngine, None)
+        self._oglEventEngine:  IOglEventEngine = cast(OglEventEngine, None)
         self._demoEventEngine: DemoEventEngine = cast(DemoEventEngine, None)
 
         self._ID_DISPLAY_OGL_CLASS:       int = wxNewIdRef()
@@ -122,17 +125,18 @@ class DemoOglElements(App):
         self._frame = SizedFrame(parent=None, title="Test Ogl Elements", size=(FRAME_WIDTH, FRAME_HEIGHT), style=DEFAULT_FRAME_STYLE | FRAME_FLOAT_ON_PARENT)
         self._frame.CreateStatusBar()  # should always do this when there's a resize border
 
-        self._oglEventEngine  = OglEventEngine(listeningWindow=self._frame)
-        self._demoEventEngine = DemoEventEngine(listeningWindow=self._frame)
+        self._demoEventEngine = DemoEventEngine(listeningWindow=self._frame)    # Our app event engine
 
         sizedPanel: SizedPanel = self._frame.GetContentsPane()
-        self._diagramFrame = DemoUmlFrame(parent=sizedPanel, eventEngine=self._oglEventEngine, demoEventEngine=self._demoEventEngine)
+        self._diagramFrame = DemoUmlFrame(parent=sizedPanel, demoEventEngine=self._demoEventEngine)
         # noinspection PyUnresolvedReferences
         self._diagramFrame.SetSizerProps(expand=True, proportion=1)
 
         # Some incestuous behavior going on here
         self._diagram = Diagram(panel=self._diagramFrame)
         self._diagramFrame.diagram = self._diagram
+
+        self._oglEventEngine  = self._diagramFrame.eventEngine      # get a reference to the Ogl Event Engine
 
         self._createApplicationMenuBar()
 
@@ -142,6 +146,7 @@ class DemoOglElements(App):
         self._frame.Show(True)
 
         self._demoEventEngine.registerListener(EVT_SET_STATUS_TEXT, callback=self._onSetStatusText)
+
         return True
 
     def _createApplicationMenuBar(self):
@@ -305,10 +310,12 @@ class DemoOglElements(App):
     def _addToDiagram(self, oglObject: Union[OglObject, OglLink]):
 
         oglObject.draggable = True
+
         x, y = self._getPosition()
         oglObject.SetPosition(x, y)
-        self._diagram.AddShape(oglObject, withModelUpdate=True)
         self._diagramFrame.Refresh()
+
+        self._diagram.AddShape(oglObject, withModelUpdate=True)
 
         self.logger.info(f'{self._diagram.GetShapes()=}')
 

@@ -8,7 +8,7 @@ from wx import PyEventBinder
 from ogl.events.OglEvents import OglEventType
 
 
-class IEventEngine(ABC):
+class IOglEventEngine(ABC):
     """
     Implement an interface using the standard Python library.  I found zope too abstract
     and python interface could not handle subclasses

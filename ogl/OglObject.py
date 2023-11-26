@@ -1,5 +1,4 @@
 
-from typing import cast
 from typing import List
 
 from logging import Logger
@@ -17,11 +16,11 @@ from wx import FONTWEIGHT_NORMAL
 from miniogl.RectangleShape import RectangleShape
 from miniogl.ShapeEventHandler import ShapeEventHandler
 
+from ogl.EventEngineMixin import EventEngineMixin
 from ogl.OglLink import OglLink
 from ogl.OglUtils import OglUtils
 
 from ogl.events.OglEvents import OglEventType
-from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 
@@ -31,7 +30,7 @@ from pyutmodel.PyutObject import PyutObject
 DEFAULT_FONT_SIZE = 10
 
 
-class OglObject(RectangleShape, ShapeEventHandler):
+class OglObject(RectangleShape, ShapeEventHandler, EventEngineMixin):
     """
     This is the base class for new OGL objects.
     Every new OGL class must inherit this class and redefine methods if
@@ -50,16 +49,17 @@ class OglObject(RectangleShape, ShapeEventHandler):
             height:     Initial height
         """
         self._pyutObject = pyutObject
+
         super().__init__(0, 0, width, height)
-        # Default font
+
+        EventEngineMixin.__init__(self)
+
         self._defaultFont: Font           = Font(DEFAULT_FONT_SIZE, FONTFAMILY_SWISS, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
         self._prefs:       OglPreferences = OglPreferences()
 
         # TODO This is also used by sequence diagrams to store OglSDMessage links
         self._oglLinks: List[OglLink] = []     # Connected links
         self._modifyCommand = None
-
-        self._eventEngine: OglEventEngine = cast(OglEventEngine, None)
 
     @deprecated(reason='Use the properties')
     def setPyutObject(self, pyutObject: PyutObject):
@@ -85,26 +85,6 @@ class OglObject(RectangleShape, ShapeEventHandler):
     @property
     def links(self):
         return self._oglLinks
-
-    @property
-    def eventEngine(self) -> OglEventEngine:
-        """
-        This property necessary because the diagram is not added until the
-        object is' attached'
-
-        Returns:
-
-        """
-        if self.HasDiagramFrame() is True:
-
-            # from org.pyut.ui.UmlDiagramsFrame import UmlDiagramsFrame
-            # panel: UmlDiagramsFrame = self.GetDiagram().GetPanel()
-            panel = self.GetDiagram().GetPanel()
-            if panel is not None:
-                if self._eventEngine is None:
-                    self._eventEngine = panel.eventEngine
-
-        return self._eventEngine
 
     def addLink(self, link):
         """
@@ -166,9 +146,8 @@ class OglObject(RectangleShape, ShapeEventHandler):
             x:  The new abscissa
             y:  The new ordinate
         """
-        if self.eventEngine is not None:        # we might be associated with a diagram yet
-            self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)
         RectangleShape.SetPosition(self, x, y)
+        self._indicateDiagramModified()
 
     def SetSelected(self, state=True):
 
@@ -180,3 +159,7 @@ class OglObject(RectangleShape, ShapeEventHandler):
         # TODO:  I took this out because could never cause this to happen;  Conveniently, this removes all mediator calls
         # RectangleShape.SetSelected(self, state)
         self.selected = state
+
+    def _indicateDiagramModified(self):
+        if self.eventEngine is not None:  # we might not be associated with a diagram yet
+            self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)

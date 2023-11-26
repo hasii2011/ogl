@@ -29,11 +29,12 @@ from miniogl.Shape import Shape
 from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.AttachmentSide import AttachmentSide
 
+from ogl.EventEngineMixin import EventEngineMixin
 from ogl.OglPosition import OglPosition
-
 from ogl.IllegalOperationException import IllegalOperationException
 
 from ogl.OglUtils import OglUtils
+from ogl.events.OglEvents import OglEventType
 
 [
     MENU_ADD_BEND,
@@ -41,8 +42,10 @@ from ogl.OglUtils import OglUtils
     MENU_TOGGLE_SPLINE,
 ]  = OglUtils.assignID(3)
 
+AVOID_CROSSED_LINES_FEATURE: bool = False   # Make this a feature flag
 
-class OglLink(LineShape, ShapeEventHandler):
+
+class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     """
     Abstract class for graphical link.
     This class should be the base class for every type of link. It implements
@@ -96,26 +99,7 @@ class OglLink(LineShape, ShapeEventHandler):
                 srcX, srcY = 0, sh//2
                 dstX, dstY = dw, dh//2
 
-            # ============== Avoid over-lining; Added by C.Dutoit ================
-            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in srcSDInstance.GetAnchors()]
-            # while (srcX, srcY) in lstAnchorsPoints:
-            #     OglLink.clsLogger.warning(f'Over-lining in source shape')
-            #     if orient == PyutAttachmentPoint.NORTH or orient == PyutAttachmentPoint.SOUTH:
-            #         srcX += 10
-            #     else:
-            #         srcY += 10
-            #
-            # lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in dstSDInstance.GetAnchors()]
-            # while (dstX, dstY) in lstAnchorsPoints:
-            #     from org.pyut.ogl.OglClass import OglClass
-            #     dstSDInstance: OglClass = cast(OglClass, dstSDInstance)
-            #     OglLink.clsLogger.warning(f'Over-lining in destination shape: {dstSDInstance.getPyutObject}')
-            #     if orient == PyutAttachmentPoint.NORTH or orient == PyutAttachmentPoint.SOUTH:
-            #         dstX += 10
-            #     else:
-            #         dstY += 10
-
-            # =========== end avoid over-lining-Added by C.Dutoit ================
+            dstX, dstY, srcX, srcY = self._avoidCrossedLines(dstShape=dstShape, dstX=dstX, dstY=dstY, orient=orient, srcShape=srcShape, srcX=srcX, srcY=srcY)
         else:
             # Use provided position
             (srcX, srcY) = srcPos
@@ -130,7 +114,10 @@ class OglLink(LineShape, ShapeEventHandler):
         OglLink.clsLogger.debug(f'src anchor pos: {srcAnchor.GetPosition()} dst anchor pos {dstAnchor.GetPosition()}')
         srcAnchor.draggable = True
         dstAnchor.draggable = True
+        #
         # Init
+        #
+        EventEngineMixin.__init__(self)
         LineShape.__init__(self, srcAnchor, dstAnchor)
         # Set up painting colors
         self.SetPen(BLACK_PEN)
@@ -243,46 +230,6 @@ class OglLink(LineShape, ShapeEventHandler):
             self._detachFromOglEnds()
             self._detachModel()
 
-    def _detachModel(self):
-        """
-        From the data model of the source remove the
-        data model link
-        """
-        from typing import Union
-        from pyutmodel.PyutClass import PyutClass
-        from pyutmodel.PyutNote import PyutNote
-        try:
-            # self._link.getSource().links.remove(self._link)
-            pyutSrc: Union[PyutClass, PyutNote] = self._link.getSource()
-            links: PyutLinks = pyutSrc.links
-            links.remove(self._link)
-        except ValueError as ve:
-            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
-
-    def _detachFromOglEnds(self):
-        """
-        Remove us (self) from the links list in each of the ends
-
-        """
-        # Do local imports because of these incestuous self references
-        from typing import Union
-        from typing import List
-        from ogl.OglClass import OglClass
-        from ogl.OglNote import OglNote
-        try:
-            src: Union[OglClass, OglNote] = self.sourceShape
-            links: List[OglLink] = src.links
-            links.remove(self)
-        except ValueError as ve:
-            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
-
-        try:
-            dest: Union[OglClass, OglNote] = self.destinationShape
-            links = dest.links
-            links.remove(self)
-        except ValueError as ee:
-            self.clsLogger.warning(f'Ignoring destination removal error: {ee}')
-
     def optimizeLine(self):
         """
         Optimize line, so that the line length is minimized
@@ -309,6 +256,7 @@ class OglLink(LineShape, ShapeEventHandler):
 
         srcAnchor.SetPosition(optimalSrcX, optimalSrcY)
         dstAnchor.SetPosition(optimalDstX, optimalDstY)
+        self._indicateDiagramModified()
 
     # noinspection PyUnusedLocal
     def OnRightDown(self, event: MouseEvent):
@@ -406,6 +354,7 @@ class OglLink(LineShape, ShapeEventHandler):
         frame = self._diagram.GetPanel()
         frame.diagram.AddShape(cp)
         frame.Refresh()
+        self._indicateDiagramModified()
 
     def _removeBend(self, clickPoint: Tuple[int, int]):
 
@@ -421,6 +370,7 @@ class OglLink(LineShape, ShapeEventHandler):
 
         frame = self._diagram.GetPanel()
         frame.Refresh()
+        self._indicateDiagramModified()
 
     def _toggleSpline(self):
 
@@ -428,6 +378,7 @@ class OglLink(LineShape, ShapeEventHandler):
 
         frame = self._diagram.GetPanel()
         frame.Refresh()
+        self._indicateDiagramModified()
 
     def _findClosestControlPoint(self, clickPoint: Tuple[int, int]) -> ControlPoint:
 
@@ -452,6 +403,50 @@ class OglLink(LineShape, ShapeEventHandler):
 
         return closestPoint
 
+    def _indicateDiagramModified(self):
+        if self.eventEngine is not None:  # we might not be associated with a diagram yet
+            self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)
+
+    def _detachModel(self):
+        """
+        From the data model of the source remove the
+        data model link
+        """
+        from typing import Union
+        from pyutmodel.PyutClass import PyutClass
+        from pyutmodel.PyutNote import PyutNote
+        try:
+            # self._link.getSource().links.remove(self._link)
+            pyutSrc: Union[PyutClass, PyutNote] = self._link.getSource()
+            links: PyutLinks = pyutSrc.links
+            links.remove(self._link)
+        except ValueError as ve:
+            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
+
+    def _detachFromOglEnds(self):
+        """
+        Remove us (self) from the links list in each of the ends
+
+        """
+        # Do local imports because of these incestuous self references
+        from typing import Union
+        from typing import List
+        from ogl.OglClass import OglClass
+        from ogl.OglNote import OglNote
+        try:
+            src: Union[OglClass, OglNote] = self.sourceShape
+            links: List[OglLink] = src.links
+            links.remove(self)
+        except ValueError as ve:
+            self.clsLogger.warning(f'Ignoring source removal error: {ve}')
+
+        try:
+            dest: Union[OglClass, OglNote] = self.destinationShape
+            links = dest.links
+            links.remove(self)
+        except ValueError as ee:
+            self.clsLogger.warning(f'Ignoring destination removal error: {ee}')
+
     def __repr__(self):
 
         srcShape: Shape = self.sourceShape
@@ -460,3 +455,36 @@ class OglLink(LineShape, ShapeEventHandler):
         dstId:    int   = dstShape.id
 
         return f'from: id: {sourceId} {srcShape} to id: {dstId} {dstShape}'
+
+    def _avoidCrossedLines(self, dstShape, dstX: int, dstY:int, orient, srcShape, srcX: int, srcY: int):
+        """
+        Avoid over-lining; Added by C.Dutoit (still experimental in 2023, ;-) )
+
+        Args:
+            dstShape:
+            dstX:
+            dstY:
+            orient:
+            srcShape:
+            srcX:
+            srcY:
+
+        Returns:  Adjust points if feature us turned on
+        """
+        if AVOID_CROSSED_LINES_FEATURE is True:
+            lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in srcShape.GetAnchors()]
+            while (srcX, srcY) in lstAnchorsPoints:
+                OglLink.clsLogger.warning(f'Over-lining in source shape: {srcShape.pyutObject}')
+                if orient == AttachmentSide.NORTH or orient == AttachmentSide.SOUTH:
+                    srcX += 10
+                else:
+                    srcY += 10
+            lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in dstShape.GetAnchors()]
+            while (dstX, dstY) in lstAnchorsPoints:
+                OglLink.clsLogger.warning(f'Over-lining in destination shape: {dstShape.pyutObject}')
+                if orient == AttachmentSide.NORTH or orient == AttachmentSide.SOUTH:
+                    dstX += 10
+                else:
+                    dstY += 10
+
+        return dstX, dstY, srcX, srcY

@@ -6,8 +6,8 @@ from wx.lib.newevent import NewEvent
 #
 # Constructor returns a tuple; First is the event,  The second is the binder
 #
-ShapeSelectedEvent,        EVT_SHAPE_SELECTED   = NewEvent()
-CutOglClassEvent,          EVT_CUT_OGL_CLASS    = NewEvent()
+ShapeSelectedEvent,        EVT_SHAPE_SELECTED         = NewEvent()
+CutOglClassEvent,          EVT_CUT_OGL_CLASS          = NewEvent()
 DiagramFrameModifiedEvent, EVT_DIAGRAM_FRAME_MODIFIED = NewEvent()
 
 RequestLollipopLocationEvent, EVT_REQUEST_LOLLIPOP_LOCATION = NewEvent()

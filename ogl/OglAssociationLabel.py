@@ -7,18 +7,19 @@ from miniogl.TextShape import TextShape
 
 from wx import Font
 
+from ogl.EventEngineMixin import EventEngineMixin
+from ogl.events.OglEvents import OglEventType
 
-class OglAssociationLabel(TextShape):
+
+class OglAssociationLabel(TextShape, EventEngineMixin):
 
     def __init__(self, x: int, y: int, text: str, parent=None, font: Font = None):
 
         super().__init__(x=x, y=y, text=text, parent=parent, font=font)
 
+        EventEngineMixin.__init__(self)
+
         self.labelLogger: Logger = getLogger(__name__)
-        # self._oglPosition: OglPosition = OglPosition(x=x, y=x)
-        """
-        Saved relative position that is continually updated
-        """
 
     def Draw(self, dc: DC, withChildren: bool = True):
 
@@ -28,3 +29,8 @@ class OglAssociationLabel(TextShape):
             pos = self.GetPosition()
             rPos = self.GetRelativePosition()
             self.labelLogger.debug(f'{pos=} {rPos=}')
+
+    def SetPosition(self, x: int, y: int):
+        super().SetPosition(x=x, y=y)
+        if self.eventEngine is not None:        # we might not be associated with a diagram yet
+            self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)
