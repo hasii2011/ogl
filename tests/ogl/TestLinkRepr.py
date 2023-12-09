@@ -6,15 +6,17 @@ from dataclasses import dataclass
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from pyutmodel.PyutClass import PyutClass
-from pyutmodel.PyutLink import PyutLink
-from pyutmodel.PyutLinkType import PyutLinkType
+from pyutmodelv2.PyutClass import PyutClass
+from pyutmodelv2.PyutLink import PyutLink
+
+from pyutmodelv2.enumerations.PyutLinkType import PyutLinkType
 
 from ogl.OglAggregation import OglAggregation
 from ogl.OglAssociation import OglAssociation
 from ogl.OglClass import OglClass
 from ogl.OglComposition import OglComposition
 from ogl.OglInterface import OglInterface
+
 from tests.TestBase import TestBase
 
 

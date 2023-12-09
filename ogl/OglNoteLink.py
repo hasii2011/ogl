@@ -5,7 +5,8 @@ from wx import Pen
 
 from miniogl.Shape import Shape
 
-from pyutmodel.PyutLink import PyutLink
+from pyutmodelv2.PyutLink import PyutLink
+
 from ogl.OglLink import OglLink
 from ogl.OglObject import OglObject
 

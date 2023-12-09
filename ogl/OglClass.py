@@ -26,11 +26,12 @@ from wx import Colour
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
-from pyutmodel.PyutDisplayParameters import PyutDisplayParameters
-from pyutmodel.PyutMethod import PyutMethod
-from pyutmodel.PyutObject import PyutObject
-from pyutmodel.PyutClass import PyutClass
-from pyutmodel.PyutStereotype import PyutStereotype
+from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
+from pyutmodelv2.enumerations.PyutStereotype import PyutStereotype
+
+from pyutmodelv2.PyutMethod import PyutMethod
+from pyutmodelv2.PyutObject import PyutObject
+from pyutmodelv2.PyutClass import PyutClass
 
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE
@@ -272,7 +273,7 @@ class OglClass(OglObject):
         eventId:      int       = event.GetId()
 
         if eventId == MENU_TOGGLE_STEREOTYPE:
-            pyutObject.setShowStereotype(not pyutObject.displayStereoType)
+            pyutObject.displayStereoType = not pyutObject.displayStereoType
             self.autoResize()
         elif eventId == MENU_TOGGLE_METHODS:
             pyutObject.showMethods = not pyutObject.showMethods     # flip it!!  too cute
@@ -305,10 +306,10 @@ class OglClass(OglObject):
         self.logger.debug(f'Current: {displayParameters=}')
 
         if displayParameters == PyutDisplayParameters.UNSPECIFIED:
-            pyutClass.displayParameters = PyutDisplayParameters.DISPLAY
-        elif displayParameters == PyutDisplayParameters.DISPLAY:
-            pyutClass.displayParameters = PyutDisplayParameters.DO_NOT_DISPLAY
-        elif displayParameters == PyutDisplayParameters.DO_NOT_DISPLAY:
+            pyutClass.displayParameters = PyutDisplayParameters.WITH_PARAMETERS
+        elif displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
+            pyutClass.displayParameters = PyutDisplayParameters.WITHOUT_PARAMETERS
+        elif displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
             pyutClass.displayParameters = PyutDisplayParameters.UNSPECIFIED
         else:
             assert False, 'Unknown display type'
@@ -359,9 +360,9 @@ class OglClass(OglObject):
 
         if displayParameters == PyutDisplayParameters.UNSPECIFIED:
             itemToggleParameters.SetBitmap(OglConstants.unspecifiedDisplayMethodsIcon())
-        elif displayParameters == PyutDisplayParameters.DISPLAY:
+        elif displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
             itemToggleParameters.SetBitmap(OglConstants.displayMethodsIcon())
-        elif displayParameters == PyutDisplayParameters.DO_NOT_DISPLAY:
+        elif displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
             itemToggleParameters.SetBitmap(OglConstants.doNotDisplayMethodsIcon())
         else:
             assert False, 'Unknown display type'
@@ -561,9 +562,9 @@ class OglClass(OglObject):
                 dc.DrawText(pyutMethod.methodWithParameters(), x + MARGIN, y + h)
             else:
                 dc.DrawText(pyutMethod.methodWithoutParameters(), x + MARGIN, y + h)
-        elif pyutClass.displayParameters == PyutDisplayParameters.DISPLAY:
+        elif pyutClass.displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
             dc.DrawText(pyutMethod.methodWithParameters(), x + MARGIN, y + h)
-        elif pyutClass.displayParameters == PyutDisplayParameters.DO_NOT_DISPLAY:
+        elif pyutClass.displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
             dc.DrawText(pyutMethod.methodWithoutParameters(), x + MARGIN, y + h)
         else:
             assert False, 'Internal error unknown pyutMethod parameter display type'

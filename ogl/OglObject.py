@@ -24,7 +24,7 @@ from ogl.events.OglEvents import OglEventType
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-from pyutmodel.PyutObject import PyutObject
+from pyutmodelv2.PyutObject import PyutObject
 
 
 DEFAULT_FONT_SIZE = 10

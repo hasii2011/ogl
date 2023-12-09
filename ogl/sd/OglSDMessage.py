@@ -11,7 +11,7 @@ from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
 
-from pyutmodel.PyutSDMessage import PyutSDMessage
+from pyutmodelv2.PyutSDMessage import PyutSDMessage
 
 from miniogl.LineShape import LineShape
 from miniogl.AnchorPoint import AnchorPoint

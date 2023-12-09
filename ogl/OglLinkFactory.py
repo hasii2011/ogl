@@ -4,7 +4,7 @@ from logging import getLogger
 
 from codeallybasic.Singleton import Singleton
 
-from pyutmodel.PyutLinkType import PyutLinkType
+from pyutmodelv2.enumerations.PyutLinkType import PyutLinkType
 
 from ogl.OglAssociation import OglAssociation
 from ogl.OglAggregation import OglAggregation

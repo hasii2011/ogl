@@ -34,7 +34,7 @@ from ogl.preferences.OglPreferences import OglPreferences
 from ogl.resources.img.textdetails.DecreaseTextSize import embeddedImage as DecreaseTextSize
 from ogl.resources.img.textdetails.IncreaseTextSize import embeddedImage as IncreaseTextSize
 
-from pyutmodel.PyutText import PyutText
+from pyutmodelv2.PyutText import PyutText
 [
     ID_MENU_INCREASE_SIZE,
     ID_MENU_DECREASE_SIZE,

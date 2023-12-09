@@ -11,7 +11,7 @@ from wx import RED_PEN
 from wx import BLACK_PEN
 from wx import WHITE_BRUSH
 
-from pyutmodel.PyutLink import PyutLink
+from pyutmodelv2.PyutLink import PyutLink
 
 from miniogl.TextShape import TextShape
 

@@ -4,7 +4,7 @@ from unittest import main as unitTestMain
 
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
-from pyutmodel.PyutClass import PyutClass
+from pyutmodelv2.PyutClass import PyutClass
 
 from ogl.OglClass import OglClass
 

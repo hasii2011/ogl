@@ -1,20 +1,14 @@
 
-from wx import CANCEL
-from wx import CENTRE
 from wx import FONTFAMILY_TELETYPE
 from wx import FONTSTYLE_ITALIC
 from wx import FONTWEIGHT_NORMAL
 
 from wx import Font
-from wx import ID_OK
-from wx import OK
-
-from wx import TextEntryDialog
 
 from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.TextShape import TextShape
 
-from pyutmodel.PyutSDInstance import PyutSDInstance
+from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
 
 class OglInstanceName(TextShape, ShapeEventHandler):

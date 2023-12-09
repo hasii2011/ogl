@@ -5,7 +5,7 @@ from wx import DC
 
 from ogl.OglObject import OglObject
 
-from pyutmodel.PyutActor import PyutActor
+from pyutmodelv2.PyutActor import PyutActor
 
 
 MARGIN: int = 10

@@ -1,11 +1,13 @@
+
 from logging import Logger
 from logging import getLogger
 
 from wx import WHITE_BRUSH
 
+from pyutmodelv2.PyutLink import PyutLink
+
 from miniogl.Shape import Shape
 
-from pyutmodel.PyutLink import PyutLink
 from ogl.OglClass import OglClass
 from ogl.OglLink import OglLink
 

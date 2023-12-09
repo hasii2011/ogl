@@ -24,7 +24,7 @@ from wx import WHITE_BRUSH
 
 from wx import Font
 
-from pyutmodel.PyutLink import PyutLink
+from pyutmodelv2.PyutLink import PyutLink
 
 from miniogl.Diagram import Diagram
 from miniogl.LineShape import Segments

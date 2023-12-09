@@ -8,11 +8,6 @@ from logging import getLogger
 
 import random
 
-from pyutmodel.PyutActor import PyutActor
-from pyutmodel.PyutLink import PyutLink
-from pyutmodel.PyutLinkType import PyutLinkType
-from pyutmodel.PyutUseCase import PyutUseCase
-
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
@@ -30,17 +25,22 @@ from wx import NewIdRef as wxNewIdRef
 from wx.lib.sized_controls import SizedFrame
 from wx.lib.sized_controls import SizedPanel
 
-from pyutmodel.PyutClass import PyutClass
-from pyutmodel.PyutField import PyutField
-from pyutmodel.PyutMethod import PyutMethod
-from pyutmodel.PyutMethod import PyutParameters
-from pyutmodel.PyutParameter import PyutParameter
-from pyutmodel.PyutStereotype import PyutStereotype
-from pyutmodel.PyutText import PyutText
-from pyutmodel.PyutType import PyutType
-from pyutmodel.PyutVisibilityEnum import PyutVisibilityEnum
-from pyutmodel.PyutField import PyutFields
-from pyutmodel.PyutMethod import PyutMethods
+from pyutmodelv2.enumerations.PyutLinkType import PyutLinkType
+from pyutmodelv2.enumerations.PyutStereotype import PyutStereotype
+from pyutmodelv2.enumerations.PyutVisibility import PyutVisibility
+
+from pyutmodelv2.PyutActor import PyutActor
+from pyutmodelv2.PyutLink import PyutLink
+from pyutmodelv2.PyutUseCase import PyutUseCase
+from pyutmodelv2.PyutClass import PyutClass
+from pyutmodelv2.PyutField import PyutField
+from pyutmodelv2.PyutMethod import PyutMethod
+from pyutmodelv2.PyutMethod import PyutParameters
+from pyutmodelv2.PyutParameter import PyutParameter
+from pyutmodelv2.PyutText import PyutText
+from pyutmodelv2.PyutType import PyutType
+from pyutmodelv2.PyutField import PyutFields
+from pyutmodelv2.PyutMethod import PyutMethods
 
 from miniogl.Diagram import Diagram
 
@@ -222,7 +222,7 @@ class DemoOglElements(App):
                 self.logger.info(f'Pressed Ok')
 
     def _displayOglText(self):
-        pyutText: PyutText = PyutText(textContent=self._oglPreferences.textValue)
+        pyutText: PyutText = PyutText(content=self._oglPreferences.textValue)
         textDimensions: OglDimensions = self._oglPreferences.textDimensions
         oglText:  OglText  = OglText(pyutText=pyutText, width=textDimensions.width, height=textDimensions.height)
         oglText.textFontFamily = self._oglPreferences.textFontFamily
@@ -237,7 +237,7 @@ class DemoOglElements(App):
     def _displayOglClass(self):
 
         pyutClass:     PyutClass  = PyutClass('DemoClass')
-        pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibilityEnum.PUBLIC,
+        pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibility.PUBLIC,
                                               fieldType=PyutType('float'),
                                               defaultValue='42.0')
 
@@ -246,7 +246,7 @@ class DemoOglElements(App):
         else:
             pyutClass.stereotype = PyutStereotype.TYPE
         pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', parameterType=PyutType("str"), defaultValue='Ozzee')
-        pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibilityEnum.PUBLIC)
+        pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibility.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])
 
         pyutClass.fields  = PyutFields([pyutField])
@@ -268,9 +268,9 @@ class DemoOglElements(App):
         self._addToDiagram(oglObject=oglComposerClass)
         self._addToDiagram(oglObject=oglComposedClass)
 
-        pyutLink: PyutLink = PyutLink("Relationship", linkType=PyutLinkType.COMPOSITION,
-                                      cardSrc='Source Cardinality',
-                                      cardDest='Destination Cardinality',
+        pyutLink: PyutLink = PyutLink(name="Relationship", linkType=PyutLinkType.COMPOSITION,
+                                      cardinalitySource='Source Cardinality',
+                                      cardinalityDestination='Destination Cardinality',
                                       source=oglComposerClass.pyutObject, destination=oglComposedClass.pyutObject)
 
         oglComposition: OglComposition = OglComposition(srcShape=oglComposerClass, pyutLink=pyutLink, dstShape=oglComposedClass)

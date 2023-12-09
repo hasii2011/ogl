@@ -12,8 +12,8 @@ from wx import Window
 
 from wx import Yield as wxYield
 
-from pyutmodel.ModelTypes import ClassName
-from pyutmodel.PyutInterface import PyutInterface
+from pyutmodelv2.PyutModelTypes import ClassName
+from pyutmodelv2.PyutInterface import PyutInterface
 
 from miniogl.AttachmentSide import AttachmentSide
 from miniogl.DiagramFrame import DiagramFrame
@@ -81,6 +81,7 @@ class DemoUmlFrame(DiagramFrame):
 
         self._createLollipopInterface(self, implementor=implementor, attachmentAnchor=attachmentPoint)
 
+    # noinspection PyUnusedLocal
     def _onDiagramModified(self, event: DiagramFrameModifiedEvent):
         """
         Catch the Ogl Event;  Let the application frame know about it

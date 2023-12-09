@@ -9,7 +9,7 @@ from unittest.mock import PropertyMock
 
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
-from pyutmodel.PyutInterface import PyutInterface
+from pyutmodelv2.PyutInterface import PyutInterface
 
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 from miniogl.AttachmentSide import AttachmentSide

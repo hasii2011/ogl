@@ -18,8 +18,8 @@ from wx import MenuItem
 from wx import MouseEvent
 
 
-from pyutmodel.PyutLink import PyutLink
-from pyutmodel.PyutLink import PyutLinks
+from pyutmodelv2.PyutLink import PyutLink
+from pyutmodelv2.PyutLink import PyutLinks
 
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
@@ -413,11 +413,11 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         data model link
         """
         from typing import Union
-        from pyutmodel.PyutClass import PyutClass
-        from pyutmodel.PyutNote import PyutNote
+        from pyutmodelv2.PyutClass import PyutClass
+        from pyutmodelv2.PyutNote import PyutNote
         try:
             # self._link.getSource().links.remove(self._link)
-            pyutSrc: Union[PyutClass, PyutNote] = self._link.getSource()
+            pyutSrc: Union[PyutClass, PyutNote] = self._link.source
             links: PyutLinks = pyutSrc.links
             links.remove(self._link)
         except ValueError as ve:
@@ -456,7 +456,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
         return f'from: id: {sourceId} {srcShape} to id: {dstId} {dstShape}'
 
-    def _avoidCrossedLines(self, dstShape, dstX: int, dstY:int, orient, srcShape, srcX: int, srcY: int):
+    def _avoidCrossedLines(self, dstShape, dstX: int, dstY: int, orient, srcShape, srcX: int, srcY: int):
         """
         Avoid over-lining; Added by C.Dutoit (still experimental in 2023, ;-) )
 

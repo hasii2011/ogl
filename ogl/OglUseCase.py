@@ -1,8 +1,10 @@
 
 from wx import DC
 
+from pyutmodelv2.PyutUseCase import PyutUseCase
+
 from ogl.OglObject import OglObject
-from pyutmodel.PyutUseCase import PyutUseCase
+
 from ogl.OglUtils import OglUtils
 
 

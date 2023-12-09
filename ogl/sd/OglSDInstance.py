@@ -5,12 +5,14 @@ from logging import Logger
 from logging import getLogger
 
 from deprecated import deprecated
-from pyutmodel.PyutSDInstance import PyutSDInstance
+
 from wx import BLACK_DASHED_PEN
 from wx import PENSTYLE_LONG_DASH
 
 from wx import Colour
 from wx import Pen
+
+from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.LineShape import LineShape
@@ -131,7 +133,7 @@ class OglSDInstance(OglObject):
         RectangleShape.SetSize(self._instance, width, self._instance.GetSize()[1])
 
     def SetPosition(self, x: int, y: int):
-        """ 
+        """
         Debug
         """
         y = self._instanceYPosition

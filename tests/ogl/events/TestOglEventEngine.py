@@ -4,11 +4,12 @@ from unittest import main as unitTestMain
 
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
-from pyutmodel.PyutClass import PyutClass
+from tests.miniogl.TestMiniOglCommon import Point
+
+from pyutmodelv2.PyutClass import PyutClass
 
 from miniogl.AttachmentSide import AttachmentSide
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
-from tests.miniogl.TestMiniOglCommon import Point
 
 from ogl.OglClass import OglClass
 
