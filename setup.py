@@ -46,5 +46,5 @@ setup(
         'ogl.sd',
         'ogl.ui', 'ogl.ui.valuecontrols',
     ],
-    install_requires=['Deprecated~=1.2.14', 'pyutmodelv2==2.0.0', 'codeallybasic==0.5.2', 'codeallyadvanced==0.5.2', 'wxPython~=4.2.1'],
+    install_requires=['Deprecated~=1.2.14', 'pyutmodelv2==2.0.0a1', 'codeallybasic==0.5.2', 'codeallyadvanced==0.5.2', 'wxPython~=4.2.1'],
 )
