@@ -238,14 +238,14 @@ class DemoOglElements(App):
 
         pyutClass:     PyutClass  = PyutClass('DemoClass')
         pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibility.PUBLIC,
-                                              fieldType=PyutType('float'),
+                                              type=PyutType('float'),
                                               defaultValue='42.0')
 
         if self._fiftyFifty() is True:
             pyutClass.stereotype = PyutStereotype.NO_STEREOTYPE
         else:
             pyutClass.stereotype = PyutStereotype.TYPE
-        pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', parameterType=PyutType("str"), defaultValue='Ozzee')
+        pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', type=PyutType("str"), defaultValue='Ozzee')
         pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibility.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])
 
