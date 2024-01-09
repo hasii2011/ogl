@@ -14,9 +14,9 @@ keywords    = ['pyut', 'graphical shapes', 'python',]
 
 dependencies = [
   'wxPython~=4.2.1',
-  'codeallybasic==0.5.2',
-  'codeallyadvanced==0.5.2',
-  'pyutmodelv2==2.0.0',
+  'codeallybasic==1.0.0',
+  'codeallyadvanced==1.0.0',
+  'pyutmodelv2==2.0.1',
 ]
 
 [project.urls]
