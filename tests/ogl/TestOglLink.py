@@ -72,7 +72,7 @@ class TestOglLink(UnitTestBase):
         pointsToAdd: ControlPoints = self._createControlPoints()
 
         for cp in pointsToAdd:
-            oglLink.AddControl(cp, None)    # type: ignore
+            oglLink.AddControl(cp, None)
 
         self.logger.debug(f'{len(oglLink._controls)=}')
 
