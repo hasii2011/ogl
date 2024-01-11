@@ -8,18 +8,12 @@ from logging import getLogger
 from dataclasses import dataclass
 
 from wx import DC
-from wx import EVT_MENU
 from wx import FONTFAMILY_SWISS
 from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_BOLD
-from wx import ITEM_CHECK
-from wx import ITEM_NORMAL
 
 from wx import Font
 from wx import ClientDC
-from wx import Menu
-from wx import CommandEvent
-from wx import MenuItem
 from wx import MouseEvent
 from wx import Point
 from wx import Brush
@@ -38,29 +32,12 @@ from pyutmodelv2.PyutClass import PyutClass
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE
 
-from ogl.OglConstants import OglConstants
-from ogl.OglUtils import OglUtils
 from ogl.events.OglEvents import OglEventType
 
 from ogl.preferences.OglPreferences import OglPreferences
-
-# Menu IDs
-[
-    MENU_TOGGLE_STEREOTYPE,
-    MENU_TOGGLE_FIELDS,
-    MENU_TOGGLE_METHODS,
-    MENU_TOGGLE_METHOD_PARAMETERS,
-    MENU_FIT_FIELDS,
-    MENU_CUT_SHAPE,
-    MENU_IMPLEMENT_INTERFACE
-]  = OglUtils.assignID(7)
+from ogl.ui.OglClassMenuHandler import OglClassMenuHandler
 
 MARGIN: int = 10
-
-HELP_STEREOTYPE: str = 'Set stereotype display on or off'
-HELP_FIELDS:     str = 'Set fields display on or off'
-HELP_METHODS:    str = 'Set methods display on or off'
-HELP_PARAMETERS: str = 'Set parameter display Unspecified, On or Off'
 
 
 @dataclass
@@ -106,21 +83,18 @@ class OglClass(OglObject):
 
         super().__init__(pyutObject, width=width, height=height)
 
-        self._nameFont: Font = Font(DEFAULT_FONT_SIZE, FONTFAMILY_SWISS, FONTSTYLE_NORMAL, FONTWEIGHT_BOLD)
-        oglTextColor:   MiniOglColorEnum = self._oglPreferences.classTextColor
-        self._textColor: Colour = Colour(MiniOglColorEnum.toWxColor(oglTextColor))
+        self._nameFont:  Font             = Font(DEFAULT_FONT_SIZE, FONTFAMILY_SWISS, FONTSTYLE_NORMAL, FONTWEIGHT_BOLD)
+        oglTextColor:    MiniOglColorEnum = self._oglPreferences.classTextColor
+        self._textColor: Colour           = Colour(MiniOglColorEnum.toWxColor(oglTextColor))
+
         oglBackgroundColor: MiniOglColorEnum = self._oglPreferences.classBackgroundColor
-        backgroundColor: Colour = Colour(MiniOglColorEnum.toWxColor(oglBackgroundColor))
+        backgroundColor:    Colour           = Colour(MiniOglColorEnum.toWxColor(oglBackgroundColor))
 
         self.SetBrush(Brush(backgroundColor))
 
         self.logger:    Logger = getLogger(__name__)
 
-        self._contextMenu:      Menu     = cast(Menu, None)
-        self._toggleStereotype: MenuItem = cast(MenuItem, None)
-        self._toggleFields:     MenuItem = cast(MenuItem, None)
-        self._toggleMethods:    MenuItem = cast(MenuItem, None)
-        self._toggleParameters: MenuItem = cast(MenuItem, None)
+        self._menuHandler: OglClassMenuHandler = cast(OglClassMenuHandler, None)
 
     def handleSelectAnchorPointSelection(self, event: MouseEvent):
         """
@@ -153,7 +127,7 @@ class OglClass(OglObject):
 
         Args:
             dc: device context to draw to
-            withChildren: a boolean indicating whether to draw this figures children
+            withChildren: A boolean indicating whether to draw this figure's children
         """
 
         pyutObject: PyutClass = cast(PyutClass, self.pyutObject)
@@ -232,95 +206,10 @@ class OglClass(OglObject):
         """
         Callback for right clicks
         """
-        pyutClass: PyutClass = cast(PyutClass, self.pyutObject)
-        if self._contextMenu is None:
-            self._createContextMenu()
+        if self._menuHandler is None:
+            self._menuHandler = OglClassMenuHandler(oglClass=self, eventEngine=self.eventEngine)
 
-        self._setMenuItemValues(pyutClass)
-
-        x: int = event.GetX()
-        y: int = event.GetY()
-        self.logger.debug(f'OglClass - x,y: {x},{y}')
-
-        frame = self._diagram.GetPanel()
-        frame.PopupMenu(self._contextMenu, x, y)
-
-    def OnMenuClick(self, event: CommandEvent):
-        """
-        Callback for the popup menu on the class
-
-        Args:
-            event:
-        """
-        pyutObject:   PyutClass = cast(PyutClass, self.pyutObject)
-        eventId:      int       = event.GetId()
-
-        if eventId == MENU_TOGGLE_STEREOTYPE:
-            pyutObject.displayStereoType = not pyutObject.displayStereoType
-            self.autoResize()
-        elif eventId == MENU_TOGGLE_METHODS:
-            pyutObject.showMethods = not pyutObject.showMethods     # flip it!!  too cute
-            self.autoResize()
-        elif eventId == MENU_TOGGLE_FIELDS:
-            pyutObject.showFields = not pyutObject.showFields       # flip it!! too cute
-            self.autoResize()
-        elif eventId == MENU_FIT_FIELDS:
-            self.autoResize()
-        elif eventId == MENU_CUT_SHAPE:
-            self.eventEngine.sendEvent(OglEventType.CutOglClass, shapeToCut=self)
-        elif eventId == MENU_IMPLEMENT_INTERFACE:
-            self.eventEngine.sendEvent(OglEventType.RequestLollipopLocation, requestShape=self)
-        else:
-            event.Skip()
-
-    # noinspection PyUnusedLocal
-    def onDisplayParametersClick(self, event: CommandEvent):
-        """
-        This menu item has its own handler because this option is tri-state
-
-        Unspecified --> Display --> Do Not Display ---|
-            ^------------------------------------------|
-
-        Args:
-            event:
-        """
-        pyutClass:         PyutClass             = cast(PyutClass, self.pyutObject)
-        displayParameters: PyutDisplayParameters = pyutClass.displayParameters
-        self.logger.debug(f'Current: {displayParameters=}')
-
-        if displayParameters == PyutDisplayParameters.UNSPECIFIED:
-            pyutClass.displayParameters = PyutDisplayParameters.WITH_PARAMETERS
-        elif displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
-            pyutClass.displayParameters = PyutDisplayParameters.WITHOUT_PARAMETERS
-        elif displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
-            pyutClass.displayParameters = PyutDisplayParameters.UNSPECIFIED
-        else:
-            assert False, 'Unknown display type'
-        self.logger.warning(f'New: {pyutClass.displayParameters=}')
-
-    def _createContextMenu(self):
-
-        menu: Menu = Menu()
-
-        self._toggleStereotype = menu.Append(id=MENU_TOGGLE_STEREOTYPE,        item="Toggle stereotype display", helpString=HELP_STEREOTYPE, kind=ITEM_CHECK)
-        self._toggleFields     = menu.Append(id=MENU_TOGGLE_FIELDS,            item="Toggle fields display",     helpString=HELP_FIELDS,     kind=ITEM_CHECK)
-        self._toggleMethods    = menu.Append(id=MENU_TOGGLE_METHODS,           item="Toggle methods display",    helpString=HELP_METHODS,    kind=ITEM_CHECK)
-        self._toggleParameters = menu.Append(id=MENU_TOGGLE_METHOD_PARAMETERS, item=" ",                         helpString=HELP_PARAMETERS, kind=ITEM_NORMAL)
-
-        menu.Append(MENU_FIT_FIELDS,          'Fit Fields', 'Fit to see all class fields')
-        menu.Append(MENU_CUT_SHAPE,           'Cut shape',  'Cut this shape')
-        menu.Append(MENU_IMPLEMENT_INTERFACE, 'Implement Interface', 'Use Existing interface or create new one')
-
-        # Callbacks
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_TOGGLE_STEREOTYPE)
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_TOGGLE_FIELDS)
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_TOGGLE_METHODS)
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_FIT_FIELDS)
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_CUT_SHAPE)
-        menu.Bind(EVT_MENU, self.OnMenuClick, id=MENU_IMPLEMENT_INTERFACE)
-        menu.Bind(EVT_MENU, self.onDisplayParametersClick, id=MENU_TOGGLE_METHOD_PARAMETERS)
-
-        self._contextMenu = menu
+        self._menuHandler.popupMenu(event=event)
 
     def _didWeClickOnSelectAnchorPoint(self, clickPoint: Point) -> ClickedOnSelectAnchorPointData:
         """
@@ -362,29 +251,6 @@ class OglClass(OglObject):
         if self.id == other.id:
             ans = True
         return ans
-
-    def _setMenuItemValues(self, pyutClass: PyutClass):
-
-        self._toggleStereotype.Check(pyutClass.displayStereoType)
-        self._toggleFields.Check(pyutClass.showFields)
-        self._toggleMethods.Check(pyutClass.showMethods)
-
-        displayParameters: PyutDisplayParameters = pyutClass.displayParameters
-        self._setupTriStateDisplayParametersMenuItem(displayParameters, self._toggleParameters)
-
-    def _setupTriStateDisplayParametersMenuItem(self, displayParameters: PyutDisplayParameters, itemToggleParameters: MenuItem):
-
-        if displayParameters == PyutDisplayParameters.UNSPECIFIED:
-            itemToggleParameters.SetBitmap(OglConstants.unspecifiedDisplayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Unspecified')
-        elif displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
-            itemToggleParameters.SetBitmap(OglConstants.displayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Display Parameters')
-        elif displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
-            itemToggleParameters.SetBitmap(OglConstants.doNotDisplayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Do Not Display Parameters')
-        else:
-            assert False, 'Unknown display type'
 
     def _drawClassHeader(self, dc: DC, draw: bool = False, initialX=None, initialY=None, calcWidth: bool = False):
         """
@@ -547,7 +413,7 @@ class OglClass(OglObject):
         if pyutClass.showMethods is True:
             for method in pyutClass.methods:
                 if draw is True:
-                    self.__drawMethodSignature(dc, method, pyutClass, x, y, h)
+                    self._drawMethodSignature(dc, method, pyutClass, x, y, h)
 
                 if calcWidth:
                     w = max(w, self.GetTextWidth(dc, str(method)))
@@ -561,7 +427,7 @@ class OglClass(OglObject):
         # Return sizes
         return x, y, w, h
 
-    def __drawMethodSignature(self, dc: DC, pyutMethod: PyutMethod, pyutClass: PyutClass, x: int, y: int, h: int):
+    def _drawMethodSignature(self, dc: DC, pyutMethod: PyutMethod, pyutClass: PyutClass, x: int, y: int, h: int):
         """
         If the preference is not set at the individual class level, then defer to global preference; Otherwise,
         respect the class level preference

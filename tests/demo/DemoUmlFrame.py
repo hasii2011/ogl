@@ -28,10 +28,12 @@ from ogl.OglObject import OglObject
 
 from ogl.events.IOglEventEngine import IOglEventEngine
 from ogl.events.OglEvents import CreateLollipopInterfaceEvent
+from ogl.events.OglEvents import CutOglClassEvent
 from ogl.events.OglEvents import DiagramFrameModifiedEvent
 from ogl.events.OglEvents import EVT_CREATE_LOLLIPOP_INTERFACE
 from ogl.events.OglEvents import EVT_DIAGRAM_FRAME_MODIFIED
 from ogl.events.OglEvents import EVT_REQUEST_LOLLIPOP_LOCATION
+from ogl.events.OglEvents import EVT_CUT_OGL_CLASS
 from ogl.events.OglEvents import RequestLollipopLocationEvent
 
 from tests.demo.DemoEventEngine import DemoEventEngine
@@ -65,6 +67,7 @@ class DemoUmlFrame(DiagramFrame):
         self._oglEventEngine.registerListener(event=EVT_REQUEST_LOLLIPOP_LOCATION, callback=self._onRequestLollipopLocation)
         self._oglEventEngine.registerListener(event=EVT_CREATE_LOLLIPOP_INTERFACE, callback=self._onCreateLollipopInterface)
         self._oglEventEngine.registerListener(event=EVT_DIAGRAM_FRAME_MODIFIED,    callback=self._onDiagramModified)
+        self._oglEventEngine.registerListener(event=EVT_CUT_OGL_CLASS,             callback=self._onCutClass)
 
     @property
     def eventEngine(self) -> IOglEventEngine:
@@ -118,6 +121,12 @@ class DemoUmlFrame(DiagramFrame):
 
         self.Refresh()
         wxYield()
+
+    def _onCutClass(self, event: CutOglClassEvent):
+
+        shapeToCut = event.selectedShape
+
+        self.logger.warning(f'Cut request received:  {shapeToCut}')
 
     def _createPotentialAttachmentPoints(self, destinationClass):
 

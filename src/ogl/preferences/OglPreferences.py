@@ -46,9 +46,11 @@ class OglPreferences(SingletonV2):
     CLASS_DIMENSIONS: str = 'class_dimensions'
     CLASS_BACKGROUND_COLOR: str = 'class_background_color'
     CLASS_TEXT_COLOR:       str = 'class_text_color'
+    DISPLAY_DUNDER_METHODS: str = 'display_dunder_methods'
+    DISPLAY_CONSTRUCTOR:    str = 'display_constructor'
 
-    DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
-    DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.WHITE.value
+    DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.MINT_CREAM.value
+    DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.BLACK.value
 
     # noinspection SpellCheckingInspection
     OGL_PREFERENCES: OGL_PREFS_NAME_VALUES = {
@@ -63,6 +65,8 @@ class OglPreferences(SingletonV2):
         CLASS_DIMENSIONS:        OglDimensions(150, 75).__str__(),
         CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
         CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
+        DISPLAY_CONSTRUCTOR:     'False',
+        DISPLAY_DUNDER_METHODS:  'False'
     }
 
     DEFAULT_GRID_LINE_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
