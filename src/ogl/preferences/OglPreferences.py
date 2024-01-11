@@ -1,17 +1,14 @@
 
+from pathlib import Path
 from typing import Dict
 from typing import List
-from typing import Optional
 
 from logging import Logger
 from logging import getLogger
 
-from sys import platform as sysPlatform
-
-from os import getenv as osGetEnv
-
 from configparser import ConfigParser
 
+from codeallybasic.ConfigurationLocator import ConfigurationLocator
 from codeallybasic.Singleton import Singleton
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
@@ -25,7 +22,8 @@ OGL_PREFS_NAME_VALUES = Dict[str, str]
 
 class OglPreferences(Singleton):
 
-    PREFERENCES_FILENAME:   str = 'ogl.ini'
+    MODULE_NAME:            str = 'ogl'
+    PREFERENCES_FILENAME:   str = f'{MODULE_NAME}.ini'
     THE_GREAT_MAC_PLATFORM: str = 'darwin'
 
     SECTION_OGL_PREFERENCES:  str = 'Ogl'
@@ -135,18 +133,14 @@ class OglPreferences(Singleton):
         self.logger:  Logger       = getLogger(__name__)
         self._config: ConfigParser = ConfigParser()
 
-        self._preferencesFileName: str = self._getPreferencesLocation()
+        self._preferencesFileName: Path = self._getPreferencesLocation()
 
         self._loadPreferences()
 
-    def _getPreferencesLocation(self) -> str:
+    def _getPreferencesLocation(self) -> Path:
 
-        if sysPlatform == "linux2" or sysPlatform == "linux" or sysPlatform == OglPreferences.THE_GREAT_MAC_PLATFORM:
-            homeDir:  Optional[str] = osGetEnv('HOME')
-            fullName: str           = f'{homeDir}/{OglPreferences.PREFERENCES_FILENAME}'
-            preferencesFileName: str = fullName
-        else:
-            preferencesFileName = OglPreferences.PREFERENCES_FILENAME
+        cl:                  ConfigurationLocator = ConfigurationLocator()
+        preferencesFileName: Path                 = cl.applicationPath(f'{OglPreferences.MODULE_NAME}') / OglPreferences.PREFERENCES_FILENAME
 
         return preferencesFileName
 

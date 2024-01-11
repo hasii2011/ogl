@@ -1,12 +1,13 @@
 
-from os import remove as osRemove
-from os import path as osPath
+from os import environ as osEnvironment
 
-from shutil import copyfile
+from pathlib import Path
 
 from unittest import TestSuite
 
 from unittest import main as unitTestMain
+
+from codeallybasic.ConfigurationLocator import XDG_CONFIG_HOME_ENV_VAR
 
 from codeallybasic.UnitTestBase import UnitTestBase
 
@@ -24,11 +25,22 @@ class TestOglPreferences(UnitTestBase):
 
     def setUp(self):
         super().setUp()
+        """
+        Create a fake location since we know that the configuration
+        locator favors using the XDG environment variable
+        """
+        fakeXDGPATH: Path = Path('/tmp/fakeXDG/.config')
+
+        osEnvironment[XDG_CONFIG_HOME_ENV_VAR] = fakeXDGPATH.as_posix()
+
         self.oglPreferences: OglPreferences = OglPreferences()
-        self._backupPrefs()
 
     def tearDown(self):
-        self._restoreBackup()
+        """
+        Hook method for deconstructing the class fixture after running all tests in the class.
+        """
+        preferenceFile: Path = self.oglPreferences._preferencesFileName
+        preferenceFile.unlink(missing_ok=True)
 
     def testInitialCreation(self):
         """
@@ -65,47 +77,10 @@ class TestOglPreferences(UnitTestBase):
 
     def testTwoColorValue(self):
 
-        self._createDefaultPreferences()
-        self.prefs.init()  # reload default prefs
         expectedColor: str = OglPreferences.DEFAULT_GRID_LINE_COLOR
-        actualColor:   str = self.prefs.gridLineColor.value
+        actualColor:   str = self.oglPreferences.gridLineColor.value
 
         self.assertEqual(expectedColor, actualColor, 'Default must have changed')
-
-    def _backupPrefs(self):
-
-        prefsFileName: str = self.oglPreferences._preferencesFileName
-        original: str = prefsFileName
-        backup:   str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
-        if osPath.exists(original):
-            try:
-                copyfile(original, backup)
-            except IOError as e:
-                self.logger.error(f"Unable to copy file. {e}")
-
-    def _restoreBackup(self):
-
-        prefsFileName: str = self.oglPreferences._preferencesFileName
-        backup:   str = f"{prefsFileName}{TestOglPreferences.BACKUP_SUFFIX}"
-        original: str = prefsFileName
-        if osPath.exists(backup):
-            try:
-                copyfile(backup, original)
-            except IOError as e:
-                self.logger.error(f"Unable to copy file. {e}")
-
-            osRemove(backup)
-        else:
-            osRemove(original)
-
-    def _createDefaultPreferences(self):
-        """
-        Delete the file and force creation of a default one
-        """
-        prefsFileName: str = self.oglPreferences._preferencesFileName
-
-        osRemove(prefsFileName)
-        self.prefs: OglPreferences = OglPreferences()
 
 
 def suite() -> TestSuite:
