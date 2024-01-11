@@ -236,7 +236,7 @@ class DemoOglElements(App):
 
     def _displayOglClass(self):
 
-        pyutClass:     PyutClass  = PyutClass('DemoClass')
+        pyutClass:     PyutClass  = PyutClass(name='DemoClass')
         pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibility.PUBLIC,
                                               type=PyutType('float'),
                                               defaultValue='42.0')
