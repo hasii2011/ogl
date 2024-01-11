@@ -1,3 +1,4 @@
+
 from wx import App
 from wx import BITMAP_TYPE_PNG
 from wx import Bitmap
@@ -15,6 +16,8 @@ from wx import ScrolledWindow
 # noinspection PyProtectedMember
 from wx._core import BitmapType
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
+
 from miniogl.DiagramFrame import DiagramFrame
 from miniogl.Diagram import Diagram
 from miniogl.LollipopLine import LollipopLine
@@ -25,7 +28,6 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.LineShape import LineShape
 from miniogl.ControlPoint import ControlPoint
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
-from miniogl.AttachmentSide import AttachmentSide
 
 
 class AppTestMiniOglApp(App):

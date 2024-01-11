@@ -9,8 +9,9 @@ from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
 from wx import Font
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
+
 from miniogl.Common import Common
-from miniogl.AttachmentSide import AttachmentSide
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 from miniogl.LollipopLine import LollipopLine
 
@@ -59,7 +60,7 @@ class OglInterface2(LollipopLine, Common):
         """
         Synonym for reverse compatibility
 
-        Returns:  The pyut interface
+        Returns: The pyut interface
         """
         return self.pyutInterface
 
@@ -96,7 +97,7 @@ class OglInterface2(LollipopLine, Common):
             clickPointX: x click coordinate
             clickPointY: y click coordinate
 
-        Returns:  `True` if (x, y) is inside the shape.
+        Returns: `True` if (x, y) is inside the shape.
         """
         clickDiffStartX, clickDiffStartY, diffX, diffY = self.setupInsideCheck(clickPointX=clickPointX, clickPointY=clickPointY, line=self.lineCoordinates())
 
@@ -111,7 +112,7 @@ class OglInterface2(LollipopLine, Common):
     def Remove(self, point):
         """
         Need an empty implementation of this to allow adding of additional interfaces
-        on an OglClass;  This confirms I really do not understand the MiniOgl structure
+        on an OglClass; This confirms I really do not understand the MiniOgl structure
 
         Args:
             point:

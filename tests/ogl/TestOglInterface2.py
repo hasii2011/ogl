@@ -7,12 +7,12 @@ from unittest import main as unitTestMain
 from unittest.mock import Mock
 from unittest.mock import PropertyMock
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 from pyutmodelv2.PyutInterface import PyutInterface
 
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
-from miniogl.AttachmentSide import AttachmentSide
 
 from ogl.OglInterface2 import OglInterface2
 from ogl.OglPosition import OglPosition

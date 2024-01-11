@@ -12,10 +12,12 @@ from wx import Window
 
 from wx import Yield as wxYield
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
+
 from pyutmodelv2.PyutModelTypes import ClassName
 from pyutmodelv2.PyutInterface import PyutInterface
 
-from miniogl.AttachmentSide import AttachmentSide
+
 from miniogl.DiagramFrame import DiagramFrame
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
@@ -84,7 +86,7 @@ class DemoUmlFrame(DiagramFrame):
     # noinspection PyUnusedLocal
     def _onDiagramModified(self, event: DiagramFrameModifiedEvent):
         """
-        Catch the Ogl Event;  Let the application frame know about it
+        Catch the Ogl Event; Let the application frame know about it
         Args:
             event:
 
@@ -164,7 +166,7 @@ class DemoUmlFrame(DiagramFrame):
             y: coord of the center of the shape
             pen: pen to use
             brush:  brush to use
-            withModelUpdate: if true the model of the shape will update from the shape (view) when added to the diagram.
+            withModelUpdate: If true, the model of the shape will update from the shape (view) when added to the diagram.
         """
         shape.SetDraggable(True)
         shape.SetPosition(x, y)

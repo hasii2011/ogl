@@ -8,17 +8,16 @@ from wx import RED_PEN
 from wx import Pen
 from wx import MouseEvent
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
 from miniogl.Shape import Shape
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ShapeEventHandler import ShapeEventHandler
-
-from miniogl.AttachmentSide import AttachmentSide
 
 
 class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
 
     """
-    This is a point attached to a shape to indicate where to click;  Presumably, to indicate where
+    This is a point attached to a shape to indicate where to click; Presumably, to indicate where
     to attach something
 
     """
@@ -32,11 +31,11 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
         """
         super().__init__(x, y, parent)
 
-        self.logger: Logger = getLogger(__name__)
+        self.logger:          Logger         = getLogger(__name__)
         self._attachmentSide: AttachmentSide = attachmentSide
-        self._pen:             Pen                = RED_PEN
+        self._pen:            Pen            = RED_PEN
         self.SetStayInside(True)
-        self.draggable = False     # So it sticks on OglClass resize;  But now the user can move it !!
+        self.draggable = False     # So it sticks on OglClass resize; But now the user can move it !!
         self.SetStayOnBorder(True)
 
     @property
@@ -63,7 +62,7 @@ class SelectAnchorPoint(AnchorPoint, ShapeEventHandler):
             event: The mouse event
         """
         self.logger.debug(f'SelectAnchorPoint.OnLeftDown:  {self._parent=} {event.GetPosition()=}')
-        self._parent.handleSelectAnchorPointSelection(event)      # bad form;  but anything to get rid of mediator
+        self._parent.handleSelectAnchorPointSelection(event)      # bad form; but anything to get rid of mediator
 
     def __str__(self) -> str:
         x, y = self.GetPosition()

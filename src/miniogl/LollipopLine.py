@@ -7,7 +7,8 @@ from wx import BLACK_PEN
 from wx import RED_PEN
 from wx import DC
 
-from miniogl.AttachmentSide import AttachmentSide
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
+
 from miniogl.Common import CommonLine
 from miniogl.Common import CommonPoint
 
@@ -72,7 +73,7 @@ class LollipopLine(Shape):
             xDest:
             yDest:
 
-        Returns:  A tuple that is the x,y position of the circle and the end
+        Returns: A tuple that is the x,y position of the circle and the end
         of the line
         """
 

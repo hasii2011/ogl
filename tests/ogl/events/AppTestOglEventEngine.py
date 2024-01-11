@@ -27,9 +27,10 @@ from wx.lib.buttons import GenButtonEvent
 from wx.lib.sized_controls import SizedFrame
 from wx.lib.sized_controls import SizedPanel
 
-from pyutmodel.PyutClass import PyutClass
+from pyutmodelv2.PyutClass import PyutClass
 
-from miniogl.AttachmentSide import AttachmentSide
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
+
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from ogl.OglClass import OglClass
@@ -112,14 +113,14 @@ class AppTestOglEventEngine(App):
 
     def _createBackGroundColorSelector(self, sizedFrame: SizedFrame, sizedPanel: SizedPanel):
         colourdb.updateColourDB()
-        # create a colour list from the  database
+        # create a color list from the database
         colour_list = colourdb.getColourList()
 
         # create a choice widget
         self._choice: Choice = Choice(sizedPanel, ID_ANY, choices=colour_list)
-        # select item 0 (first item) in choice list to show
+        # select item 0 (first item) in the choice list to show
         self._choice.SetSelection(0)
-        # set the current frame colour to the choice
+        # set the current frame color to the choice
         sizedFrame.SetBackgroundColour(self._choice.GetStringSelection())
         # bind the checkbox events to an action
         self._choice.Bind(EVT_CHOICE, self._onChoice)
@@ -198,7 +199,7 @@ class AppTestOglEventEngine(App):
     # noinspection PyUnusedLocal
     def _onChoice(self, event):
         bgColor = self._choice.GetStringSelection()
-        # change colour of the panel to the selected colour ...
+        # change color of the panel to the selected color
         self._sizedFrame.SetBackgroundColour(bgColor)
         self._sizedFrame.Refresh()
 

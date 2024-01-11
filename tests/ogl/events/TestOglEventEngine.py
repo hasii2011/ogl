@@ -2,13 +2,13 @@
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 from tests.miniogl.TestMiniOglCommon import Point
 
 from pyutmodelv2.PyutClass import PyutClass
 
-from miniogl.AttachmentSide import AttachmentSide
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
 from ogl.OglClass import OglClass

@@ -17,6 +17,10 @@ from wx import Menu
 from wx import MenuItem
 from wx import MouseEvent
 
+from codeallybasic.Position import Position
+
+from codeallyadvanced.ui.Common import Common
+from codeallyadvanced.ui.AttachmentSide import AttachmentSide
 
 from pyutmodelv2.PyutLink import PyutLink
 from pyutmodelv2.PyutLink import PyutLinks
@@ -27,7 +31,6 @@ from miniogl.LinePoint import LinePoint
 from miniogl.LineShape import LineShape
 from miniogl.Shape import Shape
 from miniogl.ShapeEventHandler import ShapeEventHandler
-from miniogl.AttachmentSide import AttachmentSide
 
 from ogl.EventEngineMixin import EventEngineMixin
 from ogl.OglPosition import OglPosition
@@ -47,10 +50,12 @@ AVOID_CROSSED_LINES_FEATURE: bool = False   # Make this a feature flag
 
 class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     """
-    Abstract class for graphical link.
+    A class that represents a graphical link.
     This class should be the base class for every type of link. It implements
-    the following functions :
-        - Link between objects position management
+    the following methods:
+
+        - Link between objects
+        - Position management
         - Control points (2)
         - Data layer link association
         - Source and destination objects
@@ -59,7 +64,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     like `OglAssociation`.
 
     There is a link factory (See `OglLinkFactory`) you can use to build
-    the different type of links that exist.
+    the different types of links that exist.
 
     """
     clsLogger: Logger = getLogger(__name__)
@@ -68,11 +73,11 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         """
 
         Args:
-            srcShape:   Source shape
-            pyutLink:   Conceptual links associated with the graphical links.
-            dstShape:   Destination shape
-            srcPos:     Position of source      Override location of input source
-            dstPos:     Position of destination Override location of input destination
+            srcShape: Source shape
+            pyutLink: Conceptual links associated with the graphical links.
+            dstShape: Destination shape
+            srcPos: Position of the source object; Overrides the location of the input source
+            dstPos: Position of the destination object; Overrides the location of the input destination
         """
         self._srcShape  = srcShape
         self._destShape = dstShape
@@ -82,7 +87,9 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
             srcX, srcY = self._srcShape.GetPosition()
             dstX, dstY = self._destShape.GetPosition()
 
-            orient = OglLink.getOrient(srcX,  srcY, dstX, dstY)
+            sourcePosition:      Position       = Position(x=srcX, y=srcY)
+            destinationPosition: Position       = Position(x=dstX, y=dstY)
+            orient:              AttachmentSide = Common.whereIsDestination(sourcePosition=sourcePosition, destinationPosition=destinationPosition)
 
             sw, sh = self._srcShape.GetSize()
             dw, dh = self._destShape.GetSize()
@@ -121,45 +128,17 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         LineShape.__init__(self, srcAnchor, dstAnchor)
         # Set up painting colors
         self.SetPen(BLACK_PEN)
-        # Keep reference to the PyutLink for mouse events, in order
-        # to can find back the corresponding link
+        # Keep reference to the PyutLink for mouse events,
+        # Need this to find our way back to the corresponding link
         if pyutLink is not None:
             self._link = pyutLink
         else:
             self._link = PyutLink()
 
-    @staticmethod
-    def getOrient(srcX, srcY, destX, destY) -> AttachmentSide:
-        """
-        Giving a source and destination, returns where the destination
-        is located according to the source.
-
-        @param int srcX  : X pos of src point
-        @param int srcY  : Y pos of src point
-        @param int destX : X pos of dest point
-        @param int destY : Y pos of dest point
-        """
-        deltaX = srcX - destX
-        deltaY = srcY - destY
-        if deltaX > 0:  # dest is not east
-            if deltaX > abs(deltaY):  # dest is west
-                return AttachmentSide.WEST
-            elif deltaY > 0:
-                return AttachmentSide.NORTH
-            else:
-                return AttachmentSide.SOUTH
-        else:  # dest is not west
-            if -deltaX > abs(deltaY):  # dest is east
-                return AttachmentSide.EAST
-            elif deltaY > 0:
-                return AttachmentSide.NORTH
-            else:
-                return AttachmentSide.SOUTH
-
     @property
     def sourceShape(self):
         """
-        Returns:  the source shape for this link.
+        Returns: The source shape for this link.
         """
         return self._srcShape
 
@@ -167,14 +146,14 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     def destinationShape(self):
         """
 
-        Returns:    The destination shape for this link.
+        Returns: The destination shape for this link.
         """
         return self._destShape
 
     @deprecated(reason='Use sourceShape property')
     def getSourceShape(self):
         """
-        Returns:  the source shape for this link.
+        Returns: The source shape for this link.
         """
         return self._srcShape
 
@@ -182,7 +161,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     def getDestinationShape(self):
         """
 
-        Returns:    The destination shape for this link.
+        Returns: The destination shape for this link.
         """
         return self._destShape
 
@@ -219,7 +198,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
     def Detach(self):
         """
-        Detach the line and all its line points, including source and destination.
+        Detach the line and all its line points, Includes the source and the destination.
         """
         if self._diagram is not None and not self._protected:
             LineShape.Detach(self)
@@ -261,7 +240,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     # noinspection PyUnusedLocal
     def OnRightDown(self, event: MouseEvent):
         """
-        Handle right-clicks on our UML LineShape-  Override base handler;  It does nothing
+        Handle right-clicks on our UML LineShape; Overrides the base handler; It does nothing
 
         Args:
             event:
@@ -304,7 +283,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     def _computeLinkLength(self, srcPosition: OglPosition, destPosition: OglPosition) -> int:
         """
 
-        Returns:  The length of the link between the source shape and destination shape
+        Returns: The length of the link between the source shape and destination shape
         """
         dx, dy = self._computeDxDy(srcPosition, destPosition)
         linkLength = round(sqrt(dx*dx + dy*dy))
@@ -425,10 +404,10 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
     def _detachFromOglEnds(self):
         """
-        Remove us (self) from the links list in each of the ends
+        Remove us (self) from the list of links in each of the ends
 
         """
-        # Do local imports because of these incestuous self references
+        # Do local imports because of these incestuous self-references
         from typing import Union
         from typing import List
         from ogl.OglClass import OglClass
@@ -458,7 +437,8 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
     def _avoidCrossedLines(self, dstShape, dstX: int, dstY: int, orient, srcShape, srcX: int, srcY: int):
         """
-        Avoid over-lining; Added by C.Dutoit (still experimental in 2023, ;-) )
+        Avoid over-lining
+        Added by: C. Dutoit (still experimental in 2024 🤪)
 
         Args:
             dstShape:
@@ -469,7 +449,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
             srcX:
             srcY:
 
-        Returns:  Adjust points if feature us turned on
+        Returns: Adjust points if feature us turned on
         """
         if AVOID_CROSSED_LINES_FEATURE is True:
             lstAnchorsPoints = [anchor.GetRelativePosition() for anchor in srcShape.GetAnchors()]
