@@ -8,8 +8,8 @@ from logging import getLogger
 
 from configparser import ConfigParser
 
+from codeallybasic.SingletonV2 import SingletonV2
 from codeallybasic.ConfigurationLocator import ConfigurationLocator
-from codeallybasic.Singleton import Singleton
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.MiniOglPenStyle import MiniOglPenStyle
@@ -20,7 +20,7 @@ from ogl.OglTextFontFamily import OglTextFontFamily
 OGL_PREFS_NAME_VALUES = Dict[str, str]
 
 
-class OglPreferences(Singleton):
+class OglPreferences(SingletonV2):
 
     MODULE_NAME:            str = 'ogl'
     PREFERENCES_FILENAME:   str = f'{MODULE_NAME}.ini'
@@ -127,22 +127,15 @@ class OglPreferences(Singleton):
         DEBUG_BASIC_SHAPE:   'False',
     }
 
-    # noinspection PyAttributeOutsideInit
-    def init(self, *args, **kwargs):
+    def __init__(self):
 
         self.logger:  Logger       = getLogger(__name__)
         self._config: ConfigParser = ConfigParser()
 
-        self._preferencesFileName: Path = self._getPreferencesLocation()
+        cl:                        ConfigurationLocator = ConfigurationLocator()
+        self._preferencesFileName: Path                 = cl.applicationPath(f'{OglPreferences.MODULE_NAME}') / OglPreferences.PREFERENCES_FILENAME
 
         self._loadPreferences()
-
-    def _getPreferencesLocation(self) -> Path:
-
-        cl:                  ConfigurationLocator = ConfigurationLocator()
-        preferencesFileName: Path                 = cl.applicationPath(f'{OglPreferences.MODULE_NAME}') / OglPreferences.PREFERENCES_FILENAME
-
-        return preferencesFileName
 
     @property
     def noteText(self) -> str:
