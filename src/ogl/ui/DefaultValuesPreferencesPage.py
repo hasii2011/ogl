@@ -47,7 +47,7 @@ class DefaultValuesPreferencesPage(BaseOglPreferencesPage):
 
     @property
     def name(self) -> str:
-        return 'Default Values'
+        return 'UML Configuration'
 
     def _layoutWindow(self, parent: SizedPanel):
 

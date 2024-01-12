@@ -65,8 +65,8 @@ class OglPreferences(SingletonV2):
         CLASS_DIMENSIONS:        OglDimensions(150, 75).__str__(),
         CLASS_BACKGROUND_COLOR:  DEFAULT_CLASS_BACKGROUND_COLOR,
         CLASS_TEXT_COLOR:        DEFAULT_CLASS_TEXT_COLOR,
-        DISPLAY_CONSTRUCTOR:     'False',
-        DISPLAY_DUNDER_METHODS:  'False'
+        DISPLAY_CONSTRUCTOR:     'True',
+        DISPLAY_DUNDER_METHODS:  'True',
     }
 
     DEFAULT_GRID_LINE_COLOR: str = MiniOglColorEnum.LIGHT_GREY.value
@@ -257,6 +257,24 @@ class OglPreferences(SingletonV2):
         colorName: str = newValue.value
         self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.CLASS_TEXT_COLOR, colorName)
 
+        self._saveConfig()
+
+    @property
+    def displayDunderMethods(self) -> bool:
+        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.DISPLAY_DUNDER_METHODS)
+
+    @displayDunderMethods.setter
+    def displayDunderMethods(self, newValue: bool):
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.DISPLAY_DUNDER_METHODS, str(newValue))
+        self._saveConfig()
+
+    @property
+    def displayConstructor(self) -> bool:
+        return self._config.getboolean(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.DISPLAY_CONSTRUCTOR)
+
+    @displayConstructor.setter
+    def displayConstructor(self, newValue: bool):
+        self._config.set(OglPreferences.SECTION_OGL_PREFERENCES, OglPreferences.DISPLAY_CONSTRUCTOR, str(newValue))
         self._saveConfig()
 
     @property

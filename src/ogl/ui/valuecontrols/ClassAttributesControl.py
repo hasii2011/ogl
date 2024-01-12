@@ -5,6 +5,8 @@ from typing import cast
 from logging import Logger
 from logging import getLogger
 
+from wx import CheckBox
+from wx import EVT_CHECKBOX
 from wx import EVT_CHOICE
 from wx import EVT_TEXT
 from wx import ID_ANY
@@ -40,13 +42,18 @@ class ClassAttributesControl(SizedPanel):
         self._classBackgroundColor: Choice            = cast(Choice, None)
         self._classTextColor:       Choice            = cast(Choice, None)
 
+        self._displayDunderMethods: CheckBox      = cast(CheckBox, None)
+        self._displayConstructor:       CheckBox      = cast(CheckBox, None)
+
         self.SetSizerType('vertical')
         self._layoutControls(self)
         self._setControlValues()
 
-        parent.Bind(EVT_TEXT,   self._classNameChanged,              self._className)
-        parent.Bind(EVT_CHOICE, self._onClassBackgroundColorChanged, self._classBackgroundColor)
-        parent.Bind(EVT_CHOICE, self._onClassTextColorChanged,       self._classTextColor)
+        parent.Bind(EVT_TEXT,     self._classNameChanged,              self._className)
+        parent.Bind(EVT_CHOICE,   self._onClassBackgroundColorChanged, self._classBackgroundColor)
+        parent.Bind(EVT_CHOICE,   self._onClassTextColorChanged,       self._classTextColor)
+        parent.Bind(EVT_CHECKBOX, self._onDisplayDunderMethodsChanged, self._displayDunderMethods)
+        parent.Bind(EVT_CHECKBOX, self._onDisplayConstructorChanged,   self._displayConstructor)
 
         self.Fit()
         self.SetMinSize(self.GetSize())
@@ -62,6 +69,8 @@ class ClassAttributesControl(SizedPanel):
                                                   setControlsSize=False)
         # noinspection PyUnresolvedReferences
         self._classDimensions.SetSizerProps(proportion=1, expand=True)
+
+        self._layoutMethodDisplayControls(parentPanel)
 
     def _layoutColorControls(self, parentPanel: SizedPanel):
 
@@ -100,6 +109,15 @@ class ClassAttributesControl(SizedPanel):
 
         self._classTextColor = Choice(classTextColorSSB, choices=classTextColors)
 
+    def _layoutMethodDisplayControls(self, parentPanel: SizedPanel):
+
+        methodDisplayPanel: SizedPanel = SizedPanel(parentPanel)
+        methodDisplayPanel.SetSizerType('horizontal')
+        methodDisplayPanel.SetSizerProps(proportion=1, expand=True)
+
+        self._displayDunderMethods = CheckBox(parent=methodDisplayPanel, label='Display Dunder Methods')
+        self._displayConstructor   = CheckBox(parent=methodDisplayPanel, label='Display Constructor')
+
     def _setControlValues(self):
         """
         """
@@ -111,6 +129,9 @@ class ClassAttributesControl(SizedPanel):
 
         txtColorSelIdx: int = oglColors.index(self._preferences.classTextColor.value)
         self._classTextColor.SetSelection(txtColorSelIdx)
+
+        self._displayDunderMethods.SetValue(self._preferences.displayDunderMethods)
+        self._displayConstructor.SetValue(self._preferences.displayConstructor)
 
     def _classNameChanged(self, event: CommandEvent):
         newValue: str = event.GetString()
@@ -132,3 +153,13 @@ class ClassAttributesControl(SizedPanel):
         oglColorEnum: MiniOglColorEnum = MiniOglColorEnum(colorValue)
 
         self._preferences.classTextColor = oglColorEnum
+
+    def _onDisplayDunderMethodsChanged(self, event: CommandEvent):
+
+        newValue: bool = event.IsChecked()
+        self._preferences.displayDunderMethods = newValue
+
+    def _onDisplayConstructorChanged(self, event: CommandEvent):
+
+        newValue: bool = event.IsChecked()
+        self._preferences.displayConstructor = newValue

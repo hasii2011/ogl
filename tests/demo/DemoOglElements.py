@@ -246,11 +246,16 @@ class DemoOglElements(App):
         else:
             pyutClass.stereotype = PyutStereotype.TYPE
         pyutParameter: PyutParameter = PyutParameter(name='DemoParameter', type=PyutType("str"), defaultValue='Ozzee')
+
         pyutMethod:    PyutMethod    = PyutMethod(name='DemoMethod', visibility=PyutVisibility.PUBLIC)
         pyutMethod.parameters = PyutParameters([pyutParameter])
 
+        constructorMethod: PyutMethod = PyutMethod(name='__init__')
+        dunderStrMethod:   PyutMethod = PyutMethod(name='__str__', visibility=PyutVisibility.PUBLIC, returnType=PyutType(value='str'))
+
         pyutClass.fields  = PyutFields([pyutField])
-        pyutClass.methods = PyutMethods([pyutMethod])
+        pyutClass.methods = PyutMethods([constructorMethod, pyutMethod, dunderStrMethod])
+
         classDimensions: OglDimensions = self._oglPreferences.classDimensions
         oglClass:  OglClass  = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
 

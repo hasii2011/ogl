@@ -55,7 +55,7 @@ class DlgOglPreferences(SizedDialog):
 
     def _layoutStandardOkCancelButtonSizer(self):
         """
-        Call this last when creating controls;  Will take care of
+        Call this last when creating controls; Will take care of
         adding callbacks for the Ok and Cancel buttons
         """
         buttSizer: StdDialogButtonSizer = self.CreateStdDialogButtonSizer(OK | CANCEL)
