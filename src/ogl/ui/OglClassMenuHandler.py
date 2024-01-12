@@ -181,11 +181,11 @@ class OglClassMenuHandler:
 
         match displayParameters:
             case PyutDisplayParameters.UNSPECIFIED:
-                triStateData: TriStateData = TriStateData(bitMap=OglConstants.unspecifiedDisplayMethodsIcon(), menuText='Unspecified Parameter Display')
+                triStateData: TriStateData = TriStateData(bitMap=OglConstants.unspecifiedDisplayIcon(), menuText='Unspecified Parameter Display')
             case PyutDisplayParameters.WITH_PARAMETERS:
-                triStateData = TriStateData(bitMap=OglConstants.displayMethodsIcon(), menuText='Display Parameters')
+                triStateData = TriStateData(bitMap=OglConstants.displayIcon(), menuText='Display Parameters')
             case PyutDisplayParameters.WITHOUT_PARAMETERS:
-                triStateData = TriStateData(bitMap=OglConstants.doNotDisplayMethodsIcon(), menuText='Do Not Display Parameters')
+                triStateData = TriStateData(bitMap=OglConstants.doNotDisplayIcon(), menuText='Do Not Display Parameters')
             case _:
                 self.logger.warning(f'Unknown Parameter DisplayType: {displayParameters}')
                 assert False, 'Developer error'

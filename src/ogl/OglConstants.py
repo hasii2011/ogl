@@ -9,16 +9,16 @@ from ogl.resources.img.UnSpecified import embeddedImage as unSpecifiedImage
 class OglConstants:
 
     @staticmethod
-    def displayMethodsIcon() -> Bitmap:
+    def displayIcon() -> Bitmap:
         bmp: Bitmap = displayImage.GetBitmap()
         return bmp
 
     @staticmethod
-    def doNotDisplayMethodsIcon() -> Bitmap:
+    def doNotDisplayIcon() -> Bitmap:
         bmp: Bitmap = doNotDisplayImage.GetBitmap()
         return bmp
 
     @staticmethod
-    def unspecifiedDisplayMethodsIcon() -> Bitmap:
+    def unspecifiedDisplayIcon() -> Bitmap:
         bmp: Bitmap = unSpecifiedImage.GetBitmap()
         return bmp
