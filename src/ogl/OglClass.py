@@ -19,9 +19,7 @@ from wx import Point
 from wx import Brush
 from wx import Colour
 
-from miniogl.MiniOglColorEnum import MiniOglColorEnum
-from miniogl.SelectAnchorPoint import SelectAnchorPoint
-
+from pyutmodelv2.enumerations.PyutDisplayMethods import PyutDisplayMethods
 from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
 from pyutmodelv2.enumerations.PyutStereotype import PyutStereotype
 
@@ -29,13 +27,20 @@ from pyutmodelv2.PyutMethod import PyutMethod
 from pyutmodelv2.PyutObject import PyutObject
 from pyutmodelv2.PyutClass import PyutClass
 
+from miniogl.MiniOglColorEnum import MiniOglColorEnum
+from miniogl.SelectAnchorPoint import SelectAnchorPoint
+
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE
 
 from ogl.events.OglEvents import OglEventType
 
 from ogl.preferences.OglPreferences import OglPreferences
+
 from ogl.ui.OglClassMenuHandler import OglClassMenuHandler
+
+DUNDER_METHOD_INDICATOR: str = '__'
+CONSTRUCTOR_NAME:        str = '__init__'
 
 MARGIN: int = 10
 
@@ -157,7 +162,7 @@ class OglClass(OglObject):
         # Method needs to be called even though returned values not used  -- TODO look at refactoring
         #
         if pyutObject.showMethods is True:
-            (methodsX, methodsY, methodsW, methodsH) = self._drawClassMethods(dc, True, initialY=y, calcWidth=True)
+            (methodsX, methodsY, methodsW, methodsH) = self._drawClassMethods(dc=dc, initialY=y)
             # noinspection PyUnusedLocal
             y = methodsY + methodsH
 
@@ -180,14 +185,14 @@ class OglClass(OglObject):
 
         # Get the size of the field's portion of the display
         if pyutObject.showFields is True:
-            (fieldsX, fieldsY, fieldsW, fieldsH) = self._drawClassFields(dc, False, initialY=y, calcWidth=True)
+            (fieldsX, fieldsY, fieldsW, fieldsH) = self._drawClassFields(dc, False, initialY=y)
             y = fieldsY + fieldsH
         else:
             fieldsW, fieldsH = 0, 0
 
         # Get method's size
         if pyutObject.showMethods is True:
-            (methodX, methodY, methodW, methodH) = self._drawClassMethods(dc, True, initialY=y, calcWidth=True)
+            (methodX, methodY, methodW, methodH) = self._drawClassMethods(dc=dc, initialY=y)
             y = methodY + methodH
         else:
             methodW, methodH = 0, 0
@@ -372,17 +377,14 @@ class OglClass(OglObject):
         # Return sizes
         return x, y, w, h
 
-    def _drawClassMethods(self, dc, draw=True, initialX=None, initialY=None, calcWidth=False) -> Tuple[int, int, int, int]:
+    def _drawClassMethods(self, dc, initialY=None) -> Tuple[int, int, int, int]:
         """
         Calculate the class methods position and size and display it if
         a draw is True
 
         Args:
             dc:
-            draw:
-            initialX:
             initialY:
-            calcWidth:
 
         Returns: tuple (x, y, w, h) which is position and size of the method's portion of the OglClass
         """
@@ -391,14 +393,11 @@ class OglClass(OglObject):
         dc.SetTextForeground(self._textColor)
 
         x, y = self.GetPosition()
-        if initialX is not None:
-            x = initialX
+
         if initialY is not None:
             y = initialY
-        w = self._width
-        h = 0
-        if calcWidth:
-            w = 0
+        w: int = 0
+        h: int = 0
 
         # Define the space between the text and the line
         lth = dc.GetTextExtent("*")[1] // 2
@@ -412,13 +411,11 @@ class OglClass(OglObject):
         self.logger.debug(f"showMethods => {pyutClass.showMethods}")
         if pyutClass.showMethods is True:
             for method in pyutClass.methods:
-                if draw is True:
-                    self._drawMethodSignature(dc, method, pyutClass, x, y, h)
+                if self._eligibleToDraw(pyutClass=pyutClass, pyutMethod=method) is True:
 
-                if calcWidth:
+                    self._drawMethod(dc, method, pyutClass, x, y, h)
                     w = max(w, self.GetTextWidth(dc, str(method)))
-
-                h += self.GetTextHeight(dc, str(method))
+                    h += self.GetTextHeight(dc, str(method))
 
         # Add space
         if len(pyutClass.methods) > 0:
@@ -427,7 +424,7 @@ class OglClass(OglObject):
         # Return sizes
         return x, y, w, h
 
-    def _drawMethodSignature(self, dc: DC, pyutMethod: PyutMethod, pyutClass: PyutClass, x: int, y: int, h: int):
+    def _drawMethod(self, dc: DC, pyutMethod: PyutMethod, pyutClass: PyutClass, x: int, y: int, h: int):
         """
         If the preference is not set at the individual class level, then defer to global preference; Otherwise,
         respect the class level preference
@@ -453,6 +450,67 @@ class OglClass(OglObject):
             dc.DrawText(pyutMethod.methodWithoutParameters(), x + MARGIN, y + h)
         else:
             assert False, 'Internal error unknown pyutMethod parameter display type'
+
+    def _eligibleToDraw(self, pyutClass: PyutClass, pyutMethod: PyutMethod):
+        """
+        Is it one of those 'special' dunder methods?
+
+        Args:
+            pyutClass: The class we need to check
+            pyutMethod: The particular method we are asked about
+
+        Returns: `True` if we can draw it, `False` if we should not
+        """
+
+        ans: bool = True
+
+        methodName: str = pyutMethod.name
+        if methodName == CONSTRUCTOR_NAME:
+            ans = self._checkConstructor(pyutClass=pyutClass)
+        elif methodName.startswith(DUNDER_METHOD_INDICATOR) and methodName.endswith(DUNDER_METHOD_INDICATOR):
+            ans = self._checkDunderMethod(pyutClass=pyutClass)
+
+        return ans
+
+    def _checkConstructor(self, pyutClass: PyutClass) -> bool:
+        """
+        If class property is UNSPECIFIED, defer to the global value; otherwise check the local value
+
+        Args:
+            pyutClass: The specified class to check
+
+        Returns: Always `True` unless the specific class says `False` or class does not care then returns
+        `False` if the global value says so
+        """
+        ans: bool = self._allowDraw(classProperty=pyutClass.displayConstructor, globalValue=self._oglPreferences.displayConstructor)
+
+        return ans
+
+    def _checkDunderMethod(self, pyutClass: PyutClass):
+        """
+        If class property is UNSPECIFIED, defer to the global value; otherwise check the local value
+
+        Args:
+            pyutClass: The specified class to check
+
+        Returns: Always `True` unless the specific class says `False` or class does not care then returns
+        `False` if the global value says so
+        """
+        ans: bool = self._allowDraw(classProperty=pyutClass.displayDunderMethods, globalValue=self._oglPreferences.displayDunderMethods)
+
+        return ans
+
+    def _allowDraw(self, classProperty: PyutDisplayMethods, globalValue: bool) -> bool:
+        ans: bool = True
+
+        if classProperty == PyutDisplayMethods.UNSPECIFIED:
+            if globalValue is False:
+                ans = False
+        else:
+            if classProperty == PyutDisplayMethods.DO_NOT_DISPLAY:
+                ans = False
+
+        return ans
 
     def __repr__(self) -> str:
         selfName: str = self.pyutObject.name

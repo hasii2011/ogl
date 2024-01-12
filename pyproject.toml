@@ -16,7 +16,7 @@ dependencies = [
   'wxPython~=4.2.1',
   'codeallybasic==1.0.0',
   'codeallyadvanced==1.0.0',
-  'pyutmodelv2==2.0.1',
+  'pyutmodelv2==2.1.0',
 ]
 
 [project.urls]

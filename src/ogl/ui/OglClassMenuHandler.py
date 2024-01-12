@@ -1,12 +1,13 @@
 
 from typing import cast
 from typing import TYPE_CHECKING
+
 from logging import Logger
 from logging import getLogger
 
-from pyutmodelv2.PyutClass import PyutClass
+from dataclasses import dataclass
 
-from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
+from wx import Bitmap
 
 from wx import ITEM_CHECK
 from wx import ITEM_NORMAL
@@ -16,6 +17,10 @@ from wx import CommandEvent
 from wx import MouseEvent
 from wx import Menu
 from wx import MenuItem
+
+from pyutmodelv2.PyutClass import PyutClass
+
+from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
 
 if TYPE_CHECKING:
     from ogl.OglClass import OglClass
@@ -32,15 +37,23 @@ from ogl.events.OglEvents import OglEventType
     MENU_TOGGLE_FIELDS,
     MENU_TOGGLE_METHODS,
     MENU_TOGGLE_METHOD_PARAMETERS,
+    MENU_TOGGLE_CONSTRUCTOR,
     MENU_FIT_FIELDS,
     MENU_CUT_SHAPE,
     MENU_IMPLEMENT_INTERFACE
-]  = OglUtils.assignID(7)
+]  = OglUtils.assignID(8)
 
-HELP_STEREOTYPE: str = 'Set stereotype display on or off'
-HELP_FIELDS:     str = 'Set fields display on or off'
-HELP_METHODS:    str = 'Set methods display on or off'
-HELP_PARAMETERS: str = 'Set parameter display Unspecified, On or Off'
+HELP_STEREOTYPE:  str = 'Set stereotype display on or off'
+HELP_FIELDS:      str = 'Set fields display on or off'
+HELP_METHODS:     str = 'Set methods display on or off'
+HELP_PARAMETERS:  str = 'Set parameter display Unspecified, On or Off'
+HELP_CONSTRUCTOR: str = 'Set constructor display Unspecified, On or Off'
+
+
+@dataclass
+class TriStateData:
+    bitMap:   Bitmap
+    menuText: str
 
 
 class OglClassMenuHandler:
@@ -51,11 +64,12 @@ class OglClassMenuHandler:
         self._oglClass:    'OglClass'        = oglClass
         self._eventEngine: IOglEventEngine = eventEngine
 
-        self._contextMenu:      Menu     = cast(Menu, None)
-        self._toggleStereotype: MenuItem = cast(MenuItem, None)
-        self._toggleFields:     MenuItem = cast(MenuItem, None)
-        self._toggleMethods:    MenuItem = cast(MenuItem, None)
-        self._toggleParameters: MenuItem = cast(MenuItem, None)
+        self._contextMenu:       Menu     = cast(Menu, None)
+        self._toggleStereotype:  MenuItem = cast(MenuItem, None)
+        self._toggleFields:      MenuItem = cast(MenuItem, None)
+        self._toggleMethods:     MenuItem = cast(MenuItem, None)
+        self._toggleParameters:  MenuItem = cast(MenuItem, None)
+        self._toggleConstructor: MenuItem = cast(MenuItem, None)
 
         self._createContextMenu()
 
@@ -78,10 +92,11 @@ class OglClassMenuHandler:
 
         menu: Menu = Menu()
 
-        self._toggleStereotype = menu.Append(id=MENU_TOGGLE_STEREOTYPE,        item="Toggle stereotype display", helpString=HELP_STEREOTYPE, kind=ITEM_CHECK)
-        self._toggleFields     = menu.Append(id=MENU_TOGGLE_FIELDS,            item="Toggle fields display",     helpString=HELP_FIELDS,     kind=ITEM_CHECK)
-        self._toggleMethods    = menu.Append(id=MENU_TOGGLE_METHODS,           item="Toggle methods display",    helpString=HELP_METHODS,    kind=ITEM_CHECK)
-        self._toggleParameters = menu.Append(id=MENU_TOGGLE_METHOD_PARAMETERS, item=" ",                         helpString=HELP_PARAMETERS, kind=ITEM_NORMAL)
+        self._toggleStereotype  = menu.Append(id=MENU_TOGGLE_STEREOTYPE,        item="Toggle stereotype display", helpString=HELP_STEREOTYPE,  kind=ITEM_CHECK)
+        self._toggleFields      = menu.Append(id=MENU_TOGGLE_FIELDS,            item="Toggle fields display",     helpString=HELP_FIELDS,      kind=ITEM_CHECK)
+        self._toggleMethods     = menu.Append(id=MENU_TOGGLE_METHODS,           item="Toggle methods display",    helpString=HELP_METHODS,     kind=ITEM_CHECK)
+        self._toggleParameters  = menu.Append(id=MENU_TOGGLE_METHOD_PARAMETERS, item=" ",                         helpString=HELP_PARAMETERS,  kind=ITEM_NORMAL)
+        self._toggleConstructor = menu.Append(id=MENU_TOGGLE_CONSTRUCTOR,       item=" ",                         helpString=HELP_CONSTRUCTOR, kind=ITEM_NORMAL)
 
         menu.Append(MENU_FIT_FIELDS,          'Fit Fields', 'Fit to see all class fields')
         menu.Append(MENU_CUT_SHAPE,           'Cut shape',  'Cut this shape')
@@ -157,19 +172,23 @@ class OglClassMenuHandler:
         self._toggleFields.Check(pyutClass.showFields)
         self._toggleMethods.Check(pyutClass.showMethods)
 
-        displayParameters: PyutDisplayParameters = pyutClass.displayParameters
-        self._setupTriStateDisplayParametersMenuItem(displayParameters, self._toggleParameters)
+        self._setTheTriStateDisplayParametersMenuItem(pyutClass=pyutClass)
 
-    def _setupTriStateDisplayParametersMenuItem(self, displayParameters: PyutDisplayParameters, itemToggleParameters: MenuItem):
+    def _setTheTriStateDisplayParametersMenuItem(self, pyutClass: PyutClass):
 
-        if displayParameters == PyutDisplayParameters.UNSPECIFIED:
-            itemToggleParameters.SetBitmap(OglConstants.unspecifiedDisplayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Unspecified')
-        elif displayParameters == PyutDisplayParameters.WITH_PARAMETERS:
-            itemToggleParameters.SetBitmap(OglConstants.displayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Display Parameters')
-        elif displayParameters == PyutDisplayParameters.WITHOUT_PARAMETERS:
-            itemToggleParameters.SetBitmap(OglConstants.doNotDisplayMethodsIcon())
-            itemToggleParameters.SetItemLabel('Do Not Display Parameters')
-        else:
-            assert False, 'Unknown display type'
+        displayParameters:    PyutDisplayParameters = pyutClass.displayParameters
+        itemToggleParameters: MenuItem              = self._toggleParameters
+
+        match displayParameters:
+            case PyutDisplayParameters.UNSPECIFIED:
+                triStateData: TriStateData = TriStateData(bitMap=OglConstants.unspecifiedDisplayMethodsIcon(), menuText='Unspecified Parameter Display')
+            case PyutDisplayParameters.WITH_PARAMETERS:
+                triStateData = TriStateData(bitMap=OglConstants.displayMethodsIcon(), menuText='Display Parameters')
+            case PyutDisplayParameters.WITHOUT_PARAMETERS:
+                triStateData = TriStateData(bitMap=OglConstants.doNotDisplayMethodsIcon(), menuText='Do Not Display Parameters')
+            case _:
+                self.logger.warning(f'Unknown Parameter DisplayType: {displayParameters}')
+                assert False, 'Developer error'
+
+        itemToggleParameters.SetBitmap(triStateData.bitMap)
+        itemToggleParameters.SetItemLabel(triStateData.menuText)

@@ -14,7 +14,7 @@ types-setuptools==69.0.0.20240106
 typing_extensions==4.9.0
 Deprecated==1.2.14
 
-pyutmodelv2==2.0.1
+pyutmodelv2==2.1.0
 codeallybasic==1.0.0
 codeallyadvanced==1.0.0
 

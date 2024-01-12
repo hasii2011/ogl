@@ -92,6 +92,8 @@ INCREMENT_Y: int = INITIAL_Y + 100
 
 class DemoOglElements(App):
 
+    classCounter: int = 0
+
     def __init__(self, redirect: bool):
 
         TestBase.setUpLogging()
@@ -236,7 +238,9 @@ class DemoOglElements(App):
 
     def _displayOglClass(self):
 
-        pyutClass:     PyutClass  = PyutClass(name='DemoClass')
+        DemoOglElements.classCounter += 1
+
+        pyutClass:     PyutClass  = PyutClass(name=f'DemoClass{DemoOglElements.classCounter}')
         pyutField:     PyutField  = PyutField(name='DemoField', visibility=PyutVisibility.PUBLIC,
                                               type=PyutType('float'),
                                               defaultValue='42.0')
