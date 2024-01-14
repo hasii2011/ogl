@@ -261,7 +261,7 @@ class DemoOglElements(App):
         pyutClass.methods = PyutMethods([constructorMethod, pyutMethod, dunderStrMethod])
 
         classDimensions: OglDimensions = self._oglPreferences.classDimensions
-        oglClass:  OglClass  = OglClass(pyutClass, w=classDimensions.width, h=classDimensions.height)
+        oglClass:  OglClass  = OglClass(pyutClass, w=classDimensions.width + 85, h=classDimensions.height + 15)
 
         self._addToDiagram(oglObject=oglClass)
 
