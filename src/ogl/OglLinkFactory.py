@@ -2,7 +2,7 @@
 from logging import Logger
 from logging import getLogger
 
-from codeallybasic.Singleton import Singleton
+from codeallybasic.SingletonV3 import SingletonV3
 
 from pyutmodelv2.enumerations.PyutLinkType import PyutLinkType
 
@@ -47,19 +47,19 @@ def getLinkType(link: OglAssociation) -> PyutLinkType:
         return PyutLinkType.NOTELINK
 
 
-class OglLinkFactory(Singleton):
+class OglLinkFactory(metaclass=SingletonV3):
     """
     This class is a factory to produce `OglLink` objects.
     It works under the Factory Design Pattern model. Ask for a link
-    from this object, and it will return you what you was asking for.
+    from this object, and it will return an instance of request link.
     """
-    def init(self, *args, **kwargs):
-        # noinspection PyAttributeOutsideInit
+    def __init__(self):
+
         self.logger: Logger = getLogger(__name__)
 
     def getOglLink(self, srcShape, pyutLink, destShape, linkType: PyutLinkType):
         """
-        Used to get a OglLink of the given linkType.
+        Used to get an OglLink of the given linkType.
 
         Args:
             srcShape:   Source shape

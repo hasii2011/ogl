@@ -8,7 +8,7 @@ from logging import getLogger
 
 from configparser import ConfigParser
 
-from codeallybasic.SingletonV2 import SingletonV2
+from codeallybasic.SingletonV3 import SingletonV3
 from codeallybasic.ConfigurationLocator import ConfigurationLocator
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
@@ -20,11 +20,10 @@ from ogl.OglTextFontFamily import OglTextFontFamily
 OGL_PREFS_NAME_VALUES = Dict[str, str]
 
 
-class OglPreferences(SingletonV2):
+class OglPreferences(metaclass=SingletonV3):
 
     MODULE_NAME:            str = 'ogl'
     PREFERENCES_FILENAME:   str = f'{MODULE_NAME}.ini'
-    THE_GREAT_MAC_PLATFORM: str = 'darwin'
 
     SECTION_OGL_PREFERENCES:  str = 'Ogl'
     SECTION_DIAGRAM:          str = 'Diagram'
