@@ -30,6 +30,7 @@ from pyutmodelv2.PyutClass import PyutClass
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
 from miniogl.SelectAnchorPoint import SelectAnchorPoint
 
+from ogl.OglDimensions import OglDimensions
 from ogl.OglObject import OglObject
 from ogl.OglObject import DEFAULT_FONT_SIZE
 
@@ -43,6 +44,11 @@ DUNDER_METHOD_INDICATOR: str = '__'
 CONSTRUCTOR_NAME:        str = '__init__'
 
 MARGIN: int = 10
+#
+#  When I added optional display of constructor and/or dunder methods, I introduced this bug
+#  I'll fix this later
+#
+HACK_FIX_AUTO_RESIZE: bool = True   # TODO:  This should be a debug flag
 
 
 @dataclass
@@ -197,15 +203,27 @@ class OglClass(OglObject):
         else:
             methodW, methodH = 0, 0
 
+        print(f'{headerW=} {fieldsW=} {methodW}')
         w = max(headerW, fieldsW, methodW)
         h = y - headerY
         w += 2 * MARGIN
+
+        minDimensions: OglDimensions = self._oglPreferences.classDimensions
+        if w < minDimensions.width:
+            w = minDimensions.width
+        if h < minDimensions.height:
+            h = minDimensions.height
+
+        if HACK_FIX_AUTO_RESIZE is True:
+            w = w - 20      # Hack keeps growing
         self.SetSize(w, h)
 
         # to automatically replace the sizer objects at a correct place
         if self.selected is True:
             self.selected = False
             self.selected = True
+
+        self.eventEngine.sendEvent(OglEventType.DiagramFrameModified)
 
     def OnRightDown(self, event: MouseEvent):
         """
@@ -348,6 +366,7 @@ class OglClass(OglObject):
         if initialY is not None:
             y = initialY
         w = self._width
+        print(f'{w=}')
         h = 0
         if calcWidth:
             w = 0
