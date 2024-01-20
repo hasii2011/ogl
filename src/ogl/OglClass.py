@@ -203,7 +203,6 @@ class OglClass(OglObject):
         else:
             methodW, methodH = 0, 0
 
-        print(f'{headerW=} {fieldsW=} {methodW}')
         w = max(headerW, fieldsW, methodW)
         h = y - headerY
         w += 2 * MARGIN
@@ -366,7 +365,6 @@ class OglClass(OglObject):
         if initialY is not None:
             y = initialY
         w = self._width
-        print(f'{w=}')
         h = 0
         if calcWidth:
             w = 0
