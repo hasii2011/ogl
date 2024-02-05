@@ -2,6 +2,8 @@
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
+
 from wx import DC
 from wx import Pen
 
@@ -18,19 +20,15 @@ from miniogl.TextShape import TextShape
 from ogl.OglLink import OglLink
 from ogl.OglClass import OglClass
 
-# Kind of labels
-[CENTER] = list(range(1))
-
 
 class OglInterface(OglLink):
-
-    clsLogger: Logger = getLogger(__name__)
-
     """
     Graphical OGL representation of an interface link.
     This class provide the methods for drawing an interface link between
     two classes of an UML diagram. Add labels to an OglLink.
     """
+    clsLogger: Logger = getLogger(__name__)
+
     def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass, srcPos=None, dstPos=None):
 
         """
@@ -47,11 +45,16 @@ class OglInterface(OglLink):
 
         self.SetPen(Pen("BLACK", 1, PENSTYLE_LONG_DASH))
         self.SetBrush(WHITE_BRUSH)
-        self._labels = {CENTER: self.AddText(0, 0, "")}
+
+        self._label: TextShape = self.AddText(0, 0, "")
 
         # Initialize labels objects
         self.updateLabels()
         self.SetDrawArrow(True)
+
+    @property
+    def label(self) -> TextShape:
+        return self._label
 
     def updateLabels(self):
         """
@@ -69,18 +72,15 @@ class OglInterface(OglLink):
                 textShape.SetVisible(False)
 
         # Prepares labels
-        prepareLabel(self._labels[CENTER], self._link.name)
+        prepareLabel(self._label, self._link.name)
 
+    @deprecated(reason='Use property .label')
     def getLabels(self):
         """
-        Get the labels.
-
-        @return TextShape []
-        @since 1.0
         """
-        return self._labels
+        return self._label
 
-    def Draw(self, dc: DC, withChildren: bool = False):
+    def Draw(self, dc: DC, withChildren: bool = True):
         """
         Called for drawing of interface links.
         OglLink drew regular lines
