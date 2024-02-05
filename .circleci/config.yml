@@ -37,7 +37,7 @@ jobs:
             pip install Deprecated~=1.2.14
             pip install codeallybasic==1.1.0
             pip install codeallyadvanced==1.1.0
-            pip install pyutmodelv2==2.1.0
+            pip install pyutmodelv2==2.1.5
       - run:
             name: run tests
             command: | 

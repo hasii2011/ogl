@@ -438,7 +438,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     def _avoidCrossedLines(self, dstShape, dstX: int, dstY: int, orient, srcShape, srcX: int, srcY: int):
         """
         Avoid over-lining
-        Added by: C. Dutoit (still experimental in 2024 🤪)
+        Added by: C. Dutoit (still experimental in 2024
 
         Args:
             dstShape:
