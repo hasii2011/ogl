@@ -4,7 +4,7 @@ from enum import Enum
 from wx.lib.newevent import NewEvent
 
 #
-# Constructor returns a tuple; First is the event,  The second is the binder
+# The constructor returns a tuple; The first entry is the event,  The second is the binder
 #
 ShapeSelectedEvent,        EVT_SHAPE_SELECTED         = NewEvent()
 CutOglClassEvent,          EVT_CUT_OGL_CLASS          = NewEvent()

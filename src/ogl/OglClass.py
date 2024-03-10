@@ -45,7 +45,7 @@ CONSTRUCTOR_NAME:        str = '__init__'
 
 MARGIN: int = 10
 #
-#  When I added optional display of constructor and/or dunder methods, I introduced this bug
+#  When I added optional display of constructor and dunder methods, I introduced this bug
 #  I'll fix this later
 #
 HACK_FIX_AUTO_RESIZE: bool = True   # TODO:  This should be a debug flag
@@ -64,7 +64,7 @@ class OglClass(OglObject):
     You instantiate an OGL class and add it to the diagram.
     Links, resizing, are managed by parent class `OglObject`.
 
-    For more instructions about how to create an OGL object, please refer
+    For more instructions about how to create an OGL object, refer
     to the `OglObject` class.
     """
     def __init__(self, pyutClass: PyutClass | None, w: int = 0, h: int = 0):
@@ -291,7 +291,7 @@ class OglClass(OglObject):
         # Init
         dc.SetFont(self._defaultFont)
         dc.SetTextForeground(self._textColor)
-        # pyutObject = self.getPyutObject()
+
         x, y = self.GetPosition()
         if initialX is not None:
             x = initialX

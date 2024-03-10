@@ -123,7 +123,7 @@ class ClassAttributesControl(SizedPanel):
         """
         self._classDimensions.dimensions = self._preferences.classDimensions
 
-        oglColors: List[str] = self._classBackgroundColor.GetItems()
+        oglColors:      List[str] = self._classBackgroundColor.GetItems()
         bgColorSelIdx:  int       = oglColors.index(self._preferences.classBackgroundColor.value)
         self._classBackgroundColor.SetSelection(bgColorSelIdx)
 
