@@ -117,7 +117,7 @@ class DiagramFrame(ScrolledWindow):
 
         self._defaultZoomFactor: float = 1.5   # used when only a point is selected
 
-        # margins define a perimeter around the work area that must remains
+        # margins define a perimeter around the work area that must remain
         # blank and hidden. if we scroll beyond the limits, the diagram is
         # resized.
         # self._leftMargin   = DEFAULT_MARGIN_VALUE
@@ -505,8 +505,6 @@ class DiagramFrame(ScrolledWindow):
             eraseBackground:    if False, the stored background is used
             rect:               not used
         """
-
-        # self.clsLogger.warning(f'Refresh - {eraseBackground=}')
         if eraseBackground:
             self.Redraw()
         else:
@@ -562,15 +560,16 @@ class DiagramFrame(ScrolledWindow):
         """
         Create a DC, load the background on demand.
 
-        @param loadBackground
-        @param w : width of the frame.
-        @param h :  height of the frame.
+        Args:
+            loadBackground:
+            w: width of the frame.
+            h: height of the frame.
 
-        @return DC
+        Returns:  A device context
         """
         dc = MemoryDC()
         bm = self.__workingBitmap
-        # cache the bitmap, to avoid creating a new at each refresh.
+        # cache the bitmap, to avoid creating a new one at each refresh.
         # only recreate it if the size of the window has changed
         if (bm.GetWidth(), bm.GetHeight()) != (w, h):
             bm = self.__workingBitmap = Bitmap(w, h)
@@ -620,7 +619,7 @@ class DiagramFrame(ScrolledWindow):
         if full:
             # first time, need to create the background
             if saveBackground:
-                # first, draw every non-moving shapes
+                # first, draw every non-moving shape
                 for shape in shapes:
                     if not shape.IsMoving():
                         shape.Draw(dc)
@@ -633,7 +632,7 @@ class DiagramFrame(ScrolledWindow):
 
             # x, y = self.CalcUnScrolledPosition(0, 0)
             if useBackground:
-                # draw every moving shapes
+                # draw every moving shape
                 for shape in shapes:
                     if shape.IsMoving():
                         shape.Draw(dc)
@@ -661,7 +660,7 @@ class DiagramFrame(ScrolledWindow):
     # noinspection PyUnusedLocal
     def OnPaint(self, event: PaintEvent):
         """
-        Refresh the screen when a paint event is issued by the system.
+        Refresh the screen when the system issues a paint event.
 
         Args:
             event:
@@ -674,7 +673,6 @@ class DiagramFrame(ScrolledWindow):
 
         x, y = self.CalcUnscrolledPosition(0, 0)
         #
-        # self.clsLogger.warning(f'OnPaint - {w=}, {h=} {x=} {y=}')
         # Paint events don't seem to be generated when Pyut is built for deployment;  So code duplicated in .Redraw()
         #
         if self._prefs.backgroundGridEnabled is True:
@@ -691,7 +689,7 @@ class DiagramFrame(ScrolledWindow):
 
             self.GetMaxLevelZoom() * self.GetDefaultZoomFactor()
 
-        If the maximal zoom level is reached, then the shapes are just centered
+        If the maximal zoom level is reached, then the shapes are centered
         on the selected area or on the clicked point.
 
 
@@ -706,13 +704,13 @@ class DiagramFrame(ScrolledWindow):
         # number of pixels per unit of scrolling
         xUnit, yUnit = self.GetScrollPixelsPerUnit()
 
-        # position of the upper left corner of the client area
+        # This is the position of the client area upper left corner.
         # (work area that is visible) in scroll units.
         viewStartX, viewStartY = self.GetViewStart()
 
-        # Get the client and virtual size of the work area, where
-        # the client size is the size of the work area that is
-        # visible and the virtual is the whole work area's size.
+        # Get the client and virtual work area size.
+        # The client size is the size of the work area that is visible.
+        # The virtual is the whole work area's size.
         clientWidth, clientHeight = self.GetClientSize()
         virtualWidth, virtualHeight = self.GetVirtualSize()
 
@@ -742,18 +740,18 @@ class DiagramFrame(ScrolledWindow):
         # dx = 0
         # dy = 0
 
-        # if there is no selected area but a clicked point, a default
-        # zoom is performed with the clicked point as center.
+        # If there is no selected area but a clicked point, a default
+        # zoom is performed with the clicked point as its center.
         if width == 0 or height == 0:
             zoomFactor = self.GetDefaultZoomFactor()
-            # check if the zoom factor that we are to apply combined with the
+            # Check if the zoom factor that we are to apply combined with the
             # previous ones won't be beyond the maximal zoom. If it's the case,
             # we proceed to the calculation of the zoom factor that allows to
             # exactly reach the maximal zoom.
             maxZoomReached = maxZoomFactor <= (self.GetCurrentZoom() * zoomFactor)
             if maxZoomReached:
                 zoomFactor = maxZoomFactor/self.GetCurrentZoom()
-            # if the view is reduced, we just eliminate the
+            # if the view is reduced, we eliminate the
             # last zoom out performed
             if self._zoomLevel < 0:
                 self._zoomStack.pop()
@@ -763,9 +761,10 @@ class DiagramFrame(ScrolledWindow):
                     self._zoomStack.append(zoomFactor)
                     self._zoomLevel += 1
 
-            # calculation of the upper-left corner of a zoom area whose
-            # size is the half of the diagram frame and which is centred
-            # on the clicked point. This calculation is done in the way to
+            # Calculate the zoom area upper-left corner.
+            # The size is half of the diagram frame.
+            # It is centred on the clicked point.
+            # This calculation is done in a way to
             # get the zoom area centred in the middle of the virtual screen.
             dx = virtualWidth/2 - x
             dy = virtualHeight/2 - y
@@ -777,7 +776,7 @@ class DiagramFrame(ScrolledWindow):
             else:
                 zoomFactor = clientHeight / abs(height)
 
-            # check if the zoom factor that we are to apply combined with the
+            # Check if the zoom factor that we are to apply combined with the
             # previous ones won't be beyond the maximal zoom. If it's the case,
             # we proceed to the calculation of the zoom factor that allows to
             # exactly reach the maximal zoom.
@@ -785,14 +784,15 @@ class DiagramFrame(ScrolledWindow):
             if maxZoomReached:
                 zoomFactor = maxZoomFactor/self.GetCurrentZoom()
 
-            # calculation of the upper-left corner of a zoom area whose
-            # size is the half of the diagram frame and which is centred
-            # on the clicked point. This calculation is done in the way to
-            # get the zoom area centred in the middle of the virtual screen.
+            # Calculate the zoom area upper-left corner.
+            # The size is the half of the diagram frame and is centred
+            # on the clicked point.
+            # This calculation is done in a way to
+            # get the zoom area centered in the middle of the virtual screen.
             dx = virtualWidth/2 - x - (clientWidth / zoomFactor / 2.0)
             dy = virtualHeight/2 - y - (clientHeight / zoomFactor / 2.0)
 
-            # we have to check if the "zoom in" on a reduced view produces
+            # We have to check if the "zoom in" on a reduced view produces
             # another less reduced view or an enlarged view. For this, we
             # get the global current zoom, multiply by the zoom factor to
             # obtain only one zoom factor.
@@ -807,7 +807,7 @@ class DiagramFrame(ScrolledWindow):
                 elif globalFactor > 1.0:
                     self._zoomLevel = 1     # the view is enlarged
                 else:
-                    self._zoomLevel = 0     # the zoom in is just equal to all the zoom out previously applied
+                    self._zoomLevel = 0     # the zoom in is  equal to all the zoom out previously applied
             else:
                 if zoomFactor > 1.0:
                     self._zoomStack.append(zoomFactor)
@@ -822,7 +822,7 @@ class DiagramFrame(ScrolledWindow):
         for shape in self.diagram.GetShapes():
             shape.UpdateFromModel()
 
-        # resize the virtual screen in order to match with the zoom
+        # resize the virtual screen to match with the zoom
         virtualWidth  = round(virtualWidth * zoomFactor)
         virtualHeight = round(virtualHeight * zoomFactor)
 
@@ -839,7 +839,7 @@ class DiagramFrame(ScrolledWindow):
         """
         Do the 'zoom out' in the way to have the clicked point (ax, ay) as
         the central point of new view.
-        If one or many 'zoom in' where performed before, then we just suppress the
+        If one or many of 'zoom in' operations where performed before, then we suppress the
         last one from the zoom stack.
         Else, we add the default inverted zoom factor to the stack.
 
@@ -850,17 +850,17 @@ class DiagramFrame(ScrolledWindow):
         # number of pixels per unit of scrolling
         xUnit, yUnit = self.GetScrollPixelsPerUnit()
 
-        # position of the upper left corner of the client area
+        # Position of the client area upper-left corner.
         # (work area that is visible) in scroll units.
         viewStartX, viewStartY = self.GetViewStart()
 
-        # Get the client and virtual size of the work area, where
-        # the client size is the size of the work area that is
-        # visible and the virtual is the whole work area's size.
+        # Get the work area client and virtual size.
+        # The client size is the size of the work area that is visible.
+        # The virtual size is the whole work area's size.
         clientWidth, clientHeight = self.GetClientSize()
         virtualWidth, virtualHeight = self.GetVirtualSize()
 
-        # transform event coordinates to get them relative to the upper left corner of
+        # Transform event coordinates to get them relative to the upper left corner of
         # the virtual screen (avoid the case where that corner is on a shape and
         # get its coordinates relative to the shape).
         if ax >= viewStartX * xUnit and ay >= viewStartY * yUnit:
@@ -870,9 +870,10 @@ class DiagramFrame(ScrolledWindow):
             x = ax + viewStartX * xUnit
             y = ay + viewStartY * yUnit
 
-        # calculation of the upper-left corner of a zoom area whose
+        # Calculate the upper-left corner of a zoom area whose
         # size is the half of the diagram frame and which is centred
-        # on the clicked point. This calculation is done in the way to
+        # on the clicked point.
+        # This calculation is done to
         # get the zoom area centred in the middle of the virtual screen.
         dx: int = virtualWidth // 2 - x
         dy: int = virtualHeight // 2 - y
@@ -881,9 +882,9 @@ class DiagramFrame(ScrolledWindow):
         minZoomFactor: float = self.minZoomFactor
         # minZoomReached = False        not used
 
-        # if the view is enlarged, then we just remove the last
-        # zoom in factor that has been applied. Else, we apply
-        # the default one in inverted.
+        # If the view is enlarged, then we remove the last
+        # zoom-in factor that has been applied.
+        # Else, we apply the default one in inverted.
         if self._zoomLevel > 0:
             zoomFactor = 1/self._zoomStack.pop()
             self._zoomLevel -= 1
@@ -915,7 +916,7 @@ class DiagramFrame(ScrolledWindow):
         for shape in self.diagram.GetShapes():
             shape.UpdateFromModel()
 
-        # resize the virtual screen in order to match with the zoom
+        # resize the virtual screen to match with the zoom
         virtualWidth  = round(virtualWidth * zoomFactor)
         virtualHeight = round(virtualHeight * zoomFactor)
 
@@ -949,7 +950,7 @@ class DiagramFrame(ScrolledWindow):
             # get the number of pixels per scroll unit
             xUnit, yUnit = self.GetScrollPixelsPerUnit()
 
-            # get the number of scroll unit
+            # get the scroll units
             noUnitX = (vWidth-cWidth) / xUnit
             noUnitY = (vHeight-cHeight) / yUnit
 
@@ -1150,7 +1151,6 @@ class DiagramFrame(ScrolledWindow):
         stop: int = height + startY
         step: int = self._prefs.backgroundGridInterval
         for movingY in range(startY, stop, step):
-            # self.clsLogger.info(f'{x1=} {movingY=} - {x2=} {movingY=}')
             memDC.DrawLine(x1, movingY, x2, movingY)
 
     def _drawVerticalLines(self, memDC: DC, width: int, height: int, startX: int, startY: int):

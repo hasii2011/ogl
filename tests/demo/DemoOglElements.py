@@ -286,7 +286,6 @@ class DemoOglElements(App):
 
         oglComposition.createDefaultAssociationLabels()
         self._addToDiagram(oglComposition)
-        oglComposition.addLabelsToDiagram()
         self._diagramFrame.Refresh()
 
     def _displayOglInterface(self):

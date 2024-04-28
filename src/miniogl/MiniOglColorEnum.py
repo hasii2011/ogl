@@ -8,7 +8,7 @@ from wx import ColourDatabase
 class MiniOglColorEnum(Enum):
     """
     The purpose of this enumeration is to keep wxPython types from getting into
-    the user visible portions of the preferences dialog
+    the user visible portions of the preference dialog
     Custom colors came from:
         https://www.rapidtables.com/web/color/RGB_Color.html
     """

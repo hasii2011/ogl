@@ -1,4 +1,6 @@
 
+from typing import cast
+
 from logging import Logger
 from logging import getLogger
 
@@ -27,24 +29,27 @@ def getLinkType(link: OglAssociation) -> PyutLinkType:
     """
 
     Args:
-        link:   The enumeration OglLinkType
+        link:   The OglLink object
 
     Returns:  The OglLinkType
 
     """
-
-    if isinstance(link, OglAggregation):
-        return PyutLinkType.AGGREGATION
-    elif isinstance(link, OglComposition):
-        return PyutLinkType.COMPOSITION
-    elif isinstance(link, OglInheritance):
-        return PyutLinkType.INHERITANCE
-    elif isinstance(link, OglAssociation):
-        return PyutLinkType.ASSOCIATION
-    elif isinstance(link, OglInterface):
-        return PyutLinkType.INTERFACE
-    elif isinstance(link, OglNoteLink):
-        return PyutLinkType.NOTELINK
+    match link:
+        case OglAggregation():
+            return PyutLinkType.AGGREGATION
+        case OglComposition():
+            return PyutLinkType.COMPOSITION
+        case OglInheritance():
+            return PyutLinkType.INHERITANCE
+        case OglAssociation():
+            return PyutLinkType.ASSOCIATION
+        case OglInterface():
+            return PyutLinkType.INTERFACE
+        case OglNoteLink():
+            return PyutLinkType.NOTELINK
+        case _:
+            print(f"Unknown OglLink: {link}")
+            return cast(PyutLinkType, None)
 
 
 class OglLinkFactory(metaclass=SingletonV3):
@@ -69,26 +74,33 @@ class OglLinkFactory(metaclass=SingletonV3):
 
         Returns:  The requested link
         """
-        if linkType == PyutLinkType.AGGREGATION:
-            return OglAggregation(srcShape, pyutLink, destShape)
+        match linkType:
+            case PyutLinkType.AGGREGATION:
+                oglAggregation: OglAggregation = OglAggregation(srcShape, pyutLink, destShape)
+                oglAggregation.createDefaultAssociationLabels()
+                return oglAggregation
 
-        elif linkType == PyutLinkType.COMPOSITION:
-            return OglComposition(srcShape, pyutLink, destShape)
+            case PyutLinkType.COMPOSITION:
+                oglComposition: OglComposition = OglComposition(srcShape, pyutLink, destShape)
+                oglComposition.createDefaultAssociationLabels()
+                return oglComposition
 
-        elif linkType == PyutLinkType.INHERITANCE:
-            return OglInheritance(srcShape, pyutLink, destShape)
+            case PyutLinkType.INHERITANCE:
+                return OglInheritance(srcShape, pyutLink, destShape)
 
-        elif linkType == PyutLinkType.ASSOCIATION:
-            return OglAssociation(srcShape, pyutLink, destShape)
+            case PyutLinkType.ASSOCIATION:
+                oglAssociation: OglAssociation = OglAssociation(srcShape, pyutLink, destShape)
+                oglAssociation.createDefaultAssociationLabels()
+                return oglAssociation
 
-        elif linkType == PyutLinkType.INTERFACE:
-            return OglInterface(srcShape, pyutLink, destShape)
+            case PyutLinkType.INTERFACE:
+                return OglInterface(srcShape, pyutLink, destShape)
 
-        elif linkType == PyutLinkType.NOTELINK:
-            return OglNoteLink(srcShape, pyutLink, destShape)
+            case PyutLinkType.NOTELINK:
+                return OglNoteLink(srcShape, pyutLink, destShape)
 
-        elif linkType == PyutLinkType.SD_MESSAGE:
-            return OglSDMessage(srcSDInstance=srcShape, pyutSDMessage=pyutLink, dstSDInstance=destShape)
-        else:
-            self.logger.error(f"Unknown OglLinkType: {linkType}")
-            return None
+            case PyutLinkType.SD_MESSAGE:
+                return OglSDMessage(srcSDInstance=srcShape, pyutSDMessage=pyutLink, dstSDInstance=destShape)
+            case _:
+                self.logger.error(f"Unknown PyutLinkType: {linkType}")
+                return None

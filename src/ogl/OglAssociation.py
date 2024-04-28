@@ -26,7 +26,6 @@ from wx import Font
 
 from pyutmodelv2.PyutLink import PyutLink
 
-from miniogl.Diagram import Diagram
 from miniogl.LineShape import Segments
 
 from ogl.OglAssociationLabel import OglAssociationLabel
@@ -62,8 +61,8 @@ class OglAssociation(OglLink):
             srcShape:   Source shape
             pyutLink:   Conceptual links associated with the graphical links.
             dstShape:   Destination shape
-            srcPos:     Position of source      Override location of input source
-            dstPos:     Position of destination Override location of input destination
+            srcPos:     Source position  Override location of input source
+            dstPos:     Destination position Override location of input destination
         """
         self.oglAssociationLogger: Logger         = getLogger(__name__)
         self._preferences:         OglPreferences = OglPreferences()
@@ -77,7 +76,6 @@ class OglAssociation(OglLink):
         self._destinationCardinality: OglAssociationLabel = cast(OglAssociationLabel, None)
 
         self.SetDrawArrow(False)
-        self._labelsAdded: bool = False
 
     @property
     def pyutObject(self) -> PyutLink:
@@ -90,7 +88,7 @@ class OglAssociation(OglLink):
     @pyutObject.setter
     def pyutObject(self, pyutLink: PyutLink):
         """
-        Override in order to update the UI
+
         Args:
             pyutLink:
         """
@@ -125,23 +123,6 @@ class OglAssociation(OglLink):
     @destinationCardinality.setter
     def destinationCardinality(self, newValue: OglAssociationLabel):
         self._destinationCardinality = newValue
-
-    def addLabelsToDiagram(self):
-        """
-        This method should only be called once.   It should only
-        be called once the OglAssociation shape itself has been
-        added to the diagram
-        """
-        assert self._labelsAdded is False, 'Developer error:  Labels should only be added once'
-        diagram: Diagram = self._diagram
-        if self.centerLabel is not None:
-            diagram.AddShape(self.centerLabel, withModelUpdate=True)
-        if self._sourceCardinality is not None:
-            diagram.AddShape(self.sourceCardinality, withModelUpdate=True)
-        if self._destinationCardinality is not None:
-            diagram.AddShape(self._destinationCardinality, withModelUpdate=True)
-
-        self._labelsAdded = True
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """
@@ -286,7 +267,7 @@ class OglAssociation(OglLink):
     @staticmethod
     def calculateDiamondPoints(lineSegments: Segments) -> DiamondPoints:
         """
-        Made static so that we can unit test it;  Please the only instance variables needed
+        Made static so that we can unit test it;  Only instance variables needed
         are passed in
 
         Args:
