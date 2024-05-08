@@ -194,7 +194,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         self._link = pyutLink
 
     def getAnchors(self) -> Tuple[AnchorPoint, AnchorPoint]:
-        return self._srcAnchor, self._dstAnchor
+        return self.sourceAnchor, self.destinationAnchor
 
     def Detach(self):
         """
@@ -438,7 +438,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
     def _avoidCrossedLines(self, dstShape, dstX: int, dstY: int, orient, srcShape, srcX: int, srcY: int):
         """
         Avoid over-lining
-        Added by: C. Dutoit (still experimental in 2024
+        (still experimental in 2024
 
         Args:
             dstShape:
