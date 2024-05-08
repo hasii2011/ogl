@@ -1,4 +1,6 @@
 
+from typing import List
+from typing import NewType
 from typing import Tuple
 
 from dataclasses import dataclass
@@ -23,3 +25,6 @@ class OglPosition:
         """
 
         return OglPosition(x=position[0], y=position[1])
+
+
+OglPositions = NewType('OglPositions', List[OglPosition])
