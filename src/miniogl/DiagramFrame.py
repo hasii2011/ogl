@@ -325,7 +325,7 @@ class DiagramFrame(ScrolledWindow):
             event:
         """
         if self._selector is not None:
-            self.Bind(EVT_MOTION, self._NullCallback)
+            self.Unbind(EVT_MOTION)
             self.diagramFrameLogger.debug(f'{self._selector=}')
             rect = self._selector
 
@@ -363,7 +363,7 @@ class DiagramFrame(ScrolledWindow):
         # normal event management
         self.GenericHandler(event, "OnLeftUp")
         if not self.__keepMoving:
-            self.Bind(EVT_MOTION, self._NullCallback)
+            self.Unbind(EVT_MOTION)
             self.Refresh()
 
     def OnDrag(self, event: MouseEvent):
@@ -416,7 +416,7 @@ class DiagramFrame(ScrolledWindow):
         self.GenericHandler(event, "OnLeftDClick")
         self._clickedShape = cast(Shape, None)
         if not self.__keepMoving:
-            self.Bind(EVT_MOTION, self._NullCallback)
+            self.Unbind(EVT_MOTION)
 
     def OnMiddleDown(self, event: MouseEvent):
         """
@@ -1123,9 +1123,6 @@ class DiagramFrame(ScrolledWindow):
             x0, y0 = self._selector.GetPosition()
             self._selector.SetSize(x - x0, y - y0)
             self.Refresh(False)
-
-    def _NullCallback(self, evt):
-        pass
 
     def _ConvertEventCoordinates(self, event):
         xView, yView = self.GetViewStart()
