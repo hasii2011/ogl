@@ -154,9 +154,12 @@ class RectangleShape(Shape):
         """
         True if (x, y) is inside the rectangle.
 
-        @param  x
-        @param y
-        @return bool
+        Args:
+            x:
+            y:
+
+        Returns:
+
         """
         # this also works if width and/or height is negative.
         sx, sy = self.GetPosition()
@@ -167,10 +170,10 @@ class RectangleShape(Shape):
         topLeftX: int = sx - self._ox
         topLeftY: int = sy - self._oy
 
-        topXLeftIsInside:  bool  = x > topLeftX
-        topXRightIsInside: bool  = x < topLeftX + width
-        topYLeftIsInside:  bool  = y > topLeftY
-        topYRightIsInside: bool  = y < topLeftY + height
+        topXLeftIsInside:  bool  = x >= topLeftX
+        topXRightIsInside: bool  = x <= topLeftX + width
+        topYLeftIsInside:  bool  = y >= topLeftY
+        topYRightIsInside: bool  = y <= topLeftY + height
         if topXLeftIsInside and topXRightIsInside and topYLeftIsInside and topYRightIsInside:
             return True
         else:

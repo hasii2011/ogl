@@ -80,6 +80,7 @@ class OglInterface2(LollipopLine, Common):
         dc.SetFont(self._defaultFont)
 
         xFaceName: str = self.pyutInterface.name
+        self.logger.debug(f'{xFaceName=} {self._pyutInterface.id=}')
 
         extentSize: Tuple[int, int] = dc.GetTextExtent(xFaceName)  # width, height
 

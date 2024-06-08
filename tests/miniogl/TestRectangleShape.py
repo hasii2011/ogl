@@ -46,6 +46,38 @@ class TestRectangleShape(TestBase):
 
         self.assertFalse(actualAnswer, 'The x-coordinate IS NOT inside the rectangle')
 
+    def testOnLeftXBoundary(self):
+
+        rectangleShape: RectangleShape = RectangleShape(x=120, y=60, width=66, height=60)
+
+        isInside: bool = rectangleShape.Inside(x=120, y=90)
+
+        self.assertTrue(isInside, 'Left boundary point should be inside')
+
+    def testOnRightXBoundary(self):
+
+        rectangleShape: RectangleShape = RectangleShape(x=120, y=60, width=66, height=60)
+
+        isInside: bool = rectangleShape.Inside(x=120+66, y=90)
+
+        self.assertTrue(isInside, 'Right boundary point should be inside')
+
+    def testOnTopYBoundary(self):
+
+        rectangleShape: RectangleShape = RectangleShape(x=120, y=60, width=66, height=60)
+
+        isInside: bool = rectangleShape.Inside(x=120, y=60)
+
+        self.assertTrue(isInside, 'Top Y boundary point should be inside')
+
+    def testOnBottomYBoundary(self):
+
+        rectangleShape: RectangleShape = RectangleShape(x=120, y=60, width=66, height=60)
+
+        isInside: bool = rectangleShape.Inside(x=120, y=60+60)
+
+        self.assertTrue(isInside, 'Bottom Y boundary point should be inside')
+
 
 def suite() -> TestSuite:
     """You need to change the name of the test class here also."""
