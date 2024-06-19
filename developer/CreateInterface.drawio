@@ -1,0 +1,42 @@
+<mxfile host="app.diagrams.net" modified="2024-06-19T15:37:11.988Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15" etag="Z5h6Py1VZwhzD80ue97W" version="24.5.5" type="github">
+  <diagram name="Page-1" id="XD0EcsFeF_NkYUPV7Ibi">
+    <mxGraphModel dx="995" dy="1121" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-1" value=":OglClass" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="150" y="160" width="100" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-2" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;" vertex="1" parent="1">
+          <mxGeometry x="30" y="240" width="30" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-4" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=0.633;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="mYTD7EPwBeybMUh3lvmu-1" target="mYTD7EPwBeybMUh3lvmu-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="230" y="670" as="sourcePoint" />
+            <mxPoint x="110" y="430" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-5" value="Developer&lt;div&gt;selects Menu&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;Item&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="mYTD7EPwBeybMUh3lvmu-4">
+          <mxGeometry x="0.0939" y="-3" relative="1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-6" value=":UmlDiagramsFrame" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" vertex="1" parent="1">
+          <mxGeometry x="380" y="160" width="130" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-7" value="" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;" edge="1" parent="1" source="mYTD7EPwBeybMUh3lvmu-1" target="mYTD7EPwBeybMUh3lvmu-6">
+          <mxGeometry x="0.0279" y="10" width="60" relative="1" as="geometry">
+            <mxPoint x="550" y="510" as="sourcePoint" />
+            <mxPoint x="610" y="510" as="targetPoint" />
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mYTD7EPwBeybMUh3lvmu-8" value="OglEventType.RequesLolllipopLocation" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="mYTD7EPwBeybMUh3lvmu-7">
+          <mxGeometry x="-0.1023" y="-2" relative="1" as="geometry">
+            <mxPoint y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
