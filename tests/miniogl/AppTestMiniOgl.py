@@ -74,18 +74,18 @@ class AppTestMiniOglApp(App):
                 diagramFrame.AddShape(pointShape)
 
         rectShape: RectangleShape = RectangleShape(100, 50, 130, 80)
-        rectShape.SetDraggable(True)
+        rectShape.draggable = True
         diagramFrame.AddShape(rectShape)
 
         anchor1 = AnchorPoint(50, 100, None)
-        anchor1.SetDraggable(True)
+        anchor1.draggable = True
         anchor2 = AnchorPoint(200, 300, None)
-        anchor2.SetDraggable(True)
+        anchor2.draggable = True
 
         lineShape: LineShape = LineShape(anchor1, anchor2)
         lineShape.SetDrawArrow(False)
         lineShape.draggable = True
-        lineShape.SetSpline(False)
+        lineShape.spline = False
 
         controlPoint: ControlPoint = ControlPoint(50, 150, None)
         lineShape.AddControl(controlPoint, None)

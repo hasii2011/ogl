@@ -2,8 +2,6 @@
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
-
 from wx import BLACK
 from wx import RED
 from wx import Size
@@ -120,24 +118,6 @@ class TextShape(RectangleShape):
         Returns:  The text shape's private font
         """
         return self._font
-
-    @deprecated(reason='Use the .text property')
-    def GetText(self) -> str:
-        """
-        Returns:  The text that the text shape displays
-        """
-        return self._text
-
-    @deprecated(reason='Use the .text property')
-    def SetText(self, text: str):
-        """
-        Set the text that the shape displays
-
-        Args:
-              text
-        """
-        self._text = text
-        self._width, self._height = MemoryDC().GetTextExtent(text)
 
     def SetTextBackground(self, color: Colour):
         """

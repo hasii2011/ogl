@@ -4,8 +4,6 @@ from typing import cast
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
-
 from wx import BLACK_DASHED_PEN
 from wx import PENSTYLE_LONG_DASH
 
@@ -49,15 +47,6 @@ class OglSDInstance(OglObject):
         self._instance:     RectangleShape  = self._createInstance()
         self._instanceName: OglInstanceName = self._createInstanceName(pyutSDInstance=pyutObject, instanceBox=self._instance)
         # TODO : set instance box size to the size of the text by invoking self._instanceBoxText.setSize()
-
-    @deprecated(reason="Use the property '.lifeline'")
-    def getLifeLineShape(self):
-        """
-        Used by OGLSDMessage to use it as parent
-
-        Returns: The lifeline object
-        """
-        return self._lifeLine
 
     @property
     def lifeline(self) -> LineShape:

@@ -8,7 +8,6 @@ from typing import Union
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
 from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
@@ -107,24 +106,6 @@ class LineShape(Shape, Common):
         """
         self._spline = state
 
-    @deprecated(reason='Use the .spline property')
-    def SetSpline(self, state):
-        """
-        Use a spline instead of a line.
-
-        @param bool state : True for a spline
-        """
-        self._spline = state
-
-    @deprecated(reason='Use the .spline property')
-    def GetSpline(self):
-        """
-        Return True if a spline is drawn instead of a line.
-
-        @return boolean
-        """
-        return self._spline
-
     def GetPosition(self):
         """
         Return the absolute position of the shape.
@@ -174,26 +155,6 @@ class LineShape(Shape, Common):
         if self._diagram is not None:
             self._diagram.AddShape(control)
 
-    @deprecated(reason='Use .destinationAnchor property')
-    def GetDestination(self):
-        """
-        Get the destination anchor.
-
-        @return AnchorPoint
-        """
-        return self._dstAnchor
-
-    @deprecated(reason='Use .destinationAnchor property')
-    def SetDestination(self, anchor):
-        """
-        Set the destination anchor.
-        Note that the line must be removed from the previous destination!
-
-        @param anchor
-        """
-        self._dstAnchor = anchor
-        anchor.AddLine(self)
-
     def SetDrawArrow(self, draw: bool):
         """
         Set to True if you want to have an arrow head at the destination.
@@ -225,40 +186,6 @@ class LineShape(Shape, Common):
         @return double size
         """
         return self._arrowSize
-
-    @deprecated(reason='Use .sourceAnchor property')
-    def GetSource(self):
-        """
-        Get the source anchor.
-
-        @return AnchorPoint source
-        """
-        return self._srcAnchor
-
-    @deprecated(reason='Use .sourceAnchor property')
-    def SetSource(self, anchor):
-        """
-        Set the source anchor.
-        Note that the line must be removed from the previous source!
-
-        @param anchor
-        """
-        self._srcAnchor = anchor
-        anchor.AddLine(self)
-
-    @deprecated(reason='Use the .segments property')
-    def GetSegments(self):
-        """
-        Return a list of tuples which are the coordinates of the control points.
-
-        Returns:  A list of int tuples
-
-        """
-        sp = self._srcAnchor.GetPosition()
-        dp = self._dstAnchor.GetPosition()
-        # LineShape.lineShapeLogger.debug(f'GetSegments --  sp: {sp} dp: {dp}')
-        retList = [sp] + list(map(lambda x: x.GetPosition(), self._controls)) + [dp]
-        return retList
 
     def GetControlPoints(self) -> ControlPoints:
         """

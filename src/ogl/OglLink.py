@@ -7,8 +7,6 @@ from logging import getLogger
 
 from math import sqrt
 
-from deprecated import deprecated
-
 from wx import BLACK_PEN
 from wx import EVT_MENU
 
@@ -149,41 +147,6 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         Returns: The destination shape for this link.
         """
         return self._destShape
-
-    @deprecated(reason='Use sourceShape property')
-    def getSourceShape(self):
-        """
-        Returns: The source shape for this link.
-        """
-        return self._srcShape
-
-    @deprecated(reason='Use destinationShape property')
-    def getDestinationShape(self):
-        """
-
-        Returns: The destination shape for this link.
-        """
-        return self._destShape
-
-    @deprecated('Use pyutObject property')
-    def getPyutObject(self):
-        """
-        Returns the associated PyutLink.
-
-        Returns: PyutLink
-
-        """
-        return self._link
-
-    @deprecated('Use pyutObject property')
-    def setPyutObject(self, pyutLink):
-        """
-        Sets the associated PyutLink.
-
-        Args:
-            pyutLink: link to associate
-        """
-        self._link = pyutLink
 
     @property
     def pyutObject(self) -> PyutLink:
@@ -353,7 +316,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
     def _toggleSpline(self):
 
-        self.SetSpline(not self.GetSpline())
+        self.spline = not self.spline
 
         frame = self._diagram.GetPanel()
         frame.Refresh()

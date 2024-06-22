@@ -2,8 +2,6 @@
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
-
 from wx import DC
 from wx import Pen
 
@@ -73,12 +71,6 @@ class OglInterface(OglLink):
 
         # Prepares labels
         prepareLabel(self._label, self._link.name)
-
-    @deprecated(reason='Use property .label')
-    def getLabels(self):
-        """
-        """
-        return self._label
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """

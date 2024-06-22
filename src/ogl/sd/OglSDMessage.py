@@ -5,8 +5,6 @@ from typing import Tuple
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
-
 from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
@@ -108,15 +106,6 @@ class OglSDMessage(OglLink):
             textShape.SetVisible(True)
         else:
             textShape.SetVisible(False)
-
-    @deprecated(reason='Use the .pyutSDMessage property')
-    def getPyutObject(self) -> PyutSDMessage:
-        """
-        override
-
-        Returns: my pyut sd message
-        """
-        return self._pyutSDMessage
 
     def Draw(self, dc: DC,  withChildren: bool = False):
         """

@@ -4,9 +4,6 @@ from typing import List
 from logging import Logger
 from logging import getLogger
 
-# noinspection PyPackageRequirements
-from deprecated import deprecated
-
 from wx import MouseEvent
 from wx import Font
 from wx import FONTFAMILY_SWISS
@@ -61,25 +58,12 @@ class OglObject(RectangleShape, ShapeEventHandler, EventEngineMixin):
         self._oglLinks: List[OglLink] = []     # Connected links
         self._modifyCommand = None
 
-    @deprecated(reason='Use the properties')
-    def setPyutObject(self, pyutObject: PyutObject):
-        self._pyutObject = pyutObject
-
-    @deprecated(reason='Use the properties')
-    def getPyutObject(self) -> PyutObject:
-        """
-        Return the associated pyut object.
-
-        @return PyutObject : Associated PyutObject
-        """
-        return self._pyutObject
-
     @property
     def pyutObject(self):
         return self._pyutObject
 
     @pyutObject.setter
-    def pyutObject(self, pyutObject):
+    def pyutObject(self, pyutObject: PyutObject):
         self._pyutObject = pyutObject
 
     @property
@@ -94,15 +78,6 @@ class OglObject(RectangleShape, ShapeEventHandler, EventEngineMixin):
             link:  the link to add
         """
         self._oglLinks.append(link)
-
-    @deprecated(reason='Use the property links')
-    def getLinks(self):
-        """
-        Return the links.
-
-        Returns: OglLink[] : Links connected to object
-        """
-        return self._oglLinks
 
     def OnLeftDown(self, event: MouseEvent):
         """

@@ -15,8 +15,6 @@ from wx import RED
 from wx import RED_PEN
 from wx import WHITE_BRUSH
 
-from deprecated import deprecated
-
 from miniogl.ShapeModel import ShapeModel
 
 from ogl.preferences.OglPreferences import OglPreferences
@@ -145,23 +143,6 @@ class Shape:
         @return wx.Brush
         """
         return self._brush
-
-    @deprecated(reason='Use the .id property')
-    def GetID(self):
-
-        return self._id
-
-    @deprecated(reason='Use the .id property')
-    def SetID(self, theId):
-        """
-        TODO: Make this a property
-
-        Set the ID of the shape. This can be used when loading a shape.
-
-        @param theId
-        """
-        self._id = theId
-        Shape.ID = max(self._id + 1, Shape.ID)
 
     def SetOrigin(self, x: int, y: int):
         """
@@ -480,50 +461,6 @@ class Shape:
         """
         return False
 
-    @deprecated(reason='Use .draggable property')
-    def IsDraggable(self):
-        """
-        True if the shape can be dragged.
-
-        @return bool
-        """
-        return self._draggable
-
-    def IsProtected(self):
-        """
-        True if the shape is protected.
-
-        @return bool
-        """
-        return self._protected
-
-    @deprecated(reason='Use the .selected property')
-    def IsSelected(self):
-        """
-        True if the shape is selected.
-
-        @return bool
-        """
-        return self._selected
-
-    def IsVisible(self):
-        """
-        True if the shape is visible.
-
-        @return bool
-        """
-        return self._visible
-
-    @deprecated(reason='Use the .selected property')
-    def SetSelected(self, state: bool = True):
-        """
-        Set the shape selected state
-
-        Args:
-            state: `True` if it is selected else `False`
-        """
-        self._selected = state
-
     def IsMoving(self):
         """
         Return the "moving" state of a shape.
@@ -543,15 +480,6 @@ class Shape:
             shape.SetMoving(state)
         for anchor in self._anchors:
             anchor.SetMoving(state)
-
-    @deprecated(reason='Use .draggable property')
-    def SetDraggable(self, drag):
-        """
-        If False, the shape won't be movable.
-
-        @param drag
-        """
-        self._draggable = drag
 
     def SetPosition(self, x: int, y: int):
         """

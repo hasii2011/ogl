@@ -6,8 +6,6 @@ from typing import List
 from logging import Logger
 from logging import getLogger
 
-from deprecated import deprecated
-
 from wx import Colour
 from wx import Rect
 from wx import WHITE
@@ -348,8 +346,8 @@ class DiagramFrame(ScrolledWindow):
                 clicked.selected = True
                 clicked.SetMoving(True)
             else:
-                sel = not clicked.IsSelected()
-                clicked.SetSelected(sel)
+                sel: bool = not clicked.selected
+                clicked.selected = sel
                 clicked.SetMoving(sel)
                 if sel and clicked not in self._selectedShapes:
                     self._selectedShapes.append(clicked)
@@ -380,7 +378,7 @@ class DiagramFrame(ScrolledWindow):
         clicked = self._clickedShape
         if clicked and not clicked.selected:
             self._selectedShapes.append(clicked)
-            clicked.SetSelected(True)
+            clicked.selected = True
             clicked.SetMoving(True)
         self._clickedShape = cast(Shape, None)
         for shape in self._selectedShapes:
@@ -743,14 +741,14 @@ class DiagramFrame(ScrolledWindow):
         # If there is no selected area but a clicked point, a default
         # zoom is performed with the clicked point as its center.
         if width == 0 or height == 0:
-            zoomFactor = self.GetDefaultZoomFactor()
+            zoomFactor = self.defaultZoomFactor
             # Check if the zoom factor that we are to apply combined with the
             # previous ones won't be beyond the maximal zoom. If it's the case,
             # we proceed to the calculation of the zoom factor that allows to
             # exactly reach the maximal zoom.
-            maxZoomReached = maxZoomFactor <= (self.GetCurrentZoom() * zoomFactor)
+            maxZoomReached = maxZoomFactor <= (self.currentZoom * zoomFactor)
             if maxZoomReached:
-                zoomFactor = maxZoomFactor/self.GetCurrentZoom()
+                zoomFactor = maxZoomFactor / self.currentZoom
             # if the view is reduced, we eliminate the
             # last zoom out performed
             if self._zoomLevel < 0:
@@ -782,7 +780,7 @@ class DiagramFrame(ScrolledWindow):
             # exactly reach the maximal zoom.
             maxZoomReached = maxZoomFactor <= self.currentZoom * zoomFactor
             if maxZoomReached:
-                zoomFactor = maxZoomFactor/self.GetCurrentZoom()
+                zoomFactor = maxZoomFactor / self.currentZoom
 
             # Calculate the zoom area upper-left corner.
             # The size is the half of the diagram frame and is centred
@@ -898,7 +896,7 @@ class DiagramFrame(ScrolledWindow):
                 self._zoomStack.append(zoomFactor)
                 self._zoomLevel -= 1
             else:
-                zoomFactor = minZoomFactor / self.GetCurrentZoom()
+                zoomFactor = minZoomFactor / self.currentZoom
                 if zoomFactor != 1:
                     self._zoomStack.append(zoomFactor)
                     self._zoomLevel -= 1
@@ -958,140 +956,6 @@ class DiagramFrame(ScrolledWindow):
                 self.Scroll(noUnitX / 2, noUnitY / 2)   # set the scrollbars position in the middle of their scale
             else:
                 self.Scroll(0, 0)
-
-    @deprecated(reason='use the .diagram property')
-    def GetDiagram(self):
-        """
-        Return the diagram associated with this panel.
-
-        @return Diagram
-        """
-        return self._diagram
-
-    @deprecated(reason='Use the .diagram property')
-    def SetDiagram(self, diagram):
-        """
-        Set a new diagram for this panel.
-
-        @param diagram
-        """
-        self._diagram = diagram
-
-    @deprecated(reason='This method is unreliable')
-    def GetSelectedShapes(self):
-        """
-        Get the selected shapes.
-        Beware, this is the list of the frame, but other shapes could be
-        selected and not declared to the frame.
-
-        @return Shape []
-        """
-        return self._selectedShapes
-
-    @deprecated(reason='This method is unreliable')
-    def SetSelectedShapes(self, shapes: List[Shape]):
-        """
-        Set the list of selected shapes.
-
-        @param shapes
-        """
-        self._selectedShapes = shapes
-
-    @deprecated(reason='Use the currentZoom property')
-    def GetCurrentZoom(self):
-        """
-        Returns:  the global current zoom factor.
-        """
-        zoom = 1.0
-        for z in self._zoomStack:
-            zoom *= z
-        return zoom
-
-    @deprecated(reason='Use the .xOffSet property')
-    def GetXOffset(self):
-        """
-        Returns: the x offset between the model and the shapes view (MVC)
-
-        """
-        return self._xOffset
-
-    @deprecated(reason='Use the .yOffSet property')
-    def GetYOffset(self):
-        """
-
-        Returns:    the y offset between the model and the view of the shapes (MVC)
-        """
-        return self._yOffset
-
-    @deprecated(reason='Use the .xOffset property')
-    def SetXOffset(self, offset):
-        """
-        Set the x offset between the model and the view of the shapes (MVC)
-        Args:
-            offset:
-        """
-        self._xOffset = offset
-
-    @deprecated(reason='Use the yOffSet property')
-    def SetYOffset(self, offset):
-        """
-        Set the y offset between the model and the view of the shapes (MVC)
-        Args:
-            offset:
-        """
-        self._yOffset = offset
-
-    @deprecated(reason='use the .defaultZoomFactor property')
-    def GetDefaultZoomFactor(self):
-        """
-        Returns:    the default zoom factor. (1 = 100%)
-        """
-        return self._defaultZoomFactor
-
-    @deprecated(reason='Use the .defaultZoomFactor property')
-    def SetDefaultZoomFactor(self, factor):
-        """
-        Set the default zoom factor (1 = 100%)
-
-        Args:
-            factor:
-        """
-        self._defaultZoomFactor = factor
-
-    @deprecated(reason='Use the .maxZoomFactor property')
-    def GetMaxZoomFactor(self):
-        """
-
-        Returns:    The maximum zoom factor that can be reached. (1 = 100%)
-        """
-        return self._maxZoomFactor
-
-    @deprecated(reason='Use the .maxZoomFactor property')
-    def SetMaxZoomFactor(self, factor):
-        """
-        Set the maximum zoom factor that can be reached (1 = 100%)
-        Args:
-            factor:
-        """
-        self._maxZoomFactor = factor
-
-    @deprecated(reason='Use the ._minZoomFactor property')
-    def GetMinZoomFactor(self):
-        """
-
-        Returns:  The minimum zoom factor that can be reached. (1 = 100%)
-        """
-        return self._minZoomFactor
-
-    @deprecated(reason='Use the .minZoomFactor property')
-    def SetMinZoomFactor(self, factor):
-        """
-        Set the minimum zoom factor that can be reached. (1 = 100%)
-
-        Args:
-            factor:
-        """
-        self._minLevelZoom = factor
 
     def _BeginSelect(self, event: MouseEvent):
         """

@@ -177,7 +177,7 @@ class DemoUmlFrame(DiagramFrame):
             brush:  brush to use
             withModelUpdate: If true, the model of the shape will update from the shape (view) when added to the diagram.
         """
-        shape.SetDraggable(True)
+        shape.draggable = True
         shape.SetPosition(x, y)
         if pen is not None:
             shape.SetPen(pen)
