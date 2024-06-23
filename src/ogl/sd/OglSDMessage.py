@@ -86,8 +86,8 @@ class OglSDMessage(OglLink):
         """
         src = self.sourceAnchor
         dst = self.destinationAnchor
-        srcY = self._pyutSDMessage.sourceY      + src.GetParent().GetSegments()[0][1]
-        dstY = self._pyutSDMessage.destinationY + dst.GetParent().GetSegments()[0][1]
+        srcY = self._pyutSDMessage.sourceY      + src.parent.GetSegments()[0][1]
+        dstY = self._pyutSDMessage.destinationY + dst.parent.GetSegments()[0][1]
         srcX = 0
         dstX = 0
 
@@ -103,9 +103,9 @@ class OglSDMessage(OglLink):
         # Don't draw blank messages
         if text.strip() != "":
             textShape.text = text
-            textShape.SetVisible(True)
+            textShape.visible = True
         else:
-            textShape.SetVisible(False)
+            textShape.visible = False
 
     def Draw(self, dc: DC,  withChildren: bool = False):
         """
@@ -184,8 +184,8 @@ class OglSDMessage(OglLink):
         dstAnchor.SetStayOnBorder(False)
         srcAnchor.SetStayInside(True)
         dstAnchor.SetStayInside(True)
-        srcAnchor.SetVisible(True)
-        dstAnchor.SetVisible(True)
+        srcAnchor.visible = True
+        dstAnchor.visible = True
         srcAnchor.draggable = True
         dstAnchor.draggable = True
 

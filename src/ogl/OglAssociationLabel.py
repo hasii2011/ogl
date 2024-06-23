@@ -25,7 +25,7 @@ class OglAssociationLabel(TextShape, EventEngineMixin):
 
         super().Draw(dc=dc, withChildren=withChildren)
 
-        if self.IsMoving() is True:
+        if self.moving is True:
             pos = self.GetPosition()
             rPos = self.GetRelativePosition()
             self.labelLogger.debug(f'{pos=} {rPos=}')

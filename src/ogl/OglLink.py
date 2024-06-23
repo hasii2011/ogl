@@ -114,8 +114,8 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         dstAnchor: AnchorPoint = self._destShape.AddAnchor(dstX, dstY)
         srcAnchor.SetPosition(srcX, srcY)
         dstAnchor.SetPosition(dstX, dstY)
-        srcAnchor.SetVisible(False)
-        dstAnchor.SetVisible(False)
+        srcAnchor.visible = False
+        dstAnchor.visible = False
         OglLink.clsLogger.debug(f'src anchor pos: {srcAnchor.GetPosition()} dst anchor pos {dstAnchor.GetPosition()}')
         srcAnchor.draggable = True
         dstAnchor.draggable = True
@@ -286,7 +286,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         y = clickPoint[1]
         cp = ControlPoint(x, y)
 
-        cp.SetVisible(True)
+        cp.visible = True
         #
         # Add it either before the destinationAnchor or the sourceAnchor
         #
@@ -308,7 +308,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
         self._removeControl(control=cp)
         cp.Detach()
-        cp.SetVisible(False)    # Work around still on screen but not visible and not saved
+        cp.visible = False    # Work around still on screen but not visible and not saved
 
         frame = self._diagram.GetPanel()
         frame.Refresh()

@@ -1,4 +1,6 @@
 
+from typing import ClassVar
+from typing import Generator
 from typing import List
 from typing import cast
 from typing import Tuple
@@ -20,14 +22,21 @@ from miniogl.ShapeModel import ShapeModel
 from ogl.preferences.OglPreferences import OglPreferences
 
 
+def infiniteSequence() -> Generator[int, None, None]:
+    num = 0
+    while True:
+        yield num
+        num += 1
+
+
 class Shape:
     """
     Shape is the basic graphical block. It is also the view in
     an MVC pattern, so it has a relative model (ShapeModel).
     """
 
-    ID = 0  # internal ID number
-    clsLogger: Logger = getLogger(__name__)
+    idGenerator: ClassVar = infiniteSequence()
+    clsLogger:   Logger   = getLogger(__name__)
 
     def __init__(self, x: int = 0, y: int = 0, parent=None):
         """
@@ -43,12 +52,12 @@ class Shape:
         self._ox: int = 0   # origin position (view)
         self._oy: int = 0   # origin position (view)
 
-        self._parent    = parent     # parent shape
-        self._selected:  bool = False      # is the shape selected ?
-        self._visible:   bool = True       # is the shape visible ?
-        self._draggable: bool = True       # can the shape be dragged ?
-        self._moving:    bool = False      # is this shape moving now ?
-        self._protected: bool = False      # to protect against deletion
+        self._parent:    Shape = parent     # parent shape
+        self._selected:  bool  = False      # is the shape selected ?
+        self._visible:   bool  = True       # is the shape visible ?
+        self._draggable: bool  = True       # can the shape be dragged ?
+        self._moving:    bool  = False      # is this shape moving now ?
+        self._protected: bool  = False      # to protect against deletion
 
         self._anchors:         List = []   # anchors of the shape
         self._children:        List = []   # child shapes
@@ -63,8 +72,8 @@ class Shape:
 
         self._diagram: Diagram = cast(Diagram, None)       # associated diagram
 
-        self._id = Shape.ID     # unique ID number
-        Shape.ID += 1
+        self._id = next(Shape.idGenerator)     # unique ID number
+
         if OglPreferences().debugBasicShape is True:
             from miniogl.TextShape import TextShape
             from miniogl.LineShape import LineShape
@@ -112,6 +121,55 @@ class Shape:
         """
         self._selected = state
 
+    @property
+    def model(self):
+        """
+        Returns:  The shape model (MVC pattern)
+        """
+        return self._model
+
+    @model.setter
+    def model(self, value: ShapeModel):
+        """
+        Associate a new model with this shape (MVC pattern)
+
+        Args:
+            value: New model
+
+        """
+        self._model = value
+
+    @property
+    def moving(self) -> bool:
+        """
+
+        Returns: `True` if the shape is moving else `False`
+        """
+        return self._moving
+
+    @moving.setter
+    def moving(self, state: bool):
+        """
+        A non-moving shape will be redrawn faster when others are moved.
+        See DiagramFrame.Refresh for more information.
+
+        Args:
+            state:
+        """
+        self._moving = state
+        for shape in self._children:
+            shape.moving = state
+        for anchor in self._anchors:
+            anchor.moving = state
+
+    @property
+    def visible(self):
+        return self._visible
+
+    @visible.setter
+    def visible(self, value: bool):
+        self._visible = value
+
     def SetPen(self, pen: Pen):
         """
         Set the pen used to draw the shape.
@@ -119,6 +177,14 @@ class Shape:
         @param pen
         """
         self._pen = pen
+
+    @property
+    def parent(self):
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent: 'Shape'):
+        self._parent = parent
 
     def GetPen(self):
         """
@@ -163,14 +229,15 @@ class Shape:
         """
         return self._ox, self._oy
 
-    def AppendChild(self, child: "Shape"):
+    def AppendChild(self, child: 'Shape'):
         """
         Append a child to this shape.
         This doesn't add it to the diagram, but it will be drawn by the parent.
 
-        @param  child
+        Args:
+            child:
         """
-        child.SetParent(self)
+        child.parent = self
         self._children.append(child)
 
     def GetAllChildren(self):
@@ -290,7 +357,7 @@ class Shape:
 
         if self._diagram is not None and not self._protected:
             # noinspection PyProtectedMember
-            self.GetModel()._views.remove(self)
+            self.model._views.remove(self)
 
             diagram = self._diagram
             self._diagram = cast(Diagram, None)
@@ -378,22 +445,6 @@ class Shape:
         """
         return self._anchors[:]     # Funky Python notation that creates a copy
 
-    def GetParent(self):
-        """
-        Get the parent of this shape.
-
-        @return Shape parent
-        """
-        return self._parent
-
-    def SetParent(self, parent: 'Shape'):
-        """
-        Set the parent of this shape.
-
-        @param parent
-        """
-        self._parent = parent
-
     def GetPosition(self) -> Tuple[int, int]:
         """
         Return the absolute position of the shape.
@@ -461,26 +512,6 @@ class Shape:
         """
         return False
 
-    def IsMoving(self):
-        """
-        Return the "moving" state of a shape.
-        See SetMoving.
-        """
-        return self._moving
-
-    def SetMoving(self, state):
-        """
-        A non-moving shape will be redrawn faster when others are moved.
-        See DiagramFrame.Refresh for more information.
-
-        @param state
-        """
-        self._moving = state
-        for shape in self._children:
-            shape.SetMoving(state)
-        for anchor in self._anchors:
-            anchor.SetMoving(state)
-
     def SetPosition(self, x: int, y: int):
         """
         If it's draggable; change the position of the shape;  Upper left corner
@@ -534,14 +565,6 @@ class Shape:
         """
         pass
 
-    def SetVisible(self, theNewValue: bool):
-        """
-        Set the shape visible or not.
-
-        @param theNewValue
-        """
-        self._visible = theNewValue
-
     def GetDiagram(self):
         """
         Return the diagram associated with this shape.
@@ -557,7 +580,7 @@ class Shape:
         """
 
         # Get the coordinates of the model (ShapeModel)
-        mx, my = self.GetModel().GetPosition()
+        mx, my = self.model.GetPosition()
 
         # Get the offsets and the ratio between the shape (view) and the
         # shape model (ShapeModel) given by the frame where the shape
@@ -585,7 +608,7 @@ class Shape:
         """
 
         #  get the associated model (ShapeModel)
-        model = self.GetModel()
+        model = self.model
 
         # Get the offsets and the ratio between the shape (view) and the
         # shape model (ShapeModel) given by the frame where the shape
@@ -618,22 +641,6 @@ class Shape:
             cmx = round((cx - dx) // ratio)
             cmy = round((cy - dy) // ratio)
             child.GetModel().SetPosition(cmx, cmy)
-
-    def GetModel(self):
-        """
-
-        Returns:  he model of the shape (MVC pattern)
-        """
-        return self._model
-
-    def SetModel(self, modelShape):
-        """
-        Set the specified model associated to this shape (MVC pattern)
-
-        Args:
-            modelShape:  model to set
-        """
-        self._model = modelShape
 
     def HasDiagramFrame(self):
         """

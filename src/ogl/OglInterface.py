@@ -46,7 +46,7 @@ class OglInterface(OglLink):
 
         self._label: TextShape = self.AddText(0, 0, "")
 
-        # Initialize labels objects
+        # Initialize label objects
         self.updateLabels()
         self.SetDrawArrow(True)
 
@@ -61,13 +61,10 @@ class OglInterface(OglLink):
         def prepareLabel(textShape: TextShape, text):
             # If label should be drawn
             if text.strip() != "":
-                # textShape.SetText(text)
                 textShape.text = text
-                # textShape.Show(True)
-                textShape.SetVisible(True)
+                textShape.visible = True
             else:
-                # textShape.Show(False)
-                textShape.SetVisible(False)
+                textShape.visible = False
 
         # Prepares labels
         prepareLabel(self._label, self._link.name)

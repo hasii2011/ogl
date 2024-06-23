@@ -19,7 +19,7 @@ class ControlPoint(LinePoint):
             parent:     parent Shape
         """
         super().__init__(x, y, parent)
-        self.SetVisible(False)
+        self.visible = False
 
     def RemoveLine(self, line):
         """

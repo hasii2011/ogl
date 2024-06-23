@@ -39,7 +39,7 @@ class OglSDInstance(OglObject):
         self._instanceYPosition: int = self._prefs.instanceYPosition  # User super class version
 
         self.draggable = True
-        self.SetVisible(True)
+        self.visible = True
         self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
 
@@ -139,7 +139,7 @@ class OglSDInstance(OglObject):
         self._instanceName.text = self._pyutObject.instanceName
         # Call parent's Draw method
         if self.selected is True:
-            self.SetVisible(True)
+            self.visible = True
             self.SetPen(Pen(Colour(200, 200, 255), 1, PENSTYLE_LONG_DASH))
 
         super().Draw(dc=dc, withChildren=withChildren)
@@ -163,16 +163,16 @@ class OglSDInstance(OglObject):
 
         (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
         for el in [src, dst]:
-            el.SetVisible(False)
+            el.visible   = False
             el.draggable = False
 
         lifeLineShape: LineShape = LineShape(src, dst)
 
-        lifeLineShape.SetParent(self)
+        lifeLineShape.parent = self
         lifeLineShape.SetDrawArrow(False)
         lifeLineShape.draggable = True
         lifeLineShape.SetPen(BLACK_DASHED_PEN)
-        lifeLineShape.SetVisible(True)
+        lifeLineShape.visible = True
 
         self.AppendChild(lifeLineShape)
 
@@ -188,7 +188,7 @@ class OglSDInstance(OglObject):
         instanceBox.draggable = False
         instanceBox.Resize = self.OnInstanceBoxResize   # type: ignore
         instanceBox.SetResizable(True)
-        instanceBox.SetParent(self)
+        instanceBox.parent = self
 
         self.AppendChild(instanceBox)
 

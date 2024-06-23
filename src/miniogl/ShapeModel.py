@@ -4,7 +4,7 @@ from typing import Tuple
 
 class ShapeModel:
     """
-    This class is the model of a shape ('view' in an MVC pattern).
+    This class is the shape model('view' in an MVC pattern).
     """
 
     def __init__(self, viewShape=None):
