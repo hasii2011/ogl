@@ -101,7 +101,7 @@ class OglClass(OglObject):
         oglBackgroundColor: MiniOglColorEnum = self._oglPreferences.classBackgroundColor
         backgroundColor:    Colour           = Colour(MiniOglColorEnum.toWxColor(oglBackgroundColor))
 
-        self.SetBrush(Brush(backgroundColor))
+        self.brush = Brush(backgroundColor)
 
         self.logger:    Logger = getLogger(__name__)
 

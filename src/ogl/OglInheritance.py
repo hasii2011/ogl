@@ -32,7 +32,7 @@ class OglInheritance(OglLink):
 
         self.logger: Logger = getLogger(__name__)
         # Arrow must be white inside
-        self.SetBrush(WHITE_BRUSH)
+        self.brush = WHITE_BRUSH
         self.SetDrawArrow(True)
 
     def __repr__(self):

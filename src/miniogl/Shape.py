@@ -170,14 +170,6 @@ class Shape:
     def visible(self, value: bool):
         self._visible = value
 
-    def SetPen(self, pen: Pen):
-        """
-        Set the pen used to draw the shape.
-
-        @param pen
-        """
-        self._pen = pen
-
     @property
     def parent(self):
         return self._parent
@@ -186,29 +178,50 @@ class Shape:
     def parent(self, parent: 'Shape'):
         self._parent = parent
 
-    def GetPen(self):
+    @property
+    def protected(self) -> bool:
         """
-        Get the pen used to draw the shape.
+        Determines if the shape is protected against deletion (Detach).
 
-        @return wx.Pen
+        Returns:
+        """
+        return self._protected
+
+    @protected.setter
+    def protected(self, newValue: bool):
+        self._protected = newValue
+
+    @property
+    def brush(self) -> Brush:
+        """
+
+        Returns: The brush used to draw the shape.
+        """
+        return self._brush
+
+    @brush.setter
+    def brush(self, newBrush: Brush):
+        """
+
+        Args:
+            newBrush: The brush used to draw the shape.
+        """
+        self._brush = newBrush
+
+    @property
+    def pen(self):
+        """
+        Returns:  The pen used to draw the shape.
         """
         return self._pen
 
-    def SetBrush(self, brush: Brush):
+    @pen.setter
+    def pen(self, pen: Pen):
         """
-        Set the brush used to draw the shape.
-
-        @param brush
+        Args:
+            pen: The pen used to draw the shape.
         """
-        self._brush = brush
-
-    def GetBrush(self):
-        """
-        Get the brush used to draw the shape.
-
-        @return wx.Brush
-        """
-        return self._brush
+        self._pen = pen
 
     def SetOrigin(self, x: int, y: int):
         """
@@ -281,7 +294,7 @@ class Shape:
         if anchorType is None:
             anchorType = AnchorPoint
         p = anchorType(x, y, self)
-        p.SetProtected(True)
+        p.protected = True
         self._anchors.append(p)
         if self._diagram is not None:
             self._diagram.AddShape(p)
@@ -546,14 +559,6 @@ class Shape:
         if self._draggable:
             self._x = x
             self._y = y
-
-    def SetProtected(self, newValue: bool):
-        """
-        Protect the shape against deletion (Detach).
-
-        @param newValue
-        """
-        self._protected = newValue
 
     def SetSize(self, w: int, h: int):
         """

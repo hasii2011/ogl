@@ -149,7 +149,7 @@ class DemoUmlFrame(DiagramFrame):
     def _createAnchorHints(self, destinationClass: OglClass, anchorX: int, anchorY: int, attachmentSide: AttachmentSide):
 
         anchorHint: SelectAnchorPoint = SelectAnchorPoint(x=anchorX, y=anchorY, attachmentSide=attachmentSide, parent=destinationClass)
-        anchorHint.SetProtected(True)
+        anchorHint.protected = True
 
         destinationClass.AddAnchorPoint(anchorHint)
         self._diagram.AddShape(anchorHint)
@@ -161,7 +161,7 @@ class DemoUmlFrame(DiagramFrame):
             if isinstance(iAnchor, SelectAnchorPoint):
                 anchor: SelectAnchorPoint = cast(SelectAnchorPoint, iAnchor)
                 if anchor.attachmentPoint != attachmentSide:
-                    anchor.SetProtected(False)
+                    anchor.protected = False
                     anchor.Detach()
 
     def addShape(self, shape: Union[OglObject, OglInterface2, SelectAnchorPoint, OglLink],
@@ -180,7 +180,7 @@ class DemoUmlFrame(DiagramFrame):
         shape.draggable = True
         shape.SetPosition(x, y)
         if pen is not None:
-            shape.SetPen(pen)
+            shape.pen = pen
         if brush is not None:
-            shape.SetBrush(brush)
+            shape.brush = brush
         self._diagram.AddShape(shape, withModelUpdate)

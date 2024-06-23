@@ -41,8 +41,8 @@ class OglInterface(OglLink):
         """
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
-        self.SetPen(Pen("BLACK", 1, PENSTYLE_LONG_DASH))
-        self.SetBrush(WHITE_BRUSH)
+        self.pen = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
+        self.brush = WHITE_BRUSH
 
         self._label: TextShape = self.AddText(0, 0, "")
 

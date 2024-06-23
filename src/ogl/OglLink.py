@@ -125,7 +125,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         EventEngineMixin.__init__(self)
         LineShape.__init__(self, srcAnchor, dstAnchor)
         # Set up painting colors
-        self.SetPen(BLACK_PEN)
+        self.pen = BLACK_PEN
         # Keep reference to the PyutLink for mouse events,
         # Need this to find our way back to the corresponding link
         if pyutLink is not None:
@@ -165,8 +165,8 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         """
         if self._diagram is not None and not self._protected:
             LineShape.Detach(self)
-            self._srcAnchor.SetProtected(False)
-            self._dstAnchor.SetProtected(False)
+            self._srcAnchor.protected = False
+            self._dstAnchor.protected = False
             self._srcAnchor.Detach()
             self._dstAnchor.Detach()
             self._detachFromOglEnds()

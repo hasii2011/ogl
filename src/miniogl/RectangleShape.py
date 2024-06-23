@@ -58,21 +58,13 @@ class RectangleShape(Shape):
         if self._resizable:
             self.ShowSizers(state)
 
-    def SetResizable(self, state: bool):
-        """
-        Set the resizable flag.
-
-        @param state
-        """
-        self._resizable = state
-
-    def GetResizable(self) -> bool:
-        """
-        Get the resizable flag.
-
-        @return bool
-        """
+    @property
+    def resizable(self):
         return self._resizable
+
+    @resizable.setter
+    def resizable(self, state: bool):
+        self._resizable = state
 
     def GetTopLeft(self) -> Tuple[int, int]:
         """

@@ -29,7 +29,7 @@ class OglNoteLink(OglLink):
         """
         super().__init__(srcShape, pyutLink, dstShape)
         self.SetDrawArrow(False)
-        self.SetPen(Pen("BLACK", 1, PENSTYLE_LONG_DASH))
+        self.pen = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
 
     def __repr__(self):
 
