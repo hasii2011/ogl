@@ -158,7 +158,7 @@ class AnchorPoint(LinePoint):
         Also remove self from the parent.
         """
         LinePoint.Detach(self)
-        parent = self.GetParent()
+        parent = self.parent
         if parent:
             parent.RemoveAnchor(self)
 

@@ -7,16 +7,18 @@ class SizerShape(PointShape):
     A sizer, to resize other shapes.
 
     """
-    def __init__(self, x, y, parent):
+    def __init__(self, x: int, y: int, parent):
         """
-        Constructor.
 
-        @param double x, y : position of the point
-        @param Shape parent : parent shape
+        Args:
+            x: x position of the sizer
+            y: y position of the sizer
+            parent:   Parent Shape
         """
-        #  print ">>>SizerShape", x, y
-        PointShape.__init__(self, x, y, parent)
-        self._moving = True
+        # PointShape.__init__(self, x, y, parent)
+        super().__init__(x, y, parent)
+
+        self.moving = True
 
     def Draw(self, dc, withChildren=True):
         """
@@ -33,27 +35,30 @@ class SizerShape(PointShape):
         Returns:
 
         """
-        PointShape.Draw(self, dc, withChildren)
-        pass
+        # PointShape.Draw(self, dc, withChildren)
+        super().Draw(dc, withChildren)
 
-    def SetPosition(self, x, y):
+    def SetPosition(self, x: int, y: int):
         """
         Change the position of the shape, if it's draggable.
+        The position of the sizer is not changed, because it is relative to the parent
 
-        @param  x
-        @param y : new position
+        Args:
+            x:  The new x position
+            y:  The new y position
+
         """
-        self._parent.Resize(self, x, y)
-        # the position of the sizer is not changed, because it is relative
-        # to the parent
+        self.parent.Resize(self, x, y)
 
-    def SetMoving(self, state):
+    def SetMoving(self, state: bool):
         """
         Set the moving flag.
         If setting a sizer moving, the parent will also be set moving.
 
-        @param
+        Args:
+            state:
         """
-        PointShape.SetMoving(self, True)
+        # PointShape.SetMoving(self, True)
+        self.moving = True
         # a sizer is always moving
-        self._parent.SetMoving(state)
+        self._parent.moving = state

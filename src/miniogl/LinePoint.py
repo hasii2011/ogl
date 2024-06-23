@@ -56,13 +56,32 @@ class LinePoint(PointShape):
         if line in self._lines:
             self._lines.remove(line)
 
-    def SetMoving(self, state: bool):
+    # def SetMoving(self, state: bool):
+    #     """
+    #     A non-moving shape will be redrawn faster when others are moved.
+    #     See DiagramFrame.Refresh for more information.
+    #
+    #     Args:
+    #         state:
+    #     """
+    #     # PointShape.SetMoving(self, state)
+    #     self.moving = state
+    #     for line in self._lines:
+    #         line.SetMoving(state)
+
+    @property
+    def moving(self) -> bool:
+        return super().moving
+
+    @moving.setter
+    def moving(self, state: moving):
         """
         A non-moving shape will be redrawn faster when others are moved.
         See DiagramFrame.Refresh for more information.
 
-        @param  state
+        Args:
+            state:
         """
-        PointShape.SetMoving(self, state)
+        self._moving = state
         for line in self._lines:
-            line.SetMoving(state)
+            line.moving = state

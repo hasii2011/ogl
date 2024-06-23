@@ -296,7 +296,7 @@ class RectangleShape(Shape):
         Shape.UpdateFromModel(self)
 
         #  get the model size
-        width, height = self.GetModel().GetSize()
+        width, height = self.model.GetSize()
 
         #  get the diagram frame ratio between the shape and the model
         ratio = self.GetDiagram().GetPanel().currentZoom
@@ -320,4 +320,4 @@ class RectangleShape(Shape):
         ratio = self.GetDiagram().GetPanel().currentZoom
 
         # set the new size to the model.
-        self.GetModel().SetSize(round(width//ratio), round(height//ratio))
+        self.model.SetSize(round(width//ratio), round(height//ratio))

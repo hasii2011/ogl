@@ -294,7 +294,7 @@ class DiagramFrame(ScrolledWindow):
             if isinstance(shape, SizerShape):
                 # don't deselect the parent of a sizer
                 # or the parent sizer is detached
-                shapes.remove(shape.GetParent())
+                shapes.remove(shape.parent)
             elif isinstance(shape, ControlPoint):
                 # don't deselect the line of a control point
                 self.diagramFrameLogger.debug(f'{shape=}')
@@ -305,11 +305,11 @@ class DiagramFrame(ScrolledWindow):
             # deselect every other shape
             for s in shapes:
                 s.selected = False
-                s.SetMoving(False)
+                s.moving   = False
 
             self._selectedShapes = [cast(Shape, shape)]
             cast(Shape, shape).selected = True
-            cast(Shape, shape).SetMoving(True)
+            cast(Shape, shape).moving   = True
             self._clickedShape = cast(Shape, None)
             self.Refresh()
 
@@ -331,9 +331,9 @@ class DiagramFrame(ScrolledWindow):
                 x0, y0 = shape.GetTopLeft()
                 w0, h0 = shape.GetSize()
 
-                if shape.GetParent() is None and self._isShapeInRectangle(rect, x0=x0, y0=y0, w0=w0, h0=h0):
-                    shape.SetSelected(True)
-                    shape.SetMoving(True)
+                if shape.parent is None and self._isShapeInRectangle(rect, x0=x0, y0=y0, w0=w0, h0=h0):
+                    shape.selected = True
+                    shape.moving   = True
                     self._selectedShapes.append(shape)
             rect.Detach()
             self._selector = cast(RectangleShape, None)
@@ -344,11 +344,11 @@ class DiagramFrame(ScrolledWindow):
                 self.DeselectAllShapes()
                 self._selectedShapes = [clicked]
                 clicked.selected = True
-                clicked.SetMoving(True)
+                clicked.moving   = True
             else:
                 sel: bool = not clicked.selected
                 clicked.selected = sel
-                clicked.SetMoving(sel)
+                clicked.moving   = sel
                 if sel and clicked not in self._selectedShapes:
                     self._selectedShapes.append(clicked)
                 elif not sel and clicked in self._selectedShapes:
@@ -379,10 +379,10 @@ class DiagramFrame(ScrolledWindow):
         if clicked and not clicked.selected:
             self._selectedShapes.append(clicked)
             clicked.selected = True
-            clicked.SetMoving(True)
+            clicked.moving   = True
         self._clickedShape = cast(Shape, None)
         for shape in self._selectedShapes:
-            parent = shape.GetParent()
+            parent = shape.parent
             if parent is not None and parent.selected is True and not isinstance(shape, SizerShape):
                 continue
             ox, oy = self._lastMousePosition
@@ -493,7 +493,7 @@ class DiagramFrame(ScrolledWindow):
         """
         for shape in self._diagram.GetShapes():
             shape.selected = False
-            shape.SetMoving(False)
+            shape.moving   = False
         self._selectedShapes = []
 
     def Refresh(self, eraseBackground: bool = True, rect: Rect = None):
@@ -619,20 +619,22 @@ class DiagramFrame(ScrolledWindow):
             if saveBackground:
                 # first, draw every non-moving shape
                 for shape in shapes:
-                    if not shape.IsMoving():
+                    # if not shape.IsMoving():
+                    if shape.moving is False:
                         shape.Draw(dc)
                 # save the background
                 self.SaveBackground(dc)
                 # draw every moving shape
                 for shape in shapes:
-                    if shape.IsMoving():
+                    # if shape.IsMoving():
+                    if shape.moving is True:
                         shape.Draw(dc)
 
             # x, y = self.CalcUnScrolledPosition(0, 0)
             if useBackground:
                 # draw every moving shape
                 for shape in shapes:
-                    if shape.IsMoving():
+                    if shape.moving is True:
                         shape.Draw(dc)
                 # TODO: This code belongs in OnPaint
                 # if self._prefs.backgroundGridEnabled is True:
@@ -970,8 +972,8 @@ class DiagramFrame(ScrolledWindow):
         rect: RectangleShape = RectangleShape(x, y, 0, 0)
         self._selector = rect
         rect.SetDrawFrame(True)
-        rect.SetBrush(TRANSPARENT_BRUSH)
-        rect.SetMoving(True)
+        rect.brush  = TRANSPARENT_BRUSH
+        rect.moving = True
         self._diagram.AddShape(rect)
         self.PrepareBackground()
         self.Bind(EVT_MOTION, self._OnMoveSelector)

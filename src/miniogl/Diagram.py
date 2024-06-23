@@ -37,7 +37,7 @@ class Diagram:
         """
         if shape not in self._shapes:
             self._shapes.append(shape)
-        if shape not in self._parentShapes and shape.GetParent() is None:
+        if shape not in self._parentShapes and shape.parent is None:
             self._parentShapes.append(shape)
 
         self.clsLogger.debug(f'.AddShape before shape.Attach()=> {shape} withModelUpdate {withModelUpdate}')

@@ -15,7 +15,6 @@ from wx import MouseEvent
 from wx import Pen
 
 from wx import DC
-from wx import MemoryDC
 
 from miniogl.Shape import Shape
 from miniogl.RectangleShape import RectangleShape
@@ -184,7 +183,7 @@ class TextShape(RectangleShape):
         # get the diagram frame ratio between the shape and the model
         ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
 
-        fontSize = round(self.GetModel().GetFontSize() * ratio)
+        fontSize = round(self.model.GetFontSize() * ratio)
         TextShape.clsLogger.debug(f'UpdateFromModel - ratio: {ratio}')
 
         # set the new font size
@@ -206,7 +205,7 @@ class TextShape(RectangleShape):
         # TextShape.clsLogger.debug(f'UpdateModel - ratio: {ratio}')
         if self.font is not None:
             fontSize = self.font.GetPointSize() // ratio
-            self.GetModel().SetFontSize(fontSize)
+            self.model.SetFontSize(fontSize)
 
     # noinspection PyUnusedLocal
     def OnLeftDown(self, event: MouseEvent):

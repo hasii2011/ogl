@@ -645,7 +645,7 @@ class Shape:
             cx, cy = child.GetPosition()
             cmx = round((cx - dx) // ratio)
             cmy = round((cy - dy) // ratio)
-            child.GetModel().SetPosition(cmx, cmy)
+            child.model.SetPosition(cmx, cmy)
 
     def HasDiagramFrame(self):
         """
