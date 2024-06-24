@@ -229,6 +229,28 @@ class DiagramFrame(ScrolledWindow):
     def eventEngine(self) -> IOglEventEngine:
         return self._oglEventEngine
 
+    @property
+    def selectedShapes(self):
+        """
+        Get the selected shapes.
+
+        Beware, this is the list of the frame, but other shapes could be
+        selected and not declared to the frame.
+
+        Returns:  The selected shapes
+        """
+        return self._selectedShapes
+
+    @selectedShapes.setter
+    def selectedShapes(self, shapes: List[Shape]):
+        """
+        Set the list of selected shapes.
+
+        Args:
+            shapes:
+        """
+        self._selectedShapes = shapes
+
     def getEventPosition(self, event: MouseEvent):
         """
         Return the position of a click in the diagram.
