@@ -17,7 +17,7 @@ from ogl.OglClass import OglClass
 from ogl.OglComposition import OglComposition
 from ogl.OglInterface import OglInterface
 
-from tests.TestBase import TestBase
+from tests.ProjectTestBase import TestBase
 
 
 SOURCE_CLASS_NAME:      str = 'SourceClass'

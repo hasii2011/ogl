@@ -5,7 +5,7 @@ from unittest import main as unitTestMain
 from wx import Colour
 
 from miniogl.MiniOglColorEnum import MiniOglColorEnum
-from tests.TestBase import TestBase
+from tests.ProjectTestBase import TestBase
 
 
 class TestMiniOglColorEnum(TestBase):
@@ -13,7 +13,7 @@ class TestMiniOglColorEnum(TestBase):
     """
     def setUp(self):
         super().setUp()
-        
+
     def tearDown(self):
         super().tearDown()
 

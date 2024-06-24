@@ -2,7 +2,7 @@
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from tests.TestBase import TestBase
+from tests.ProjectTestBase import TestBase
 
 from miniogl.RectangleShape import RectangleShape
 

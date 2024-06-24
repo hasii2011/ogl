@@ -50,7 +50,7 @@ from ogl.events.OglEvents import RequestLollipopLocationEvent
 from ogl.events.OglEvents import ShapeSelectedEvent
 from ogl.events.ShapeSelectedEventData import ShapeSelectedEventData
 
-from tests.TestBase import TestBase
+from tests.ProjectTestBase import TestBase
 
 WINDOW_WIDTH:  int = 900
 WINDOW_HEIGHT: int = 500
