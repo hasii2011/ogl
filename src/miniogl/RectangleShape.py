@@ -7,7 +7,8 @@ from wx import DC
 from miniogl.Shape import Shape
 from miniogl.MiniOglUtils import sign
 from miniogl.SizerShape import SizerShape
-from miniogl.RectangleShapeModel import RectangleShapeModel
+
+from miniogl.models.RectangleShapeModel import RectangleShapeModel
 
 
 class RectangleShape(Shape):

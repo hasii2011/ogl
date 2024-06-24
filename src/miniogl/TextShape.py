@@ -18,7 +18,8 @@ from wx import DC
 
 from miniogl.Shape import Shape
 from miniogl.RectangleShape import RectangleShape
-from miniogl.TextShapeModel import TextShapeModel
+
+from miniogl.models.TextShapeModel import TextShapeModel
 
 
 TEXT_Y_MARGIN: int = 2

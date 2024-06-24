@@ -17,7 +17,7 @@ from wx import RED
 from wx import RED_PEN
 from wx import WHITE_BRUSH
 
-from miniogl.ShapeModel import ShapeModel
+from miniogl.models.ShapeModel import ShapeModel
 
 from ogl.preferences.OglPreferences import OglPreferences
 

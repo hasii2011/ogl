@@ -2,7 +2,7 @@
 
 from miniogl.RectangleShape import RectangleShape
 
-from miniogl.VShapes import VShape
+from miniogl.rotatable.VShapes import VShape
 
 
 class RotatableShape(RectangleShape):
