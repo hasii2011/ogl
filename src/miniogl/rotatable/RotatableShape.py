@@ -16,13 +16,15 @@ class RotatableShape(RectangleShape):
     """
     def __init__(self, x=0, y=0, width=0, height=0, parent=None):
         """
-        Constructor.
 
-        @param double x, y : position of the point
-        @param double width, height : size of the rectangle
-        @param Shape parent : parent shape
+        Args:
+            x:  position of the point
+            y:  position of the point
+            width: size of the rectangle
+            height: height of the rectangle
+            parent: parent shape
         """
-        RectangleShape.__init__(self, x, y, width, height, parent)
+        super().__init__(x=x, y=y, width=width, height=height, parent=parent)
         # this is the definition of the shape
         self._defineShape()
         self._angle = 0                                 # angle is in [0..3], by steps of 90 degrees
