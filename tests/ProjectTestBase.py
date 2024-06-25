@@ -3,7 +3,7 @@
 from codeallyadvanced.ui.UnitTestBaseW import UnitTestBaseW
 
 
-class TestBase(UnitTestBaseW):
+class ProjectTestBase(UnitTestBaseW):
     """
     Use the UI version
     """

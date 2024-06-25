@@ -50,7 +50,7 @@ from ogl.events.OglEvents import RequestLollipopLocationEvent
 from ogl.events.OglEvents import ShapeSelectedEvent
 from ogl.events.ShapeSelectedEventData import ShapeSelectedEventData
 
-from tests.ProjectTestBase import TestBase
+from tests.ProjectTestBase import ProjectTestBase
 
 WINDOW_WIDTH:  int = 900
 WINDOW_HEIGHT: int = 500
@@ -61,7 +61,7 @@ class AppTestOglEventEngine(App):
     # noinspection PyAttributeOutsideInit
     def OnInit(self):
 
-        TestBase.setUpLogging()
+        ProjectTestBase.setUpLogging()
 
         self.logger: Logger = getLogger(__name__)
 
@@ -205,7 +205,7 @@ class AppTestOglEventEngine(App):
 
     def _getFullyQualifiedImageFileName(self, imageFileName: str) -> str:
 
-        fqFileName: str = TestBase.getFullyQualifiedResourceFileName(TestBase.RESOURCES_TEST_IMAGES_PACKAGE_NAME, fileName=imageFileName)
+        fqFileName: str = ProjectTestBase.getFullyQualifiedResourceFileName(ProjectTestBase.RESOURCES_TEST_IMAGES_PACKAGE_NAME, fileName=imageFileName)
         return fqFileName
 
 

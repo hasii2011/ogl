@@ -17,7 +17,7 @@ from ogl.OglClass import OglClass
 from ogl.OglComposition import OglComposition
 from ogl.OglInterface import OglInterface
 
-from tests.ProjectTestBase import TestBase
+from tests.ProjectTestBase import ProjectTestBase
 
 
 SOURCE_CLASS_NAME:      str = 'SourceClass'
@@ -37,7 +37,7 @@ class LinkClasses:
     pyutLink:    PyutLink = cast(PyutLink, None)
 
 
-class TestLinkRepr(TestBase):
+class TestLinkRepr(ProjectTestBase):
     """
     This test class test multiple classes that subclass OglLink.  Usually,
     I have one test class per "tested" class.  However, since I am testing

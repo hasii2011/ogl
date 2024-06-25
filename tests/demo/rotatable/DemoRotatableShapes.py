@@ -20,10 +20,12 @@ from wx.lib.sized_controls import SizedFrame
 from wx.lib.sized_controls import SizedPanel
 
 from miniogl.Diagram import Diagram
-
 from miniogl.rotatable.RotatableShape import RotatableShape
 
-from tests.demo.DemoRotatableShapeFrame import DemoRotatableShapeFrame
+from tests.ProjectTestBase import ProjectTestBase
+
+from tests.demo.rotatable.DemoRotatableShapeFrame import DemoRotatableShapeFrame
+from tests.demo.rotatable.RotatableRectangle import RotatableRectangle
 
 FRAME_WIDTH:  int = 800
 FRAME_HEIGHT: int = 600
@@ -37,16 +39,22 @@ INCREMENT_Y: int = INITIAL_Y + 100
 
 class DemoRotatableShapes(App):
     def __init__(self):
+
+        ProjectTestBase.setUpLogging()
+
         self.logger: Logger = getLogger(__name__)
 
         self._frame:          SizedFrame            = cast(SizedFrame, None)
         self._diagramFrame:   DemoRotatableShapeFrame = cast(DemoRotatableShapeFrame, None)
         self._diagram:        Diagram               = cast(Diagram, None)
 
-        self._ID_DISPLAY_RECTANGLE:       int = wxNewIdRef()
+        self._ID_DISPLAY_RECTANGLE: int = wxNewIdRef()
+        self._ID_ROTATE_RECTANGLE:  int = wxNewIdRef()
 
-        self._x: int = 50
-        self._y: int = 50
+        self._x: int = 200
+        self._y: int = 200
+
+        self._rotatableShape: RotatableRectangle = cast(RotatableRectangle, None)
 
         super().__init__(redirect=False)
 
@@ -87,9 +95,11 @@ class DemoRotatableShapes(App):
         menuBar.Append(fileMenu, 'File')
         menuBar.Append(viewMenu, 'View')
 
-        viewMenu.Append(id=self._ID_DISPLAY_RECTANGLE,  item='Rectangle',       helpString='Display a Rectangle')
+        viewMenu.Append(id=self._ID_DISPLAY_RECTANGLE, item='Rectangle', helpString='Display a Rectangle')
+        viewMenu.Append(id=self._ID_ROTATE_RECTANGLE,  item='Rotate',    helpString='Rotate Rectangle')
 
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_RECTANGLE)
+        self.Bind(EVT_MENU, self._onRotateElement,  id=self._ID_ROTATE_RECTANGLE)
 
         self._frame.SetMenuBar(menuBar)
 
@@ -101,15 +111,22 @@ class DemoRotatableShapes(App):
             case _:
                 self.logger.error(f'WTH!  I am not handling that menu item')
 
+    # noinspection PyUnusedLocal
+    def _onRotateElement(self, event: CommandEvent):
+        self._rotatableShape.Rotate(clockwise=True)
+        self._diagramFrame.Refresh()
+
     def _displayRectangle(self):
 
-        rotatableShape: RotatableShape = RotatableShape()
+        rotatableShape: RotatableRectangle = RotatableRectangle()
+
+        rotatableShape.draggable = True
 
         self._addToDiagram(rotatableShape=rotatableShape)
 
-    def _addToDiagram(self, rotatableShape: RotatableShape):
+        self._rotatableShape = rotatableShape
 
-        rotatableShape.draggable = True
+    def _addToDiagram(self, rotatableShape: RotatableShape):
 
         x, y = self._getPosition()
         rotatableShape.SetPosition(x, y)

@@ -60,7 +60,7 @@ from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-from tests.ProjectTestBase import TestBase
+from tests.ProjectTestBase import ProjectTestBase
 
 from tests.demo.DemoEventEngine import DemoEventEngine
 from tests.demo.DemoEventEngine import EVT_SET_STATUS_TEXT
@@ -96,7 +96,7 @@ class DemoOglElements(App):
 
     def __init__(self, redirect: bool):
 
-        TestBase.setUpLogging()
+        ProjectTestBase.setUpLogging()
 
         self.logger:          Logger          = getLogger(__name__)
 

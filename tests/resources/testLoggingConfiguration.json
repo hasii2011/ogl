@@ -23,27 +23,15 @@
             "propagate": "False"
         },
         "__main__": {
-            "level": "WARNING",
+            "level": "INFO",
             "propagate": "False"
         },
         "hasiihelper.UnitTestBase": {
             "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl": {
-            "level":     "WARNING",
-            "propagate": "False"
-        },
-        "miniogl.DiagramFrame": {
-            "level":     "WARNING",
-            "propagate": "False"
-        },
-        "miniogl.TextShape": {
-            "level":     "WARNING",
-            "propagate": "False"
-        },
-        "ogl.OglAssociationLabel": {
-            "level":     "DEBUG",
+        "tests.demo.rotatable.DemoRotatableShapes": {
+            "level":     "INFO",
             "handlers":  ["consoleHandler"],
             "propagate": "False"
         }

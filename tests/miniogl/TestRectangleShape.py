@@ -2,7 +2,7 @@
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
-from tests.ProjectTestBase import TestBase
+from tests.ProjectTestBase import ProjectTestBase
 
 from miniogl.RectangleShape import RectangleShape
 
@@ -13,7 +13,7 @@ CANONICAL_WIDTH:  int = 100
 CANONICAL_HEIGHT: int = 100
 
 
-class TestRectangleShape(TestBase):
+class TestRectangleShape(ProjectTestBase):
     """
     """
     def setUp(self):
