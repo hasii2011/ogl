@@ -1,3 +1,4 @@
+
 from typing import cast
 
 from wx import Colour
@@ -5,6 +6,8 @@ from wx import DC
 from wx import Pen
 
 from miniogl.Shape import Shape
+
+POINT_SHAPE_WIDTH: int = 3
 
 
 class PointShape(Shape):
@@ -23,7 +26,8 @@ class PointShape(Shape):
             parent:  parent shape
         """
         super().__init__(x, y, parent)
-        self._selectZone:           int = PointShape.SELECTION_ZONE
+
+        self._selectionZone:       int  = PointShape.SELECTION_ZONE
         self._visibleWhenSelected: bool = True
 
         self.__penSaveColor: Colour = cast(Colour, None)
@@ -45,29 +49,29 @@ class PointShape(Shape):
 
             x, y = self.GetPosition()
             if not self._selected:
-                dc.DrawRectangle(x - 1, y - 1, 3, 3)
+                dc.DrawRectangle(x - 1, y - 1, POINT_SHAPE_WIDTH, POINT_SHAPE_WIDTH)
             else:
-                dc.DrawRectangle(x - 3, y - 3, 7, 7)
+                dc.DrawRectangle(x - POINT_SHAPE_WIDTH, y - POINT_SHAPE_WIDTH, 7, 7)
             if withChildren:
                 self.DrawChildren(dc)
 
-    def GetSelectionZone(self) -> int:
+    @property
+    def selectionZone(self) -> int:
         """
         Get the selection tolerance zone, in pixels.
-
-        Returns: half of the selection zone.
+        Returns: Half of the selection zone.
         """
+        return self._selectionZone
 
-        return self._selectZone
-
-    def SetSelectionZone(self, halfWidth: int):
+    @selectionZone.setter
+    def selectionZone(self, halfWidth: int):
         """
         Set the selection tolerance zone, in pixels.
 
         Args:
-            halfWidth: half of the selection zone.
+            halfWidth:  Half of the selection zone.
         """
-        self._selectZone = halfWidth
+        self._selectionZone = halfWidth
 
     def Inside(self, x: int, y: int):
         """
@@ -80,7 +84,7 @@ class PointShape(Shape):
 
         """
         ax, ay = self.GetPosition()     # GetPosition always returns absolute position
-        zone = self._selectZone
+        zone = self._selectionZone
         return (ax - zone < x < ax + zone) and (ay - zone < y < ay + zone)
 
     def SetVisibleWhenSelected(self, state: bool):

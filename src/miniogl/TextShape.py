@@ -119,23 +119,24 @@ class TextShape(RectangleShape):
         """
         return self._font
 
-    def SetTextBackground(self, color: Colour):
+    @property
+    def textBackground(self):
+        """
+        Get the text background color.
+
+        Returns:  The text background color
+        """
+        return self._textBackgroundColor
+
+    @textBackground.setter
+    def textBackground(self, color: Colour):
         """
         Set the text background color.
 
         Args:
-             color
+            color:
         """
-        self._textBackgroundColor = color
-
-    def GetTextBackground(self) -> Colour:
-        """
-        Get the text background color.
-
-        Returns:
-             the text background color
-        """
-        return self._textBackgroundColor
+        self._text = color
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """

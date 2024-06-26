@@ -26,8 +26,8 @@
             "level": "INFO",
             "propagate": "False"
         },
-        "hasiihelper.UnitTestBase": {
-            "level":     "WARNING",
+        "codeallybasic.UnitTestBase": {
+            "level":     "INFO",
             "propagate": "False"
         },
         "tests.demo.rotatable.DemoRotatableShapes": {

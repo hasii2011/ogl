@@ -129,12 +129,12 @@ class RotatableShape(RectangleShape):
             if not child.IsDraggable():
                 child.SetDraggable(True)
                 lock = True
-            x, y = VShape().Convert(1, x, y)
+            x, y = VShape.convert(1, x, y)
             child.SetRelativePosition(x, y)
             if lock:
                 child.SetDraggable(False)
-        self._width, self._height = VShape().Convert(1, self._width, self._height)
-        self._ox, self._oy = VShape().Convert(1, self._ox, self._oy)
+        self._width, self._height = VShape.convert(1, self._width, self._height)
+        self._ox, self._oy = VShape.convert(1, self._ox, self._oy)
 
     def Draw(self, dc, withChildren=True):
         """

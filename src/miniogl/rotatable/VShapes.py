@@ -1,19 +1,60 @@
 """
 This is a suite of small classes used to draw RotatableShapes.
-Each one represent a simple shape (line, rectangle, circle, ellipse...) or
-abstract command (color change).
+Each one represent a simple shape (line, rectangle, circle, ellipse...)
+or abstract command (color change).
 """
+from abc import ABC
+from abc import ABC
+from abc import abstractmethod
+
+from dataclasses import dataclass
+
+from wx import DC
 
 
-class VShape:
+@dataclass(kw_only=True)
+class VShapePosition:
+    x: int = 0
+    y: int = 0
+
+
+@dataclass(kw_only=True)
+class VShapeSize:
+    width:  int = 99
+    height: int = 49
+
+@dataclass
+class VBasicDetails(VShapePosition, VShapeSize):
+    pass
+
+
+@dataclass
+class VRectangleDetails( VBasicDetails):
+    pass
+
+
+@dataclass
+class VEllipseDetails(VBasicDetails):
+    pass
+
+
+@dataclass
+class ShapeData:
+    start:  int = 0
+    end:    int = 0
+    radius: int = 0
+
+
+class VShape(ABC):
     """
     Base VShape class.
 
     """
     def __init__(self):
-        self._data = ()
+        self._data: ShapeData = ShapeData()
 
-    def Convert(self, angle, x, y):
+    @classmethod
+    def convert(cls, angle, x, y):
         T = [
             [1, 0, 0, 1], [0, -1, 1, 0], [-1, 0, 0, -1], [0, 1, -1, 0]
         ]
@@ -21,59 +62,89 @@ class VShape:
         ny = T[angle][2] * x + T[angle][3] * y
         return nx, ny
 
+    @abstractmethod
     def SetAngle(self, angle):
         pass
 
-    def Scale(self, scale, data):
-        return map(lambda x: x * scale, data)
+    def Scale(self, factor, data):
+        return map(lambda x: x * factor, data)
 
 
-class VRectangle(VShape):
-    def __init__(self, x, y, w, h):
-        VShape.__init__(self)
-        self._data = (x, y, w, h)
+class VBasicShape(VShape, ABC):
+    def __init__(self, vBasicDetails: VBasicDetails):
+        super().__init__()
+
+        self._vBasicDetails: vBasicDetails = vBasicDetails
+
+    def scale(self, factor: int) -> VBasicDetails:
+
+        if factor == 1:
+            x: int = self._vBasicDetails.x
+            y: int = self._vBasicDetails.y
+            w: int = self._vBasicDetails.width
+            h: int = self._vBasicDetails.height
+        else:
+            x: int = self._vBasicDetails.x * factor
+            y: int = self._vBasicDetails.y * factor
+            w: int = self._vBasicDetails.width  * factor
+            h: int = self._vBasicDetails.height * factor
+
+        return VBasicDetails(x=x, y=y, width=w, height=h)
+
+
+class VRectangle(VBasicShape):
+    def __init__(self, vRectangleDetails: VRectangleDetails):
+        """
+
+        Args:
+            vRectangleDetails
+        """
+        super().__init__(vBasicDetails=vRectangleDetails)
 
     def SetAngle(self, angle):
-        x, y, w, h = self._data
-        x, y = self.Convert(angle, x, y)
-        w, h = self.Convert(angle, w, h)
-        self._data = (x, y, w, h)
+        x: int = self._vBasicDetails.x
+        y: int = self._vBasicDetails.y
+        w: int = self._vBasicDetails.width
+        h: int = self._vBasicDetails.height
 
-    def Draw(self, dc, ox, oy, scale):
-        if scale == 1:
-            x, y, w, h = self._data
-        else:
-            x, y, w, h = self.Scale(scale, self._data)
-        dc.DrawRectangle(ox + x, oy + y, w, h)
+        x, y = self.convert(angle, x, y)
+        w, h = self.convert(angle, w, h)
+        self._vBasicDetails = VRectangleDetails(x=x, y=y, width=w, height=h)
+
+    def Draw(self, dc: DC, ox, oy, scale):
+
+        scaledDetails: VBasicDetails = self.scale(scale)
+        dc.DrawRectangle(ox + scaledDetails.x, oy + scaledDetails.y, scaledDetails.width, scaledDetails.height)
 
 
-class VEllipse(VShape):
-    def __init__(self, x, y, w, h):
-        VShape.__init__(self)
-        self._data = (x, y, w, h)
+class VEllipse(VBasicShape):
+    def __init__(self, vEllipseDetails: VEllipseDetails):
+        super().__init__(vBasicDetails=vEllipseDetails)
 
     def SetAngle(self, angle):
-        x, y, w, h = self._data
-        x, y = self.Convert(angle, x, y)
-        w, h = self.Convert(angle, w, h)
-        self._data = (x, y, w, h)
+        x: int = self._vBasicDetails.x
+        y: int = self._vBasicDetails.y
+        w: int = self._vBasicDetails.width
+        h: int = self._vBasicDetails.height
+
+        x, y = self.convert(angle, x, y)
+        w, h = self.convert(angle, w, h)
+        self._vBasicDetails = VRectangleDetails(x=x, y=y, width=w, height=h)
 
     def Draw(self, dc, ox, oy, scale):
-        if scale == 1:
-            x, y, w, h = self._data
-        else:
-            x, y, w, h = self.Scale(scale, self._data)
-        dc.DrawEllipse(ox + x, oy + y, w, h)
+
+        scaledDetails: VBasicDetails = self.scale(scale)
+        dc.DrawEllipse(ox + scaledDetails.x, oy + scaledDetails.y, scaledDetails.width, scaledDetails.height)
 
 
 class VCircle(VShape):
     def __init__(self, x, y, r):
-        VShape.__init__(self)
-        self._data = (x, y, r)
+        super().__init__()
+        self._data = ShapeData(x=x, y=y, radius=r)
 
     def SetAngle(self, angle):
         x, y, r = self._data
-        x, y = self.Convert(angle, x, y)
+        x, y = self.convert(angle, x, y)
         self._data = (x, y, r)
 
     def Draw(self, dc, ox, oy, scale):
@@ -86,14 +157,14 @@ class VCircle(VShape):
 
 class VArc(VShape):
     def __init__(self, x1, y1, x2, y2, xc, yc):
-        VShape.__init__(self)
+        super().__init__()
         self._data = (x1, y1, x2, y2, xc, yc)
 
     def SetAngle(self, angle):
         x1, y1, x2, y2, xc, yc = self._data
-        x1, y1 = self.Convert(angle, x1, y1)
-        x2, y2 = self.Convert(angle, x2, y2)
-        xc, yc = self.Convert(angle, xc, yc)
+        x1, y1 = self.convert(angle, x1, y1)
+        x2, y2 = self.convert(angle, x2, y2)
+        xc, yc = self.convert(angle, xc, yc)
         self._data = (x1, y1, x2, y2, xc, yc)
 
     def Draw(self, dc, ox, oy, scale):
@@ -105,14 +176,14 @@ class VArc(VShape):
 
 
 class VEllipticArc(VShape):
-    def __init__(self, x, y, w, h, start, end):
-        VShape.__init__(self)
-        self._data = (x, y, w, h, start, end)
+    def __init__(self, x: int, y: int, w: int, h: int, start: int, end: int):
+        super().__init__()
+        self._data = ShapeData(x=x, y=y, width=w, height=h, start=start, end=end)
 
     def SetAngle(self, angle):
         x, y, w, h, start, end  = self._data
-        x, y = self.Convert(angle, x, y)
-        w, h = self.Convert(angle, w, h)
+        x, y = self.convert(angle, x, y)
+        w, h = self.convert(angle, w, h)
         start -= angle * 90
         end -= angle * 90
         self._data = (x, y, w, h, start, end)
@@ -128,13 +199,13 @@ class VEllipticArc(VShape):
 
 class VLineLength(VShape):
     def __init__(self, x, y, w, h):
-        VShape.__init__(self)
-        self._data = (x, y, w, h)
+        super().__init__()
+        self._data = ShapeData(x, y, w, h)
 
     def SetAngle(self, angle):
         x, y, w, h = self._data
-        x, y = self.Convert(angle, x, y)
-        w, h = self.Convert(angle, w, h)
+        x, y = self.convert(angle, x, y)
+        w, h = self.convert(angle, w, h)
         self._data = (x, y, w, h)
 
     def Draw(self, dc, ox, oy, scale):
@@ -148,13 +219,13 @@ class VLineLength(VShape):
 
 class VLineDest(VShape):
     def __init__(self, sx, sy, dx, dy):
-        VShape.__init__(self)
+        super().__init__()
         self._data = (sx, sy, dx, dy)
 
     def SetAngle(self, angle):
         sx, sy, dx, dy = self._data
-        sx, sy = self.Convert(angle, sx, sy)
-        dx, dy = self.Convert(angle, dx, dy)
+        sx, sy = self.convert(angle, sx, sy)
+        dx, dy = self.convert(angle, dx, dy)
         self._data = (sx, sy, dx, dy)
 
     def Draw(self, dc, ox, oy, scale):
@@ -167,13 +238,13 @@ class VLineDest(VShape):
 
 class VPolygon(VShape):
     def __init__(self, points):
-        VShape.__init__(self)
+        super().__init__()
         self._data = points
 
     def SetAngle(self, angle):
         new = []
         for x, y in self._data:
-            x, y = self.Convert(angle, x, y)
+            x, y = self.convert(angle, x, y)
             new.append((x, y))
         self._data = tuple(new)
 
@@ -189,8 +260,11 @@ class VPolygon(VShape):
 
 class VPen(VShape):
     def __init__(self, pen):
-        VShape.__init__(self)
+        super().__init__()
         self._pen = pen
+
+    def SetAngle(self, angle):
+        pass
 
     # noinspection PyUnusedLocal
     def Draw(self, dc, x, y, scale=1):
@@ -199,8 +273,11 @@ class VPen(VShape):
 
 class VBrush(VShape):
     def __init__(self, brush):
-        VShape.__init__(self)
+        super().__init__()
         self._brush = brush
+
+    def SetAngle(self, angle):
+        pass
 
     # noinspection PyUnusedLocal
     def Draw(self, dc, x, y, scale=1):
