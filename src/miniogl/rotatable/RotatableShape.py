@@ -26,10 +26,11 @@ class RotatableShape(RectangleShape):
         super().__init__(x=x, y=y, width=width, height=height, parent=parent)
         # this is the definition of the shape
         self._defineShape()
-        self._angle = 0                                 # angle is in [0..3], by steps of 90 degrees
+        self._angle: int = 0                           # angle is in [0..3], by steps of 90 degrees
         self._vShapes = self._SHAPES[0]                 # currently, used list of shapes
         self._InitRotations()                           # create the other rotations if necessary
-        self._scale = 1.0                               # scale of the shape
+
+        self._scale: int = 1                            # scale of the shape
         self._sox, self._soy = self._ox, self._oy       # ox, oy with scale == 1
         self._sw, self._sh = self._width, self._height  # width and height with scale == 1
 
@@ -144,7 +145,7 @@ class RotatableShape(RectangleShape):
         @param withChildren
         """
         if self._visible:
-            RectangleShape.Draw(self, dc, False)
+            super().Draw(dc, False)
             for shape in self._vShapes:
                 shape.Draw(dc, self._x, self._y, self._scale)
             if withChildren:

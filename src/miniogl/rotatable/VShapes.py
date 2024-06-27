@@ -23,6 +23,7 @@ class VShapeSize:
     width:  int = 99
     height: int = 49
 
+
 @dataclass
 class VBasicDetails(VShapePosition, VShapeSize):
     pass
@@ -36,6 +37,11 @@ class VRectangleDetails( VBasicDetails):
 @dataclass
 class VEllipseDetails(VBasicDetails):
     pass
+
+
+@dataclass
+class VCircleDetails(VShapePosition):
+    radius: int = 0
 
 
 @dataclass
@@ -138,21 +144,25 @@ class VEllipse(VBasicShape):
 
 
 class VCircle(VShape):
-    def __init__(self, x, y, r):
+    def __init__(self, vCircleDetails: VCircleDetails):
         super().__init__()
-        self._data = ShapeData(x=x, y=y, radius=r)
+        self._vCircleDetails: VCircleDetails = vCircleDetails
 
     def SetAngle(self, angle):
-        x, y, r = self._data
-        x, y = self.convert(angle, x, y)
-        self._data = (x, y, r)
+        x, y = self.convert(angle, self._vCircleDetails.x, self._vCircleDetails.y)
+        self._vCircleDetails = VCircleDetails(x=x, y=y, radius=self._vCircleDetails.radius)
 
     def Draw(self, dc, ox, oy, scale):
-        if scale == 1:
-            x, y, r = self._data
-        else:
-            x, y, r = self.Scale(scale, self._data)
-        dc.DrawCircle(ox + x, oy + y, r)
+        vCircleDetails: VCircleDetails = self.scale(scale)
+        dc.DrawCircle(ox + vCircleDetails.x, oy + vCircleDetails.y, vCircleDetails.radius)
+
+    def scale(self, factor: int) -> VCircleDetails:
+
+        x: int = self._vCircleDetails.x * factor
+        y: int = self._vCircleDetails.y * factor
+        r: int = self._vCircleDetails.radius * factor
+
+        return VCircleDetails(x=x, y=y, radius=r)
 
 
 class VArc(VShape):

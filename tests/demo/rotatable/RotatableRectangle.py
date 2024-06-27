@@ -3,6 +3,8 @@ from logging import Logger
 from logging import getLogger
 
 from miniogl.rotatable.RotatableShape import RotatableShape
+from miniogl.rotatable.VShapes import VCircle
+from miniogl.rotatable.VShapes import VCircleDetails
 
 from miniogl.rotatable.VShapes import VEllipse
 from miniogl.rotatable.VShapes import VEllipseDetails
@@ -27,7 +29,8 @@ class RotatableRectangle(RotatableShape):
         self._SHAPES = [
             [
                 VRectangle(VRectangleDetails(x=20,  y=20,  width=100, height=100)),
-                VEllipse(VEllipseDetails(x=40, y=40, width=20, height=20))
+                VEllipse(VEllipseDetails(x=40, y=40, width=20, height=10)),
+                VCircle(VCircleDetails(x=100, y=50, radius=15))
 
             ]
         ]
