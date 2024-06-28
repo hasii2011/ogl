@@ -24,9 +24,12 @@ class RotatableShape(RectangleShape):
             parent: parent shape
         """
         super().__init__(x=x, y=y, width=width, height=height, parent=parent)
+
+        self._drawFrame = False
+
         # this is the definition of the shape
         self._defineShape()
-        self._angle: int = 0                           # angle is in [0..3], by steps of 90 degrees
+        self._angle: int = 0                            # angle is in [0..3], by steps of 90 degrees
         self._vShapes = self._SHAPES[0]                 # currently, used list of shapes
         self._InitRotations()                           # create the other rotations if necessary
 

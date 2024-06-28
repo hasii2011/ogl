@@ -3,21 +3,16 @@ from logging import Logger
 from logging import getLogger
 
 from miniogl.rotatable.RotatableShape import RotatableShape
-from miniogl.rotatable.VShapes import VCircle
-from miniogl.rotatable.VShapes import VCircleDetails
-
-from miniogl.rotatable.VShapes import VEllipse
-from miniogl.rotatable.VShapes import VEllipseDetails
-from miniogl.rotatable.VShapes import VRectangle
-from miniogl.rotatable.VShapes import VRectangleDetails
+from miniogl.rotatable.VShapes import VArc
+from miniogl.rotatable.VShapes import VArcDetails
 
 
-class RotatableRectangle(RotatableShape):
+class RotatableArc(RotatableShape):
 
     def __init__(self):
+        super().__init__(x=100, y=120, width=225, height=225)
 
         self.logger: Logger = getLogger(__name__)
-        super().__init__(x=100, y=120, width=225, height=225)
 
     def _defineShape(self):
         """
@@ -28,12 +23,12 @@ class RotatableRectangle(RotatableShape):
         """
         self._SHAPES = [
             [
-                VRectangle(VRectangleDetails(x=20,  y=20,  width=100, height=100)),
+                VArc(VArcDetails(xStart=40, yStart=40, xEnd=80, yEnd=80, xCenter=60, yCenter=60)),
             ]
         ]
 
     def __repr__(self):
-        return f'RotatableRectangle'
+        return f'RotatableArc'
 
     def __str__(self):
         return self.__repr__()

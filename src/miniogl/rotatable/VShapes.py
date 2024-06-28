@@ -4,7 +4,6 @@ Each one represent a simple shape (line, rectangle, circle, ellipse...)
 or abstract command (color change).
 """
 from abc import ABC
-from abc import ABC
 from abc import abstractmethod
 
 from dataclasses import dataclass
@@ -42,6 +41,16 @@ class VEllipseDetails(VBasicDetails):
 @dataclass
 class VCircleDetails(VShapePosition):
     radius: int = 0
+
+
+@dataclass
+class VArcDetails:
+    xStart:  int = 0
+    yStart:  int = 0
+    xEnd:    int = 0
+    yEnd:    int = 0
+    xCenter: int = 0
+    yCenter: int = 0
 
 
 @dataclass
@@ -166,23 +175,45 @@ class VCircle(VShape):
 
 
 class VArc(VShape):
-    def __init__(self, x1, y1, x2, y2, xc, yc):
+    def __init__(self, vArcDetails: VArcDetails):
         super().__init__()
-        self._data = (x1, y1, x2, y2, xc, yc)
+        self._vArcDetails: VArcDetails = vArcDetails
 
     def SetAngle(self, angle):
-        x1, y1, x2, y2, xc, yc = self._data
+        # x1, y1, x2, y2, xc, yc = self._data
+        x1: int = self._vArcDetails.xStart
+        y1: int = self._vArcDetails.yStart
+        x2: int = self._vArcDetails.xEnd
+        y2: int = self._vArcDetails.yEnd
+        xc: int = self._vArcDetails.xCenter
+        yc: int = self._vArcDetails.yCenter
+
         x1, y1 = self.convert(angle, x1, y1)
         x2, y2 = self.convert(angle, x2, y2)
         xc, yc = self.convert(angle, xc, yc)
-        self._data = (x1, y1, x2, y2, xc, yc)
+        # self._data = (x1, y1, x2, y2, xc, yc)
+        self._vArcDetails = VArcDetails(xStart=x1, yStart=y1, xEnd=x2, yEnd=y2, xCenter=xc, yCenter=yc)
 
     def Draw(self, dc, ox, oy, scale):
-        if scale == 1:
-            x1, y1, x2, y2, xc, yc = self._data
-        else:
-            x1, y1, x2, y2, xc, yc = self.Scale(scale, self._data)
-        dc.DrawArc(ox + x1, oy + y1, ox + x2, oy + y2, ox + xc, oy + yc)
+        self._vArcDetails = self.scale(scale)
+        # dc.DrawArc(ox + x1, oy + y1, ox + x2, oy + y2, ox + xc, oy + yc)
+        dc.DrawArc(ox + self._vArcDetails.xStart,
+                   oy + self._vArcDetails.yStart,
+                   ox + self._vArcDetails.xEnd,
+                   oy + self._vArcDetails.yEnd,
+                   ox + self._vArcDetails.xCenter,
+                   oy + self._vArcDetails.yCenter)
+
+    def scale(self, factor: int) -> VArcDetails:
+
+        x1: int = self._vArcDetails.xStart * factor
+        y1: int = self._vArcDetails.yStart * factor
+        x2: int = self._vArcDetails.xEnd * factor
+        y2: int = self._vArcDetails.yEnd * factor
+        xc: int = self._vArcDetails.xCenter * factor
+        yc: int = self._vArcDetails.yCenter * factor
+
+        return VArcDetails(xStart=x1, yStart=y1, xEnd=x2, yEnd=y2, xCenter=xc, yCenter=yc)
 
 
 class VEllipticArc(VShape):

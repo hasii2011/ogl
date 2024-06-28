@@ -25,6 +25,9 @@ from wx.lib.sized_controls import SizedFrame
 
 from miniogl.rotatable.RotatableShape import RotatableShape
 from tests.demo.rotatable.DemoRotatableShapeFrame import DemoRotatableShapeFrame
+from tests.demo.rotatable.RotatableArc import RotatableArc
+from tests.demo.rotatable.RotatableCircle import RotatableCircle
+from tests.demo.rotatable.RotatableEllipse import RotatableEllipse
 from tests.demo.rotatable.RotatableRectangle import RotatableRectangle
 from tests.demo.rotatable.icons.rectangle64 import embeddedImage as ImgRectangle
 from tests.demo.rotatable.icons.redCircle32 import embeddedImage as ImgCircle
@@ -32,6 +35,8 @@ from tests.demo.rotatable.icons.ellipse32 import embeddedImage as ImgEllipse
 from tests.demo.rotatable.icons.polygon64 import embeddedImage as ImgPolygon
 from tests.demo.rotatable.icons.arc32 import embeddedImage as ImgArc
 from tests.demo.rotatable.icons.line32 import embeddedImage as ImgLine
+from tests.demo.rotatable.icons.rotateClockwise64 import embeddedImage as ImgRotateClockwise
+from tests.demo.rotatable.icons.rotateCounterClockwise64 import embeddedImage as ImgRotateCounterClockwise
 
 
 @dataclass
@@ -61,11 +66,17 @@ class DemoToolBarHandler:
         self._frame:        SizedFrame = frame
         self._diagramFrame: DemoRotatableShapeFrame = diagramFrame
 
-        self._ID_DISPLAY_RECTANGLE: WindowIDRef = wxNewIdRef()
-        self._ID_ROTATE_RECTANGLE:  WindowIDRef = wxNewIdRef()
+        self._ID_DISPLAY_RECTANGLE:        WindowIDRef = wxNewIdRef()
+        self._ID_DISPLAY_CIRCLE:           WindowIDRef = wxNewIdRef()
+        self._ID_DISPLAY_ELLIPSE:          WindowIDRef = wxNewIdRef()
+        self._ID_DISPLAY_ARC:              WindowIDRef = wxNewIdRef()
+        self._ID_ROTATE_CLOCKWISE:         WindowIDRef = wxNewIdRef()
+        self._ID_ROTATE_COUNTER_CLOCKWISE: WindowIDRef = wxNewIdRef()
 
         self._x: int = 200
         self._y: int = 200
+
+        self._rotatableShape: RotatableShape = cast(RotatableShape, None)
 
         self._tb.SetToolBitmapSize(Size(24, 24))
 
@@ -74,6 +85,11 @@ class DemoToolBarHandler:
             self._tb.AddTool(tDef.toolId, tDef.label, tDef.bitMap, tDef.shortHelp, tDef.itemKind)
 
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_RECTANGLE)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_CIRCLE)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_ELLIPSE)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_ARC)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_ROTATE_CLOCKWISE)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_ROTATE_COUNTER_CLOCKWISE)
 
     @property
     def toolbar(self) -> ToolBar:
@@ -84,11 +100,16 @@ class DemoToolBarHandler:
         toolBarDefinitions: ToolBarDefinitions = ToolBarDefinitions(
             [
                 ToolBarDefinition(label='Rectangle', bitMap=ImgRectangle.Bitmap, toolId=self._ID_DISPLAY_RECTANGLE, itemKind=ITEM_NORMAL, shortHelp='Rectangle'),
-                ToolBarDefinition(label='Circle',    bitMap=ImgCircle.Bitmap,    toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Circle'),
-                ToolBarDefinition(label='Ellipse',   bitMap=ImgEllipse.Bitmap,   toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Ellipse'),
+                ToolBarDefinition(label='Circle',    bitMap=ImgCircle.Bitmap,    toolId=self._ID_DISPLAY_CIRCLE,    itemKind=ITEM_NORMAL, shortHelp='Circle'),
+                ToolBarDefinition(label='Ellipse',   bitMap=ImgEllipse.Bitmap,   toolId=self._ID_DISPLAY_ELLIPSE,   itemKind=ITEM_NORMAL, shortHelp='Ellipse'),
                 ToolBarDefinition(label='Polygon',   bitMap=ImgPolygon.Bitmap,   toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Polygon'),
-                ToolBarDefinition(label='Arc',       bitMap=ImgArc.Bitmap,       toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Arc'),
+                ToolBarDefinition(label='Arc',       bitMap=ImgArc.Bitmap,       toolId=self._ID_DISPLAY_ARC,       itemKind=ITEM_NORMAL, shortHelp='Arc'),
                 ToolBarDefinition(label='Line',      bitMap=ImgLine.Bitmap,      toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Line'),
+
+                ToolBarDefinition(label='ClockWise',        bitMap=ImgRotateClockwise.Bitmap,        toolId=self._ID_ROTATE_CLOCKWISE,
+                                  itemKind=ITEM_NORMAL, shortHelp='Rotate Clockwise'),
+                ToolBarDefinition(label='CounterClockWise', bitMap=ImgRotateCounterClockwise.Bitmap, toolId=self._ID_ROTATE_COUNTER_CLOCKWISE,
+                                  itemKind=ITEM_NORMAL, shortHelp='Rotate CounterClockwise'),
             ]
         )
 
@@ -99,8 +120,18 @@ class DemoToolBarHandler:
         match toolId:
             case self._ID_DISPLAY_RECTANGLE:
                 self._displayRectangle()
+            case self._ID_DISPLAY_CIRCLE:
+                self._displayCircle()
+            case self._ID_DISPLAY_ELLIPSE:
+                self._displayEllipse()
+            case self._ID_DISPLAY_ARC:
+                self._displayArc()
+            case self._ID_ROTATE_CLOCKWISE:
+                self._rotateShape(clockWise=True)
+            case self._ID_ROTATE_COUNTER_CLOCKWISE:
+                self._rotateShape(clockWise=False)
             case _:
-                self.logger.error(f'WTH!  I am not handling that menu item')
+                self.logger.error(f'WTH!  I am not handling that menu item {toolId=}')
 
     def _displayRectangle(self):
 
@@ -108,7 +139,38 @@ class DemoToolBarHandler:
 
         rotatableShape.draggable = True
 
+        self._rotatableShape = rotatableShape
+
         self._addToDiagram(rotatableShape=rotatableShape)
+
+    def _displayCircle(self):
+
+        rotatableShape: RotatableCircle = RotatableCircle()
+        rotatableShape.draggable = True
+
+        self._rotatableShape = rotatableShape
+
+        self._addToDiagram(rotatableShape=rotatableShape)
+
+    def _displayEllipse(self):
+        rotatableShape: RotatableEllipse = RotatableEllipse()
+        rotatableShape.draggable = True
+
+        self._rotatableShape = rotatableShape
+
+        self._addToDiagram(rotatableShape=rotatableShape)
+
+    def _displayArc(self):
+        rotatableShape: RotatableArc = RotatableArc()
+        rotatableShape.draggable = True
+
+        self._rotatableShape = rotatableShape
+
+        self._addToDiagram(rotatableShape=rotatableShape)
+
+    def _rotateShape(self, clockWise: bool):
+        self._rotatableShape.Rotate(clockwise=clockWise)
+        self._diagramFrame.Refresh()
 
     def _addToDiagram(self, rotatableShape: RotatableShape):
 
