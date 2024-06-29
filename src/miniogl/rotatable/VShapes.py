@@ -3,10 +3,16 @@ This is a suite of small classes used to draw RotatableShapes.
 Each one represent a simple shape (line, rectangle, circle, ellipse...)
 or abstract command (color change).
 """
+from typing import List
+from typing import NewType
+
 from abc import ABC
 from abc import abstractmethod
 
 from dataclasses import dataclass
+
+from logging import Logger
+from logging import getLogger
 
 from wx import DC
 
@@ -15,6 +21,12 @@ from wx import DC
 class VShapePosition:
     x: int = 0
     y: int = 0
+
+    def __iter__(self):
+        return iter((self.x, self.y))
+
+
+VShapePositions = NewType('VShapePositions', List[VShapePosition])
 
 
 @dataclass(kw_only=True)
@@ -29,7 +41,7 @@ class VBasicDetails(VShapePosition, VShapeSize):
 
 
 @dataclass
-class VRectangleDetails( VBasicDetails):
+class VRectangleDetails(VBasicDetails):
     pass
 
 
@@ -57,7 +69,17 @@ class VArcDetails:
 class ShapeData:
     start:  int = 0
     end:    int = 0
-    radius: int = 0
+    w:      int = 0
+    h:      int = 0
+
+
+@dataclass(kw_only=True)
+class VEllipticArcDetails(VBasicDetails):
+    start: int = 0
+    end:   int = 0
+
+    def __iter__(self):
+        return iter((self.x, self.y, self.width, self.height, self.start, self.end))
 
 
 class VShape(ABC):
@@ -217,24 +239,26 @@ class VArc(VShape):
 
 
 class VEllipticArc(VShape):
-    def __init__(self, x: int, y: int, w: int, h: int, start: int, end: int):
+    def __init__(self, details: VEllipticArcDetails):
         super().__init__()
-        self._data = ShapeData(x=x, y=y, width=w, height=h, start=start, end=end)
+        self.logger: Logger = getLogger(__name__)
+        self._details: VEllipticArcDetails = details
 
     def SetAngle(self, angle):
-        x, y, w, h, start, end  = self._data
+        x, y, w, h, start, end  = self._details
         x, y = self.convert(angle, x, y)
         w, h = self.convert(angle, w, h)
         start -= angle * 90
         end -= angle * 90
-        self._data = (x, y, w, h, start, end)
+        self._details = VEllipticArcDetails(x=x, y=y, width=w, height=h, start=start, end=end)
 
     def Draw(self, dc, ox, oy, scale):
         if scale == 1:
-            x, y, w, h, start, end  = self._data
+            x, y, w, h, start, end  = self._details
+            self.logger.debug(f'Draw: {self._details=}')
         else:
-            x, y, w, h = self.Scale(scale, self._data[0:4])
-            start, end = self._data[4:]
+            x, y, w, h = self.Scale(scale, self._details[0:4])
+            start, end = self._details[4:]
         dc.DrawEllipticArc(ox + x, oy + y, w, h, start, end)
 
 
@@ -278,20 +302,20 @@ class VLineDest(VShape):
 
 
 class VPolygon(VShape):
-    def __init__(self, points):
+    def __init__(self, points: VShapePositions):
         super().__init__()
-        self._data = points
+        self._points = points
 
     def SetAngle(self, angle):
         new = []
-        for x, y in self._data:
+        for x, y in self._points:
             x, y = self.convert(angle, x, y)
             new.append((x, y))
         self._data = tuple(new)
 
     def Draw(self, dc, ox, oy, scale):
         if scale == 1:
-            points = self._data
+            points = self._points
         else:
             points = []
             for x, y in self._data:
