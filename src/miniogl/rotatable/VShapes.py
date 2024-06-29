@@ -5,6 +5,7 @@ or abstract command (color change).
 """
 from typing import List
 from typing import NewType
+from typing import cast
 
 from abc import ABC
 from abc import abstractmethod
@@ -88,7 +89,7 @@ class VShape(ABC):
 
     """
     def __init__(self):
-        self._data: ShapeData = ShapeData()
+        pass
 
     @classmethod
     def convert(cls, angle, x, y):
@@ -307,19 +308,38 @@ class VPolygon(VShape):
         self._points = points
 
     def SetAngle(self, angle):
-        new = []
-        for x, y in self._points:
+        new: VShapePositions = VShapePositions([])
+
+        for pt in self._points:
+            vShapePosition: VShapePosition = cast(VShapePosition, pt)
+            x: int = vShapePosition.x
+            y: int = vShapePosition.y
+
             x, y = self.convert(angle, x, y)
-            new.append((x, y))
-        self._data = tuple(new)
+            newPt: VShapePosition = VShapePosition(x=x, y=y)
+            new.append(newPt)
+
+        self._points = tuple(new)
 
     def Draw(self, dc, ox, oy, scale):
         if scale == 1:
-            points = self._points
+            points = []
+            for pt in self._points:
+                vShapePosition: VShapePosition = cast(VShapePosition, pt)
+                x: int = vShapePosition.x
+                y: int = vShapePosition.y
+
+                points.append((x, y))
         else:
             points = []
-            for x, y in self._data:
+            for pt in self._points:
+                vShapePosition: VShapePosition = cast(VShapePosition, pt)
+
+                x: int = vShapePosition.x
+                y: int = vShapePosition.y
+
                 points.append(tuple(self.Scale(scale, (x, y))))
+
         dc.DrawPolygon(points, ox, oy)
 
 

@@ -29,6 +29,7 @@ from tests.demo.rotatable.RotatableArc import RotatableArc
 from tests.demo.rotatable.RotatableCircle import RotatableCircle
 from tests.demo.rotatable.RotatableEllipse import RotatableEllipse
 from tests.demo.rotatable.RotatableEllipticArc import RotatableEllipticArc
+from tests.demo.rotatable.RotatablePolygon import RotatablePolygon
 from tests.demo.rotatable.RotatableRectangle import RotatableRectangle
 from tests.demo.rotatable.icons.rectangle64 import embeddedImage as ImgRectangle
 from tests.demo.rotatable.icons.redCircle32 import embeddedImage as ImgCircle
@@ -61,6 +62,7 @@ INCREMENT_Y: int = INITIAL_Y + 100
 
 NO_ROTATABLE_SHAPE = cast(RotatableShape, None)
 
+
 class DemoToolBarHandler:
     def __init__(self, frame: SizedFrame, diagramFrame: DemoRotatableShapeFrame):
 
@@ -71,6 +73,7 @@ class DemoToolBarHandler:
         self._diagramFrame: DemoRotatableShapeFrame = diagramFrame
 
         self._ID_CLEAR:                    WindowIDRef = wxNewIdRef()
+        self._ID_DISPLAY_POLYGON:                  WindowIDRef = wxNewIdRef()
         self._ID_DISPLAY_RECTANGLE:        WindowIDRef = wxNewIdRef()
         self._ID_DISPLAY_CIRCLE:           WindowIDRef = wxNewIdRef()
         self._ID_DISPLAY_ELLIPSE:          WindowIDRef = wxNewIdRef()
@@ -95,6 +98,7 @@ class DemoToolBarHandler:
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_CIRCLE)
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_ELLIPSE)
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_ARC)
+        self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_POLYGON)
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_DISPLAY_ELLIPTICAL_ARC)
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_ROTATE_CLOCKWISE)
         self._frame.Bind(EVT_TOOL, self._onDisplayElement, id=self._ID_ROTATE_COUNTER_CLOCKWISE)
@@ -112,8 +116,9 @@ class DemoToolBarHandler:
                 ToolBarDefinition(label='Circle',    bitMap=ImgCircle.Bitmap,    toolId=self._ID_DISPLAY_CIRCLE,    itemKind=ITEM_NORMAL, shortHelp='Circle'),
                 ToolBarDefinition(label='Ellipse',   bitMap=ImgEllipse.Bitmap,   toolId=self._ID_DISPLAY_ELLIPSE,   itemKind=ITEM_NORMAL, shortHelp='Ellipse'),
                 ToolBarDefinition(label='Arc',       bitMap=ImgArc.Bitmap,       toolId=self._ID_DISPLAY_ARC,       itemKind=ITEM_NORMAL, shortHelp='Arc'),
-                ToolBarDefinition(label='Line',      bitMap=ImgLine.Bitmap,      toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Line'),
-                ToolBarDefinition(label='Polygon', bitMap=ImgPolygon.Bitmap, toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Polygon'),
+                ToolBarDefinition(label='Polygon', bitMap=ImgPolygon.Bitmap,     toolId=self._ID_DISPLAY_POLYGON,   itemKind=ITEM_NORMAL, shortHelp='Polygon'),
+
+                ToolBarDefinition(label='Line', bitMap=ImgLine.Bitmap, toolId=wxNewIdRef(), itemKind=ITEM_NORMAL, shortHelp='Line'),
 
                 ToolBarDefinition(label='Elliptical Arc',   bitMap=ImgEllipticalArc.Bitmap,          toolId=self._ID_DISPLAY_ELLIPTICAL_ARC,
                                   itemKind=ITEM_NORMAL, shortHelp='Elliptical Arc'),
@@ -139,6 +144,8 @@ class DemoToolBarHandler:
                 self._displayEllipse()
             case self._ID_DISPLAY_ARC:
                 self._displayArc()
+            case self._ID_DISPLAY_POLYGON:
+                self._displayPolygon()
             case self._ID_DISPLAY_ELLIPTICAL_ARC:
                 self._displayEllipticalArc()
             case self._ID_ROTATE_CLOCKWISE:
@@ -183,6 +190,9 @@ class DemoToolBarHandler:
 
     def _displayArc(self):
         self._finishDisplay(RotatableArc())
+
+    def _displayPolygon(self):
+        self._finishDisplay(RotatablePolygon())
 
     def _displayEllipticalArc(self):
         self._finishDisplay(RotatableEllipticArc())
