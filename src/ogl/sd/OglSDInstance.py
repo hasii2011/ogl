@@ -169,7 +169,7 @@ class OglSDInstance(OglObject):
         lifeLineShape: LineShape = LineShape(src, dst)
 
         lifeLineShape.parent = self
-        lifeLineShape.SetDrawArrow(False)
+        lifeLineShape.drawArrow = False
         lifeLineShape.draggable = True
         lifeLineShape.pen       = BLACK_DASHED_PEN
         lifeLineShape.visible   = True

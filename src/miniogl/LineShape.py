@@ -4,6 +4,7 @@ from typing import List
 from typing import NewType
 from typing import Tuple
 from typing import Union
+from typing import TYPE_CHECKING
 
 from logging import Logger
 from logging import getLogger
@@ -15,14 +16,17 @@ from wx import RED_PEN
 from miniogl.Common import Common
 from miniogl.Common import CommonLine
 from miniogl.Common import CommonPoint
-from miniogl.LinePoint import LinePoint
+if TYPE_CHECKING:
+    from miniogl.LinePoint import LinePoint
+
+from miniogl.LinePoint import ControlPoints
+
 from miniogl.Shape import Shape
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.ControlPoint import ControlPoint
 
-ControlPoints = NewType('ControlPoints', List[LinePoint])
-SegmentPoint  = NewType('SegmentPoint', Tuple[int, int])
-Segments      = NewType('Segments', List[SegmentPoint])
+SegmentPoint  = NewType('SegmentPoint',  Tuple[int, int])
+Segments      = NewType('Segments',      List[SegmentPoint])
 
 
 class LineShape(Shape, Common):
@@ -71,6 +75,7 @@ class LineShape(Shape, Common):
 
     @property
     def segments(self) -> Segments:
+        from miniogl.LinePoint import LinePoint
         """
         The source anchor is the first, The destination anchor is the last.   The
         control points if any are the intermediate SegmentPoint
@@ -106,6 +111,52 @@ class LineShape(Shape, Common):
         """
         self._spline = state
 
+    @property
+    def selected(self) -> bool:
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        self._selected = state
+        for cp in self._controls:
+            ctrl: ControlPoint = cast(ControlPoint, cp)
+            ctrl.visible = state
+
+    @property
+    def drawArrow(self) -> bool:
+        """
+
+        Returns: `True` if we draw an arrow head, else `False`
+        """
+        return self._drawArrow
+
+    @drawArrow.setter
+    def drawArrow(self, draw: bool):
+        """
+        Set to `True` if you want to have an arrow head at the destination.
+        Args:
+            draw:
+
+        """
+        self._drawArrow = draw
+
+    @property
+    def arrowSize(self) -> int:
+        """
+        Returns:  The size of the arrow head, in pixels.
+        """
+        return self._arrowSize
+
+    @arrowSize.setter
+    def arrowSize(self, size: int):
+        """
+        Set the size of the arrow head, in pixels.
+
+        Args:
+            size:
+        """
+        self._arrowSize = size
+
     def GetPosition(self):
         """
         Return the absolute position of the shape.
@@ -126,7 +177,7 @@ class LineShape(Shape, Common):
             # odd number, take the middle point
             return points[middle]
 
-    def AddControl(self, control: Union[ControlPoint, LinePoint], after: Union[ControlPoint, LinePoint] | None):
+    def AddControl(self, control: Union[ControlPoint, 'LinePoint'], after: Union[ControlPoint, 'LinePoint'] | None):
         """
         Add a control point to the line.
         The control point can be appended (last before the destination anchor)
@@ -154,38 +205,6 @@ class LineShape(Shape, Common):
         # add the point to the diagram so that it can be selected
         if self._diagram is not None:
             self._diagram.AddShape(control)
-
-    def SetDrawArrow(self, draw: bool):
-        """
-        Set to True if you want to have an arrow head at the destination.
-
-        @param  draw
-        """
-        self._drawArrow = draw
-
-    def GetDrawArrow(self):
-        """
-        Tells if an arrow head will be drawn.
-
-        @return bool
-        """
-        return self._drawArrow
-
-    def SetArrowSize(self, size):
-        """
-        Set the size of the arrow head, in pixels.
-
-        @param  size
-        """
-        self._arrowSize = size
-
-    def GetArrowSize(self):
-        """
-        Get the size of the arrow head, in pixels.
-
-        @return double size
-        """
-        return self._arrowSize
 
     def GetControlPoints(self) -> ControlPoints:
         """
@@ -376,14 +395,5 @@ class LineShape(Shape, Common):
 
         return points
 
-    def SetSelected(self, state: bool = True):
-        """
-        Select the shape (default) or not
 
-        Args:
-            state:
-        """
-        # Shape.selected = state
-        self._selected = state
-        for ctrl in self._controls:
-            ctrl.SetVisible(state)
+LineShapes = NewType('LineShapes', List[LineShape])

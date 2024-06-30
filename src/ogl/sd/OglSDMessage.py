@@ -63,7 +63,7 @@ class OglSDMessage(OglLink):
 
         self._messageLabel: TextShape = self.AddText(centerMessageX, centerMessageY, pyutSDMessage.message)  # font=self._defaultFont
         self.updateMessage()
-        self.SetDrawArrow(True)
+        self.drawArrow = True
 
         assert isinstance(srcSDInstance, OglSDInstance), 'Developer Error, src of message should be an instance'
         assert isinstance(dstSDInstance, OglSDInstance), 'Developer Error, dst of message should be an instance'

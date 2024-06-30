@@ -2,6 +2,7 @@
 from logging import Logger
 from logging import getLogger
 
+from wx import Brush
 from wx import DC
 from wx import Pen
 
@@ -28,7 +29,6 @@ class OglInterface(OglLink):
     clsLogger: Logger = getLogger(__name__)
 
     def __init__(self, srcShape: OglClass, pyutLink: PyutLink, dstShape: OglClass, srcPos=None, dstPos=None):
-
         """
 
         Args:
@@ -41,14 +41,13 @@ class OglInterface(OglLink):
         """
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
 
-        self.pen = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
-        self.brush = WHITE_BRUSH
-
+        self.pen:    Pen       = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
+        self.brush:  Brush     = WHITE_BRUSH
         self._label: TextShape = self.AddText(0, 0, "")
 
         # Initialize label objects
         self.updateLabels()
-        self.SetDrawArrow(True)
+        self.drawArrow = True
 
     @property
     def label(self) -> TextShape:

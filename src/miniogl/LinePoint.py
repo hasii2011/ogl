@@ -1,5 +1,11 @@
-
 from typing import List
+from typing import NewType
+from typing import cast
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from miniogl.LineShape import LineShapes
 
 from miniogl.PointShape import PointShape
 
@@ -16,9 +22,10 @@ class LinePoint(PointShape):
             y:  ordinate of point
             parent:     parent shape
         """
-        #  print ">>>LinePoint ", x, y
+        from miniogl.LineShape import LineShapes
+
         super().__init__(x, y, parent)
-        self._lines: List = []    # a list of LineShape(s) passing through this point
+        self._lines: LineShapes = LineShapes([])    # LineShape(s) passing through this point
 
     def AddLine(self, line):
         """
@@ -38,12 +45,13 @@ class LinePoint(PointShape):
             line.Remove(self)
         self._lines = []
 
-    def GetLines(self):
+    @property
+    def lines(self) -> 'LineShapes':
         """
-        Get the lines passing through this point.
+        Return the lines passing through this point.
         Modifying the returned list won't modify the point itself.
 
-        @return LineShape []
+        Returns:  A copy
         """
         return self._lines[:]
 
@@ -55,19 +63,6 @@ class LinePoint(PointShape):
         """
         if line in self._lines:
             self._lines.remove(line)
-
-    # def SetMoving(self, state: bool):
-    #     """
-    #     A non-moving shape will be redrawn faster when others are moved.
-    #     See DiagramFrame.Refresh for more information.
-    #
-    #     Args:
-    #         state:
-    #     """
-    #     # PointShape.SetMoving(self, state)
-    #     self.moving = state
-    #     for line in self._lines:
-    #         line.SetMoving(state)
 
     @property
     def moving(self) -> bool:
@@ -82,6 +77,12 @@ class LinePoint(PointShape):
         Args:
             state:
         """
+        from miniogl.LineShape import LineShape
+
         self._moving = state
-        for line in self._lines:
+        for ll in self._lines:
+            line: LineShape = cast(LineShape, ll)
             line.moving = state
+
+
+ControlPoints = NewType('ControlPoints', List[LinePoint])

@@ -73,6 +73,25 @@ class PointShape(Shape):
         """
         self._selectionZone = halfWidth
 
+    @property
+    def visibleWhenSelected(self) -> bool:
+        """
+        Return the "visible when selected flag".
+
+        Returns:  True if the shape is always visible when selected
+        """
+        return self._visibleWhenSelected
+
+    @visibleWhenSelected.setter
+    def visibleWhenSelected(self, state: bool):
+        """
+        Set to True if you want the point to always be visible when it's selected.
+
+        Args:
+            state:
+        """
+        self._visibleWhenSelected = state
+
     def Inside(self, x: int, y: int):
         """
 
@@ -86,22 +105,6 @@ class PointShape(Shape):
         ax, ay = self.GetPosition()     # GetPosition always returns absolute position
         zone = self._selectionZone
         return (ax - zone < x < ax + zone) and (ay - zone < y < ay + zone)
-
-    def SetVisibleWhenSelected(self, state: bool):
-        """
-        Set to True if you want the point to always be visible when it's selected.
-
-        @param  state
-        """
-        self._visibleWhenSelected = state
-
-    def GetVisibleWhenSelected(self):
-        """
-        Return the "visible when selected flag".
-
-        @return bool True if the shape is always visible when selected
-        """
-        return self._visibleWhenSelected
 
     def __resetPenColor(self, dc: DC):
 

@@ -83,9 +83,9 @@ class AppTestMiniOglApp(App):
         anchor2.draggable = True
 
         lineShape: LineShape = LineShape(anchor1, anchor2)
-        lineShape.SetDrawArrow(False)
+        lineShape.drawArrow = False
         lineShape.draggable = True
-        lineShape.spline = False
+        lineShape.spline    = False
 
         controlPoint: ControlPoint = ControlPoint(50, 150, None)
         lineShape.AddControl(controlPoint, None)

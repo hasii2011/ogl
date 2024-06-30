@@ -27,7 +27,7 @@ class OglAggregation(OglAssociation):
         super().__init__(srcShape, pyutLink, dstShape, dstPos=dstPos, srcPos=srcPos)
 
         self.logger: Logger = getLogger(__name__)
-        self.SetDrawArrow(True)
+        self.drawArrow = True
 
     def Draw(self, dc: DC, withChildren: bool = False):
         """

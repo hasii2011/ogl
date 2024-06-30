@@ -28,7 +28,7 @@ class OglNoteLink(OglLink):
             dstShape: Destination shape
         """
         super().__init__(srcShape, pyutLink, dstShape)
-        self.SetDrawArrow(False)
+        self.drawArrow = False
         self.pen = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
 
     def __repr__(self):

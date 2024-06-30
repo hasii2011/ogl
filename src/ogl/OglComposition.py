@@ -26,7 +26,7 @@ class OglComposition(OglAssociation):
         """
 
         super().__init__(srcShape, pyutLink, dstShape, srcPos=srcPos, dstPos=dstPos)
-        self.SetDrawArrow(True)
+        self.drawArrow = True
 
     def Draw(self, dc: DC, withChildren: bool = False):
         """

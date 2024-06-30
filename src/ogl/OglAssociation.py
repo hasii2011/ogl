@@ -75,7 +75,7 @@ class OglAssociation(OglLink):
         self._sourceCardinality:      OglAssociationLabel = cast(OglAssociationLabel, None)
         self._destinationCardinality: OglAssociationLabel = cast(OglAssociationLabel, None)
 
-        self.SetDrawArrow(False)
+        self.drawArrow = False
 
     @property
     def pyutObject(self) -> PyutLink:
