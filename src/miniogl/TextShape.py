@@ -76,7 +76,7 @@ class TextShape(RectangleShape):
         """
         # RectangleShape.Attach(self, diagram)
         super().Attach(diagram)
-        self._textBackgroundColor = self._diagram.GetPanel().GetBackgroundColour()
+        self._textBackgroundColor = self._diagram.panel.GetBackgroundColour()
 
     @property
     def text(self) -> str:
@@ -183,7 +183,7 @@ class TextShape(RectangleShape):
         # RectangleShape.UpdateFromModel(self)
         super().UpdateFromModel()
         # get the diagram frame ratio between the shape and the model
-        ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
+        ratio = self.diagram.panel.currentZoom
 
         fontSize = round(self.model.GetFontSize() * ratio)
         TextShape.clsLogger.debug(f'UpdateFromModel - ratio: {ratio}')
@@ -202,7 +202,7 @@ class TextShape(RectangleShape):
 
         # get the ratio between the model and the shape (view) from
         # the diagram frame where the shape is displayed.
-        ratio = self.GetDiagram().GetPanel().currentZoom
+        ratio = self.diagram.panel.currentZoom
 
         # TextShape.clsLogger.debug(f'UpdateModel - ratio: {ratio}')
         if self.font is not None:
