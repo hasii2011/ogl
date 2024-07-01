@@ -223,6 +223,38 @@ class Shape:
         """
         self._pen = pen
 
+    @property
+    def anchors(self):
+        """
+
+        Returns: The list of shape anchors
+        """
+        return self._anchors[:]     # Funky Python notation that creates a copy
+
+    @property
+    def topLeft(self) -> Tuple[int, int]:
+        """
+        The coordinates of the top left point in diagram coordinates.
+
+        Returns:  The top left shape position as a tuple
+        """
+
+        x, y = self.GetPosition()
+        x -= self._ox
+        y -= self._oy
+        return x, y
+
+    @property
+    def children(self) -> List:
+        """
+        Not recursively, only get first level children.
+        It's a copy of the original list, modifying it won't modify the
+        original.
+
+        Returns: The shape children
+        """
+        return self._children[:]
+
     def SetOrigin(self, x: int, y: int):
         """
         Set the origin of the shape, from its upper left corner.
@@ -264,16 +296,16 @@ class Shape:
             shapes.append(child.GetAllChildren())
         return shapes
 
-    def GetChildren(self):
-        """
-        Get the children of this shape.
-        Not recursively, only get first level children.
-        It's a copy of the original list, modifying it won't modify the
-        original.
-
-        @return Shape []
-        """
-        return self._children[:]
+    # def GetChildren(self):
+    #     """
+    #     Get the children of this shape.
+    #     Not recursively, only get first level children.
+    #     It's a copy of the original list, modifying it won't modify the
+    #     original.
+    #
+    #     @return Shape []
+    #     """
+    #     return self._children[:]
 
     def AddAnchor(self, x: int, y: int, anchorType=None):
         """
@@ -378,13 +410,13 @@ class Shape:
             # detach the anchors + children
             while self._anchors:
                 child = self._anchors[0]
-                child.SetProtected(False)
+                child.protected = False
                 child.Detach()
-                child.SetProtected(True)
+                child.protected = True
             for child in self._children + self._privateChildren:
-                child.SetProtected(False)
+                child.protected = False
                 child.Detach()
-                child.SetProtected(True)
+                child.protected = True
 
             # Shape.clsLogger.debug("now, the shapes are", diagram.GetShapes())
 
@@ -421,42 +453,31 @@ class Shape:
         """
         if self._visible:
             for child in self._children + self._anchors + self._privateChildren:
-                # Shape.clsLogger.debug(f'DrawChildren {child=} {child._selected=}')
                 child.Draw(dc)
 
-    def DrawBorder(self, dc):
+    def DrawBorder(self, dc: DC):
         """
-        Draw the border of the shape, for fast rendering.
-
-        @param dc
+        Draw the shape border
+        Args:
+            dc:
         """
         pass
 
-    def DrawAnchors(self, dc):
+    def DrawAnchors(self, dc: DC):
         """
-        Draw the anchors of the shape.
-
-        @param dc
+        Draw the shape anchors
+        Args:
+            dc:
         """
-        #  print "Shape.DrawAnchors; shape=", self, ", anchors=", self._anchors
         map(lambda x: x.Draw(dc), self._anchors)
 
     def DrawHandles(self, dc: DC):
         """
-        Draw the handles (selection points) of the shape.
-        A shape has no handles, because it has no size.
-
-        @param  dc
+        Draw the shape handles (selection points)
+        Args:
+            dc:
         """
         pass
-
-    def GetAnchors(self):
-        """
-        Return a list of the anchors of the shape.
-
-        @return AnchorPoint []
-        """
-        return self._anchors[:]     # Funky Python notation that creates a copy
 
     def GetPosition(self) -> Tuple[int, int]:
         """
@@ -471,17 +492,6 @@ class Shape:
             return self._x + x, self._y + y
         else:
             return self._x, self._y
-
-    def GetTopLeft(self):
-        """
-        Get the coordinates of the top left point in diagram coordinates.
-
-        @return (double, double)
-        """
-        x, y = self.GetPosition()
-        x -= self._ox
-        y -= self._oy
-        return x, y
 
     def GetSize(self) -> Tuple[int, int]:
         """
@@ -696,6 +706,5 @@ class Shape:
         textShape: TextShape = TextShape(x, y, text, parent=self, font=font)
         if self._diagram is not None:
             self._diagram.AddShape(textShape)
-        # Shape.clsLogger.debug(f'_CreateTextShape - {textShape=} added at {x=} {y=}')
 
         return textShape

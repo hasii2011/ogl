@@ -244,7 +244,7 @@ class OglClass(OglObject):
         from miniogl.Shape import Shape
 
         selectData: ClickedOnSelectAnchorPointData = ClickedOnSelectAnchorPointData(clicked=False)
-        anchors = self.GetAnchors()
+        anchors = self.anchors
         for shape in anchors:
             child: Shape = cast(Shape, shape)
             if isinstance(child, SelectAnchorPoint):
