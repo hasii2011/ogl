@@ -229,7 +229,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         # I hate lambdas -- humberto
         menu.Bind(EVT_MENU, lambda evt, data=clickPoint: self._onMenuItemSelected(evt, data))
 
-        frame = self._diagram.GetPanel()
+        frame = self._diagram.panel
         frame.PopupMenu(menu, x, y)
 
     # noinspection PyUnusedLocal
@@ -293,7 +293,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         lp: LinePoint = self.sourceAnchor
         self.AddControl(control=cp, after=lp)
 
-        frame = self._diagram.GetPanel()
+        frame = self._diagram.panel
         frame.diagram.AddShape(cp)
         frame.Refresh()
         self._indicateDiagramModified()
@@ -310,7 +310,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
         cp.Detach()
         cp.visible = False    # Work around still on screen but not visible and not saved
 
-        frame = self._diagram.GetPanel()
+        frame = self._diagram.panel
         frame.Refresh()
         self._indicateDiagramModified()
 
@@ -318,7 +318,7 @@ class OglLink(LineShape, ShapeEventHandler, EventEngineMixin):
 
         self.spline = not self.spline
 
-        frame = self._diagram.GetPanel()
+        frame = self._diagram.panel
         frame.Refresh()
         self._indicateDiagramModified()
 

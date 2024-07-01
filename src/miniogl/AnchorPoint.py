@@ -82,7 +82,7 @@ class AnchorPoint(LinePoint):
                 self._x = x
                 self._y = y
             else:
-                topLeftX, topLeftY = self._parent.GetTopLeft()
+                topLeftX, topLeftY = self._parent.topLeft
                 width, height      = self._parent.GetSize()
                 width  = abs(width) - 1
                 height = abs(height) - 1

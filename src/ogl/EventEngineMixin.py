@@ -35,7 +35,7 @@ class EventEngineMixin(ABC):
         """
         if self.HasDiagramFrame() is True:
 
-            diagramFrame: DiagramFrame = self.GetDiagram().GetPanel()
+            diagramFrame: DiagramFrame = self.diagram.panel
 
             if diagramFrame is not None:
                 if self._eventEngine is None:
@@ -43,8 +43,9 @@ class EventEngineMixin(ABC):
 
         return self._eventEngine
 
+    @property
     @abstractmethod
-    def GetDiagram(self) -> Diagram:
+    def diagram(self) -> Diagram:
         pass
 
     @abstractmethod

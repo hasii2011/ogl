@@ -51,26 +51,28 @@ from wx import PenInfo
 # noinspection PyUnresolvedReferences
 from wx.core import PenStyle
 
-from miniogl.Shape import Shape
-
 from miniogl.Diagram import Diagram
-from miniogl.MiniOglColorEnum import MiniOglColorEnum
-from miniogl.MiniOglPenStyle import MiniOglPenStyle
-from miniogl.ShapeEventHandler import ShapeEventHandler
+from miniogl.Shape import Shapes
+from miniogl.Shape import Shape
 from miniogl.SizerShape import SizerShape
 from miniogl.ControlPoint import ControlPoint
 from miniogl.RectangleShape import RectangleShape
+from miniogl.MiniOglColorEnum import MiniOglColorEnum
+from miniogl.MiniOglPenStyle import MiniOglPenStyle
+from miniogl.ShapeEventHandler import ShapeEventHandler
+from miniogl.DlgDebugDiagramFrame import DlgDebugDiagramFrame
+
 from ogl.events.IOglEventEngine import IOglEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 
-from miniogl.DlgDebugDiagramFrame import DlgDebugDiagramFrame
-
 
 class DiagramFrame(ScrolledWindow):
     """
-    TODO: Deprecate all the Get/Set methods and make them properties
+    A frame to draw UML diagrams.
+    This frame also manages all mouse events.
+    It has a Diagram that is automatically associated.
 
     Note:  This really seems more like an OGL class rather than a miniogl class; Notice,
     GenericHandler depends on the ShapeEventHandler pseudo interface;  That is one of the
@@ -80,11 +82,6 @@ class DiagramFrame(ScrolledWindow):
 
     diagramFrameLogger: Logger = getLogger(__name__)
 
-    """
-    A frame to draw UML diagrams.
-    This frame also manages all mouse events.
-    It has a Diagram that is automatically associated.
-    """
     def __init__(self, parent: Window):
         """
 
@@ -96,7 +93,7 @@ class DiagramFrame(ScrolledWindow):
         self._diagram = Diagram(self)
 
         self.__keepMoving:    bool        = False
-        self._selectedShapes: List[Shape] = []        # list of the shapes that are selected
+        self._selectedShapes: Shapes = Shapes([])        # The list of selected shapes
 
         self._lastMousePosition: Tuple[int, int] = cast(Tuple[int, int], None)
         self._selector:          RectangleShape  = cast(RectangleShape, None)     # rectangle selector shape
@@ -122,7 +119,7 @@ class DiagramFrame(ScrolledWindow):
         # self._rightMargin  = DEFAULT_MARGIN_VALUE
         # self._topMargin    = DEFAULT_MARGIN_VALUE
         # self._bottomMargin = DEFAULT_MARGIN_VALUE
-        self._isInfinite = False    # to know if the frame is infinite or not
+        self._isInfinite: bool = False    # Indicates if the frame is infinite
 
         # paint related
         w, h = self.GetSize()
@@ -311,7 +308,7 @@ class DiagramFrame(ScrolledWindow):
 
         realShape: Shape = cast(Shape, shape)
         if not event.ControlDown() and not realShape.selected:
-            shapes = self._diagram.GetShapes()
+            shapes = self._diagram.shapes
             shapes.remove(shape)
             if isinstance(shape, SizerShape):
                 # don't deselect the parent of a sizer
@@ -320,7 +317,7 @@ class DiagramFrame(ScrolledWindow):
             elif isinstance(shape, ControlPoint):
                 # don't deselect the line of a control point
                 self.diagramFrameLogger.debug(f'{shape=}')
-                for line in shape.GetLines():
+                for line in shape.lines:
                     shapes.remove(line)
             # do not call DeselectAllShapes, because we must ensure that
             # the sizer won't be deselected (because they are detached when they are deselected)
@@ -349,8 +346,8 @@ class DiagramFrame(ScrolledWindow):
             self.diagramFrameLogger.debug(f'{self._selector=}')
             rect = self._selector
 
-            for shape in self._diagram.GetShapes():
-                x0, y0 = shape.GetTopLeft()
+            for shape in self._diagram.shapes:
+                x0, y0 = shape.topLeft
                 w0, h0 = shape.GetSize()
 
                 if shape.parent is None and self._isShapeInRectangle(rect, x0=x0, y0=y0, w0=w0, h0=h0):
@@ -499,7 +496,7 @@ class DiagramFrame(ScrolledWindow):
         """
         self.diagramFrameLogger.debug(f'FindShape: @{x},{y}')
         found = None
-        shapes = self._diagram.GetShapes()
+        shapes = self._diagram.shapes
         # self.clsLogger.debug(f'{shapes=}')
         shapes.reverse()    # to select the one at the top
         for shape in shapes:
@@ -513,7 +510,7 @@ class DiagramFrame(ScrolledWindow):
         """
         Deselect all shapes in the frame.
         """
-        for shape in self._diagram.GetShapes():
+        for shape in self._diagram.shapes:
             shape.selected = False
             shape.moving   = False
         self._selectedShapes = []
@@ -635,7 +632,7 @@ class DiagramFrame(ScrolledWindow):
 
         dc.SetFont(self._defaultFont)
 
-        shapes = self._diagram.GetShapes()
+        shapes = self._diagram.shapes
         if full:
             # first time, need to create the background
             if saveBackground:
@@ -841,7 +838,7 @@ class DiagramFrame(ScrolledWindow):
 
         # updates the shapes (view) position and dimensions from
         # their models in the light of the new zoom factor and offsets.
-        for shape in self.diagram.GetShapes():
+        for shape in self.diagram.shapes:
             shape.UpdateFromModel()
 
         # resize the virtual screen to match with the zoom
@@ -935,7 +932,7 @@ class DiagramFrame(ScrolledWindow):
         # updates the shapes (view) position and dimensions from
         # their model in the light of the new zoom factor and offsets.
         # for shape in self.GetDiagram().GetShapes():
-        for shape in self.diagram.GetShapes():
+        for shape in self.diagram.shapes:
             shape.UpdateFromModel()
 
         # resize the virtual screen to match with the zoom

@@ -5,6 +5,7 @@ from logging import Logger
 from logging import getLogger
 
 from miniogl.Shape import Shape
+from miniogl.Shape import Shapes
 from miniogl.SizerShape import SizerShape
 
 
@@ -23,8 +24,35 @@ class Diagram:
         @param  panel : the panel on which to draw
         """
         self._panel = panel
-        self._shapes = []        # all selectable shapes
-        self._parentShapes = []  # all first level shapes
+        self._shapes:       Shapes = Shapes([])     # all selectable shapes
+        self._parentShapes: Shapes = Shapes([])     # all first level shapes
+
+    @property
+    def shapes(self) -> Shapes:
+        """
+        A copy of the originals. You cannot detach or add shapes to the
+        diagram this way.
+
+        Returns: A list of the shapes in the diagram.
+        """
+        return Shapes(self._shapes[:])
+
+    @property
+    def parentShapes(self) -> Shapes:
+        """
+        Copies of the original. You cannot detach or add shapes to the
+        diagram this way.
+
+        Returns:  A list of the parent shapes in the diagram.
+        """
+        return self._parentShapes[:]
+
+    @property
+    def panel(self):
+        """
+        Returns:  The associated DiagramFrame
+        """
+        return self._panel
 
     def AddShape(self, shape, withModelUpdate: bool = True):
         """
@@ -76,34 +104,6 @@ class Diagram:
             self._shapes.remove(shape)
         if shape in self._parentShapes:
             self._parentShapes.remove(shape)
-
-    def GetShapes(self):
-        """
-        Return a list of the shapes in the diagram.
-        It is a copy of the original. You cannot detach or add shapes to the
-        diagram this way.
-
-        @return Shape []
-        """
-        return self._shapes[:]
-
-    def GetParentShapes(self):
-        """
-        Return a list of the parent shapes in the diagram.
-        It is a copy of the original. You cannot detach or add shapes to the
-        diagram this way.
-
-        @return Shape []
-        """
-        return self._parentShapes[:]
-
-    def GetPanel(self):
-        """
-        Return the panel associated with this diagram.
-
-        @return DiagramFrame
-        """
-        return self._panel
 
     def MoveToFront(self, shape: Shape):
         """

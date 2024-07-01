@@ -249,7 +249,7 @@ class RectangleShape(Shape):
             y:      y position of the sizer
 
         """
-        tlx, tly = self.GetTopLeft()
+        tlx, tly = self.topLeft
         w, h = self.GetSize()
         sw, sh = sign(w), sign(h)
         w, h = abs(w), abs(h)
@@ -300,7 +300,7 @@ class RectangleShape(Shape):
         width, height = self.model.GetSize()
 
         #  get the diagram frame ratio between the shape and the model
-        ratio = self.GetDiagram().GetPanel().currentZoom
+        ratio = self.diagram.panel.currentZoom
 
         # set the new size to the shape.
         self._width  = round(width * ratio)
@@ -318,7 +318,7 @@ class RectangleShape(Shape):
 
         # get the ratio between the model and the shape (view) from
         # the diagram frame where the shape is displayed.
-        ratio = self.GetDiagram().GetPanel().currentZoom
+        ratio = self.diagram.panel.currentZoom
 
         # set the new size to the model.
         self.model.SetSize(round(width//ratio), round(height//ratio))

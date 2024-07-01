@@ -217,7 +217,7 @@ class DemoToolBarHandler:
         diagram = self._diagramFrame.diagram
         diagram.AddShape(rotatableShape, withModelUpdate=True)
 
-        self.logger.info(f'{diagram.GetShapes()=}')
+        self.logger.info(f'{diagram.shapes=}')
 
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x

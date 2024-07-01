@@ -325,7 +325,7 @@ class DemoOglElements(App):
 
         self._diagram.AddShape(oglObject, withModelUpdate=True)
 
-        self.logger.info(f'{self._diagram.GetShapes()=}')
+        self.logger.info(f'{self._diagram.shapes=}')
 
     def _fiftyFifty(self) -> bool:
         if random.random() < .5:

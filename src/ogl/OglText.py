@@ -146,7 +146,7 @@ class OglText(OglObject):
         if self._menu is None:
             self._menu = self._createMenu()
 
-        frame = self._diagram.GetPanel()
+        frame = self._diagram.panel
 
         x: int = event.GetX()
         y: int = event.GetY()
@@ -260,7 +260,7 @@ class OglText(OglObject):
 
         self.autoResize()
 
-        frame: DiagramFrame = self._diagram.GetPanel()
+        frame: DiagramFrame = self._diagram.panel
         frame.Refresh()
 
     def __initializeTextDisplay(self):

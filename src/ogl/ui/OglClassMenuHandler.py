@@ -87,7 +87,7 @@ class OglClassMenuHandler:
         y: int = event.GetY()
         self.logger.debug(f'OglClassMenuHandler - x,y: {x},{y}')
 
-        frame = self._oglClass.GetDiagram().GetPanel()
+        frame = self._oglClass.diagram.panel
         frame.PopupMenu(self._contextMenu, x, y)
 
     def _createContextMenu(self):

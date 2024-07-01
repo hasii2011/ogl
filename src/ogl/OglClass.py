@@ -182,7 +182,7 @@ class OglClass(OglObject):
         """
         # Init
         pyutObject: PyutClass = cast(PyutClass, self.pyutObject)
-        umlFrame = self.GetDiagram().GetPanel()
+        umlFrame = self.diagram.panel
         dc = ClientDC(umlFrame)
 
         # Get header size

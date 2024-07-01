@@ -2,6 +2,7 @@
 from typing import ClassVar
 from typing import Generator
 from typing import List
+from typing import NewType
 from typing import cast
 from typing import Tuple
 
@@ -247,13 +248,21 @@ class Shape:
     @property
     def children(self) -> List:
         """
-        Not recursively, only get first level children.
+        Does not return the list recursively, only get first level children.
         It's a copy of the original list, modifying it won't modify the
         original.
 
         Returns: The shape children
         """
         return self._children[:]
+
+    @property
+    def diagram(self):
+        """
+
+        Returns: the diagram associated with this shape.
+        """
+        return self._diagram
 
     def SetOrigin(self, x: int, y: int):
         """
@@ -295,17 +304,6 @@ class Shape:
         for child in self._children:
             shapes.append(child.GetAllChildren())
         return shapes
-
-    # def GetChildren(self):
-    #     """
-    #     Get the children of this shape.
-    #     Not recursively, only get first level children.
-    #     It's a copy of the original list, modifying it won't modify the
-    #     original.
-    #
-    #     @return Shape []
-    #     """
-    #     return self._children[:]
 
     def AddAnchor(self, x: int, y: int, anchorType=None):
         """
@@ -580,14 +578,6 @@ class Shape:
         """
         pass
 
-    def GetDiagram(self):
-        """
-        Return the diagram associated with this shape.
-
-        @return Diagram
-        """
-        return self._diagram
-
     def UpdateFromModel(self):
         """
         Updates the shape position from the model in the light of a
@@ -600,9 +590,9 @@ class Shape:
         # Get the offsets and the ratio between the shape (view) and the
         # shape model (ShapeModel) given by the frame where the shape
         # is displayed.
-        ratio = self.GetDiagram().GetPanel().currentZoom
-        dx: int = round(self.GetDiagram().GetPanel().xOffSet)
-        dy: int = round(self.GetDiagram().GetPanel().yOffSet)
+        ratio = self.diagram.panel.currentZoom
+        dx: int = round(self.diagram.panel.xOffSet)
+        dy: int = round(self.diagram.panel.yOffSet)
 
         # calculation of the shape (view) coordinates in the light of the offsets and ratio
         x: int = round(ratio * mx) + dx
@@ -629,12 +619,9 @@ class Shape:
         # shape model (ShapeModel) given by the frame where the shape
         # is displayed.
         from miniogl.DiagramFrame import DiagramFrame
-        diagram = self.GetDiagram()
-        panel: DiagramFrame   = diagram.GetPanel()   # to enable debugging and unit tests
+        diagram = self.diagram
+        panel: DiagramFrame   = diagram.panel   # to enable debugging and unit tests
 
-        # ratio = self.GetDiagram().GetPanel().GetCurrentZoom()
-        # dx = self.GetDiagram().GetPanel().GetXOffset()
-        # dy = self.GetDiagram().GetPanel().GetYOffset()
         ratio = panel.currentZoom
         dx    = panel.xOffSet
         dy    = panel.yOffSet
@@ -663,8 +650,8 @@ class Shape:
         Returns: `True` if the shape has a diagram and if this diagram has
         a diagram frame.
         """
-        if self.GetDiagram() is not None:
-            return self.GetDiagram().GetPanel() is not None
+        if self.diagram is not None:
+            return self.diagram.panel is not None
         else:
             return False
 
@@ -708,3 +695,6 @@ class Shape:
             self._diagram.AddShape(textShape)
 
         return textShape
+
+
+Shapes = NewType('Shapes', List[Shape])
