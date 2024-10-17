@@ -8,6 +8,7 @@ from logging import getLogger
 
 import random
 
+from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
@@ -245,6 +246,7 @@ class DemoOglElements(App):
                                               type=PyutType('float'),
                                               defaultValue='42.0')
 
+        pyutClass.displayParameters = PyutDisplayParameters.WITHOUT_PARAMETERS
         if self._fiftyFifty() is True:
             pyutClass.stereotype = PyutStereotype.NO_STEREOTYPE
         else:
@@ -255,6 +257,7 @@ class DemoOglElements(App):
         pyutMethod.parameters = PyutParameters([pyutParameter])
 
         constructorMethod: PyutMethod = PyutMethod(name='__init__')
+        constructorMethod.parameters = self._manyParameters()
         dunderStrMethod:   PyutMethod = PyutMethod(name='__str__', visibility=PyutVisibility.PUBLIC, returnType=PyutType(value='str'))
 
         pyutClass.fields  = PyutFields([pyutField])
@@ -331,6 +334,20 @@ class DemoOglElements(App):
         if random.random() < .5:
             return True
         return False
+
+    def _manyParameters(self) -> PyutParameters:
+
+        pyutParameters: PyutParameters = PyutParameters([])
+
+        pyutParameter1: PyutParameter = PyutParameter(name='parameter1', type=PyutType("str"),   defaultValue='Ozzee')
+        pyutParameter2: PyutParameter = PyutParameter(name='parameter2', type=PyutType("int"),   defaultValue='0')
+        pyutParameter3: PyutParameter = PyutParameter(name='parameter3', type=PyutType("float"), defaultValue='42.00')
+
+        pyutParameters.append(pyutParameter1)
+        pyutParameters.append(pyutParameter2)
+        pyutParameters.append(pyutParameter3)
+
+        return pyutParameters
 
     def _onSetStatusText(self, event: SetStatusTextEvent):
         msg: str = event.statusMessage

@@ -144,8 +144,7 @@ class OglClass(OglObject):
         pyutObject: PyutClass = cast(PyutClass, self.pyutObject)
 
         # Draw rectangle shape
-        OglObject.Draw(self, dc)
-
+        super().Draw(dc)
         # drawing is restricted in the specified region of the device
         w, h = self._width, self._height
         x, y = self.GetPosition()           # Get position
@@ -171,6 +170,8 @@ class OglClass(OglObject):
             (methodsX, methodsY, methodsW, methodsH) = self._drawClassMethods(dc=dc, initialY=y)
             # noinspection PyUnusedLocal
             y = methodsY + methodsH
+            if methodsW > self._width:
+                self._width = methodsW
 
         dc.DestroyClippingRegion()
 
@@ -397,7 +398,7 @@ class OglClass(OglObject):
     def _drawClassMethods(self, dc, initialY=None) -> Tuple[int, int, int, int]:
         """
         Calculate the class methods position and size and display it if
-        a draw is True
+        a showMethods is True
 
         Args:
             dc:
@@ -431,7 +432,12 @@ class OglClass(OglObject):
                 if self._eligibleToDraw(pyutClass=pyutClass, pyutMethod=method) is True:
 
                     self._drawMethod(dc, method, pyutClass, x, y, h)
-                    w = max(w, self.GetTextWidth(dc, str(method)))
+
+                    pyutMethod: PyutMethod = cast(PyutMethod, method)
+                    if pyutClass.displayParameters == PyutDisplayParameters.WITH_PARAMETERS or self._oglPreferences.showParameters is True:
+                        w = max(w, self.GetTextWidth(dc, str(pyutMethod.methodWithParameters())))
+                    else:
+                        w = max(w, self.GetTextWidth(dc, str(pyutMethod.methodWithoutParameters())))
                     h += self.GetTextHeight(dc, str(method))
 
         # Add space
