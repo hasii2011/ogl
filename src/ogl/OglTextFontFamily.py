@@ -11,3 +11,7 @@ class OglTextFontFamily(Enum):
     ROMAN    = 'Roman'
     SCRIPT   = 'Script'
     TELETYPE = 'Teletype'
+
+    @classmethod
+    def deSerialize(cls, value: str) -> 'OglTextFontFamily':
+        return OglTextFontFamily(value)
