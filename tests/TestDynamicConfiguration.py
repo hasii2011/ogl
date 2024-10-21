@@ -1,7 +1,15 @@
-from enum import Enum
+
+from typing import cast
+
 from unittest import TestSuite
 from unittest import main as unitTestMain
 
+from enum import Enum
+
+from pathlib import Path
+
+from codeallybasic.ConfigurationLocator import ConfigurationLocator
+from codeallybasic.SingletonV3 import SingletonV3
 from codeallybasic.UnitTestBase import UnitTestBase
 
 from ogl.OglDimensions import OglDimensions
@@ -16,18 +24,27 @@ from tests.DynamicConfiguration import Sections
 
 class UnitTestEnumeration(Enum):
     HUMBERTO = 'The Great One'
+    # noinspection SpellCheckingInspection
     FRAN     = 'La Esposa'
     OZZEE    = 'El Gato Malo'
 
     @classmethod
     def deSerialize(cls, value: str) -> 'UnitTestEnumeration':
+        """
+        You need a deSerializer when you store the enumerations by name.
+        Args:
+            value:
+
+        Returns:
+
+        """
 
         match value:
-            case UnitTestEnumeration.HUMBERTO.value:
+            case UnitTestEnumeration.HUMBERTO.name:
                 enumeration: UnitTestEnumeration = UnitTestEnumeration.HUMBERTO
-            case UnitTestEnumeration.FRAN.value:
+            case UnitTestEnumeration.FRAN.name:
                 enumeration = UnitTestEnumeration.FRAN
-            case UnitTestEnumeration.OZZEE.value:
+            case UnitTestEnumeration.OZZEE.name:
                 enumeration = UnitTestEnumeration.OZZEE
             case _:
                 raise Exception('Unknown enumeration value')
@@ -45,8 +62,8 @@ PREFERENCES_FILE_NAME: str = f'{MODULE_NAME}.ini'
 oglDynoProperties: ValueDescriptions = ValueDescriptions(
     {
         KeyName('noteText'):       ValueDescription(defaultValue='This is the note text'),
-        KeyName('valueEnum'):      ValueDescription(defaultValue=UnitTestEnumeration.HUMBERTO.value,  enumUseValue=True),
-        KeyName('nameEnum'):       ValueDescription(defaultValue=UnitTestEnumeration.OZZEE.__str__(), enumUseName=True),
+        KeyName('valueEnum'):      ValueDescription(defaultValue=UnitTestEnumeration.HUMBERTO.value,  enumUseValue=True, deserializer=UnitTestEnumeration),
+        KeyName('nameEnum'):       ValueDescription(defaultValue=UnitTestEnumeration.OZZEE.__str__(), enumUseName=True,  deserializer=UnitTestEnumeration.deSerialize),
         KeyName('noteDimensions'): ValueDescription(defaultValue=str(OglDimensions(100, 50)),         deserializer=OglDimensions.deSerialize)
     }
 )
@@ -56,6 +73,12 @@ sections: Sections = Sections(
         SectionName('Ogl'): oglDynoProperties
     }
 )
+
+
+class DynamiteConfiguration(DynamicConfiguration,metaclass=SingletonV3):
+
+    def __init__(self):
+        super().__init__(baseFileName=f'{PREFERENCES_FILE_NAME}', moduleName=MODULE_NAME, sections=sections)
 
 
 class TestDynamicConfiguration(UnitTestBase):
@@ -71,55 +94,71 @@ class TestDynamicConfiguration(UnitTestBase):
 
     def setUp(self):
         super().setUp()
-        self._dyno: DynamicConfiguration = DynamicConfiguration(baseFileName='dynamite.ini', moduleName=MODULE_NAME, sections=sections)
 
-        # locator: ConfigurationLocator = ConfigurationLocator()
-        # self.logger.debug(f'{locator.configurationHome=}')
-        # prefsPath: Path = locator.applicationPath(applicationName=MODULE_NAME, create=False)
+        locator: ConfigurationLocator = ConfigurationLocator()
+        self.logger.debug(f'{locator.configurationHome=}')
+        prefsPath: Path = locator.applicationPath(applicationName=MODULE_NAME, create=False)
         #
-        # prefsFile: Path = prefsPath / PREFERENCES_FILE_NAME
-        # # Save the original in case it exists
-        # if prefsFile.exists() is True:
-        #     self._savePath: Path = prefsFile.rename(f'{prefsFile}.SAVE')
-        # else:
-        #     self._savePath = cast(Path, None)
-        #
-        # self._prefsFile: Path = prefsFile
+        prefsFile: Path = prefsPath / PREFERENCES_FILE_NAME
+        # Save the original in case it exists
+        if prefsFile.exists() is True:
+            self._savePath: Path = prefsFile.rename(f'{prefsFile}.SAVE')
+        else:
+            self._savePath = cast(Path, None)
+
+        self._prefsFile: Path = prefsFile
 
     def tearDown(self):
         super().tearDown()
 
         # Remove the newly created one
         # put the original back
-        # if self._savePath is not None:
-        #     self._prefsFile.unlink(missing_ok=True)
-        #     self._savePath.rename(str(self._prefsFile))
+        if self._savePath is not None:
+            self._prefsFile.unlink(missing_ok=True)
+            self._savePath.rename(str(self._prefsFile))
+
+    def testDefaultInstantiation(self):
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
+        self.assertIsNotNone(dyno)
 
     def testDeserializer(self):
-        dyno: DynamicConfiguration = self._dyno
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
 
         noteDimensions: OglDimensions = dyno.noteDimensions
 
         self.assertTrue(isinstance(noteDimensions, OglDimensions), 'Incorrect type')
 
     def testEnumPropertyUsesName(self):
-        dyno: DynamicConfiguration = self._dyno
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
         dyno.nameEnum = UnitTestEnumeration.FRAN
 
+    def testEnumPropertyUsesNameGet(self):
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
+
+        testEnumeration: UnitTestEnumeration = dyno.nameEnum
+        self.assertTrue(isinstance(testEnumeration, UnitTestEnumeration), 'Wrong type returned')
+
     def testEnumPropertyUsesValue(self):
-        dyno: DynamicConfiguration = self._dyno
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
         dyno.valueEnum = UnitTestEnumeration.OZZEE
 
+    def testEnumPropertyUsesValueGet(self):
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
+        testEnumeration: UnitTestEnumeration = dyno.valueEnum
+
+        self.assertTrue(isinstance(testEnumeration, UnitTestEnumeration), 'Wrong type returned')
+
     def testDynamicSet(self):
-        dyno: DynamicConfiguration = self._dyno
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
 
-        # print(f'{dyno.name=}')
+        expectedValue: str = 'A new value'
+        dyno.noteText = expectedValue
 
-        dyno.noteText = 'A new value'
+        self.assertEqual(expectedValue, dyno.noteText, 'WTH. the value did not change')
 
     def testNoValueDescription(self):
 
-        dyno: DynamicConfiguration = self._dyno
+        dyno: DynamiteConfiguration = DynamiteConfiguration()
 
         self.assertRaises(UnDefinedValueDescription, lambda: self._setBadValue(dyno))
 

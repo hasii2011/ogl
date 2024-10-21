@@ -34,8 +34,8 @@ class ValueDescription:
 
     defaultValue: Any          = None
     deserializer: Deserializer = cast(Deserializer, None)
-    enumUseValue: bool         = False      # Set to True if you want to use the enum value
-    enumUseName:  bool         = False      # Set to True if you want to use the enum name
+    enumUseValue: bool         = False      # Set to True if you want to use the enum value; Use constructor to deserialize
+    enumUseName:  bool         = False      # Set to True if you want to use the enum name;  Create deserialize method
 
 
 ValueDescriptions = NewType('ValueDescriptions', Dict[KeyName,     ValueDescription])
@@ -93,14 +93,14 @@ class DynamicConfiguration:
 
         self._logger.info(f'{attrName}')
 
-        configParser:   ConfigParser     = self._configParser
-        result:         LookupResult     = self._lookupKey(searchKeyName=KeyName(attrName))
-        keyDescription: ValueDescription = result.keyDescription
+        configParser:     ConfigParser     = self._configParser
+        result:           LookupResult     = self._lookupKey(searchKeyName=KeyName(attrName))
+        valueDescription: ValueDescription = result.keyDescription
 
         valueStr: str = configParser.get(result.sectionName, attrName)
 
-        if keyDescription.deserializer is not None:
-            value: Any = keyDescription.deserializer(valueStr)
+        if valueDescription.deserializer is not None:
+            value: Any = valueDescription.deserializer(valueStr)
         else:
             value = valueStr
 
@@ -123,14 +123,14 @@ class DynamicConfiguration:
         else:
             self._logger.debug(f'Writing `{key}` with `{value}` to configuration file')
 
-            configParser:   ConfigParser     = self._configParser
-            result:         LookupResult     = self._lookupKey(searchKeyName=KeyName(key))
-            keyDescription: ValueDescription = result.keyDescription
+            configParser:     ConfigParser     = self._configParser
+            result:           LookupResult     = self._lookupKey(searchKeyName=KeyName(key))
+            valueDescription: ValueDescription = result.keyDescription
 
-            if keyDescription.enumUseValue is True:
+            if valueDescription.enumUseValue is True:
                 valueStr: str = value.value
                 configParser.set(result.sectionName, key, valueStr)
-            elif keyDescription.enumUseName is True:
+            elif valueDescription.enumUseName is True:
                 configParser.set(result.sectionName, key, value.name)
             else:
                 configParser.set(result.sectionName, key, str(value))
