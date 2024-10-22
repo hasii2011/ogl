@@ -48,7 +48,7 @@ PI_6:         float = pi / 6
 
 class OglAssociation(OglLink):
 
-    clsDiamondSize: int = OglPreferences().associationDiamondSize
+    clsDiamondSize: int = OglPreferences().diamondSize
     """
     Graphical link representation of an association, (simple line, no arrow).
     To get a new link,  use the `OglLinkFactory` and specify

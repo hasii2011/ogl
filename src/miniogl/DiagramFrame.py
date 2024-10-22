@@ -694,7 +694,7 @@ class DiagramFrame(ScrolledWindow):
         #
         # Paint events don't seem to be generated when Pyut is built for deployment;  So code duplicated in .Redraw()
         #
-        if self._prefs.backgroundGridEnabled is True:
+        if self._prefs.backGroundGridEnabled is True:
             self._drawGrid(memDC=mem, width=w, height=h, startX=x, startY=y)
         self.Redraw(mem)
 

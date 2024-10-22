@@ -88,7 +88,7 @@ class ClassAttributesControl(SizedPanel):
         nameSizedPanel.SetSizerProps(proportion=1, expand=False)
 
         StaticText(nameSizedPanel, ID_ANY, 'Default Class Name:')
-        self._className = TextCtrl(nameSizedPanel, value=self._preferences.className, size=(160, -1))
+        self._className = TextCtrl(nameSizedPanel, value=self._preferences.defaultClassName, size=(160, -1))
         self._className.SetSizerProps(proportion=1, expand=False)
 
     def _layoutClassBackgroundControl(self, parentPanel: SizedPanel):
@@ -124,7 +124,7 @@ class ClassAttributesControl(SizedPanel):
         self._classDimensions.dimensions = self._preferences.classDimensions
 
         oglColors:      List[str] = self._classBackgroundColor.GetItems()
-        bgColorSelIdx:  int       = oglColors.index(self._preferences.classBackgroundColor.value)
+        bgColorSelIdx:  int       = oglColors.index(self._preferences.classBackGroundColor.value)
         self._classBackgroundColor.SetSelection(bgColorSelIdx)
 
         txtColorSelIdx: int = oglColors.index(self._preferences.classTextColor.value)

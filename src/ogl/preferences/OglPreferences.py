@@ -19,7 +19,7 @@ from tests.DynamicConfiguration import ValueDescription
 from tests.DynamicConfiguration import ValueDescriptions
 
 MODULE_NAME:           str = 'ogl'
-PREFERENCES_FILE_NAME: str = f'{MODULE_NAME}V2.ini'
+PREFERENCES_FILE_NAME: str = f'{MODULE_NAME}.ini'
 
 DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.MINT_CREAM.value
 DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.BLACK.value
@@ -38,9 +38,9 @@ oglProperties: ValueDescriptions = ValueDescriptions(
         KeyName('textFontSize'):         ValueDescription(defaultValue='14',                        deserializer=SecureConversions.secureInteger),
         KeyName('displayConstructor'):   ValueDescription(defaultValue='True',                      deserializer=SecureConversions.secureBoolean),
         KeyName('displayDunderMethods'): ValueDescription(defaultValue='True',                      deserializer=SecureConversions.secureBoolean),
-        KeyName('classDimensions'):      ValueDescription(defaultValue=OglDimensions(150, 75).__str__()),
-        KeyName('classBackGroundColor'): ValueDescription(defaultValue=DEFAULT_CLASS_BACKGROUND_COLOR, enumUseValue=True),
-        KeyName('classTextColor'):       ValueDescription(defaultValue=DEFAULT_CLASS_TEXT_COLOR,       enumUseValue=True),
+        KeyName('classDimensions'):      ValueDescription(defaultValue=str(OglDimensions(150, 75)), deserializer=OglDimensions.deSerialize),
+        KeyName('classBackGroundColor'): ValueDescription(defaultValue=DEFAULT_CLASS_BACKGROUND_COLOR, enumUseValue=True, deserializer=MiniOglColorEnum),
+        KeyName('classTextColor'):       ValueDescription(defaultValue=DEFAULT_CLASS_TEXT_COLOR,       enumUseValue=True, deserializer=MiniOglColorEnum),
     }
 )
 diagramProperties: ValueDescriptions = ValueDescriptions(
@@ -68,7 +68,7 @@ namePreferences: ValueDescriptions = ValueDescriptions(
 )
 sequenceDiagramPreferences: ValueDescriptions = ValueDescriptions(
     {
-        KeyName('instanceYPosition'):  ValueDescription(defaultValue='50'),
+        KeyName('instanceYPosition'):  ValueDescription(defaultValue='50',                         deserializer=SecureConversions.secureInteger),
         KeyName('instanceDimensions'): ValueDescription(defaultValue=str(OglDimensions(100, 400)), deserializer=OglDimensions.deSerialize)
     }
 )
@@ -81,7 +81,7 @@ associationsPreferences: ValueDescriptions = ValueDescriptions(
 debugPreferences: ValueDescriptions = ValueDescriptions(
     {
         KeyName('debugDiagramFrame'): ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
-        KeyName('debugBasicShape'):  ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
+        KeyName('debugBasicShape'):   ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
     }
 )
 
@@ -97,7 +97,7 @@ sections: Sections = Sections(
 )
 
 
-class OglPreferencesV2(DynamicConfiguration, metaclass=SingletonV3):
+class OglPreferences(DynamicConfiguration, metaclass=SingletonV3):
 
     def __init__(self):
         self._logger: Logger = getLogger(__name__)

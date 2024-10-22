@@ -113,7 +113,7 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
         """
         self._resetSnapToGridControl()
 
-        self._enableBackgroundGrid.SetValue(self._preferences.backgroundGridEnabled)
+        self._enableBackgroundGrid.SetValue(self._preferences.backGroundGridEnabled)
         self._snapToGrid.SetValue(self._preferences.snapToGrid)
         self._centerDiagramView.SetValue(self._preferences.centerDiagram)
         self._showParameters.SetValue(self._preferences.showParameters)
@@ -228,7 +228,7 @@ class DiagramPreferencesPage(BaseOglPreferencesPage):
         Make the UI consistent when the background grid is used or not
         If no background grid there is nothing to snap to
         """
-        if self._preferences.backgroundGridEnabled is True:
+        if self._preferences.backGroundGridEnabled is True:
             self._snapToGrid.Enabled = True
         else:
             self._snapToGrid.SetValue(False)

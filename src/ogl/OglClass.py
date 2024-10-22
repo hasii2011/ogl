@@ -98,7 +98,7 @@ class OglClass(OglObject):
         oglTextColor:    MiniOglColorEnum = self._oglPreferences.classTextColor
         self._textColor: Colour           = Colour(MiniOglColorEnum.toWxColor(oglTextColor))
 
-        oglBackgroundColor: MiniOglColorEnum = self._oglPreferences.classBackgroundColor
+        oglBackgroundColor: MiniOglColorEnum = self._oglPreferences.classBackGroundColor
         backgroundColor:    Colour           = Colour(MiniOglColorEnum.toWxColor(oglBackgroundColor))
 
         self.brush = Brush(backgroundColor)

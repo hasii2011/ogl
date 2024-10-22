@@ -13,9 +13,9 @@ from miniogl.MiniOglColorEnum import MiniOglColorEnum
 
 from ogl.OglDimensions import OglDimensions
 
-from ogl.preferences.OglPreferencesV2 import MODULE_NAME
-from ogl.preferences.OglPreferencesV2 import OglPreferencesV2
-from ogl.preferences.OglPreferencesV2 import PREFERENCES_FILE_NAME
+from ogl.preferences.OglPreferences import MODULE_NAME
+from ogl.preferences.OglPreferences import OglPreferences
+from ogl.preferences.OglPreferences import PREFERENCES_FILE_NAME
 
 
 class TestOglPreferencesV2(UnitTestBase):
@@ -56,7 +56,7 @@ class TestOglPreferencesV2(UnitTestBase):
 
     def testDefaultInstantiation(self):
 
-        oglPreferencesV2: OglPreferencesV2 = OglPreferencesV2()
+        oglPreferencesV2: OglPreferences = OglPreferences()
 
         self.assertIsNotNone(oglPreferencesV2, 'We should get an object')
         self.assertEqual(14, oglPreferencesV2.textFontSize)
@@ -68,18 +68,18 @@ class TestOglPreferencesV2(UnitTestBase):
 
         self.assertTrue(isinstance(gridLineColor, MiniOglColorEnum), 'Wrong type returned')
 
-        instanceDimensions: OglDimensions = oglPreferencesV2.instanceDimensions
-        self.assertTrue(isinstance(instanceDimensions, OglDimensions), 'Wrong type returned')
+        classDimensions: OglDimensions = oglPreferencesV2.classDimensions
+        self.assertTrue(isinstance(classDimensions, OglDimensions), 'Wrong type returned')
 
     def testGetTextFontFamily(self):
 
-        oglPreferencesV2: OglPreferencesV2 = OglPreferencesV2()
+        oglPreferencesV2: OglPreferences = OglPreferences()
 
         self.assertIsNotNone(oglPreferencesV2.textFontFamily, 'Something should be there')
 
     def testSetTextFontFamily(self):
 
-        oglPreferencesV2: OglPreferencesV2 = OglPreferencesV2()
+        oglPreferencesV2: OglPreferences = OglPreferences()
 
         oglPreferencesV2.textFontFamily = 'Script'
 
@@ -87,20 +87,20 @@ class TestOglPreferencesV2(UnitTestBase):
 
     def testStringGet(self):
 
-        prefsV2: OglPreferencesV2 = OglPreferencesV2()
+        prefsV2: OglPreferences = OglPreferences()
 
         noteText: str = prefsV2.noteText
         self.assertTrue(len(noteText) > 0, 'Should not be empty')
 
     def testStringSet(self):
 
-        prefsV2: OglPreferencesV2 = OglPreferencesV2()
+        prefsV2: OglPreferences = OglPreferences()
 
         prefsV2.noteText = 'I changed it'
         self.assertEqual(prefsV2.noteText, 'I changed it', 'Hmm, why did it not change')
 
     def testOglDimensionsGet(self):
-        prefsV2: OglPreferencesV2 = OglPreferencesV2()
+        prefsV2: OglPreferences = OglPreferences()
 
         actualDimensions: OglDimensions = prefsV2.noteDimensions
         self.assertIsNotNone(actualDimensions, 'I should get some value')
@@ -111,7 +111,7 @@ class TestOglPreferencesV2(UnitTestBase):
 
     def testOglDimensionsSet(self):
 
-        prefsV2:  OglPreferencesV2 = OglPreferencesV2()
+        prefsV2:  OglPreferences = OglPreferences()
         expected: OglDimensions = OglDimensions(1000, 1000)
         prefsV2.noteDimensions = expected
 

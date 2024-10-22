@@ -56,7 +56,7 @@ class AssociationAttributesControl(SizedPanel):
 
     def _setControlValues(self):
         self._textFontSize.SetValue(str(self._preferences.associationTextFontSize))
-        self._diamondSize.SetValue(str(self._preferences.associationDiamondSize))
+        self._diamondSize.SetValue(str(self._preferences.diamondSize))
 
     def _onTextFontSizedChanged(self, event: CommandEvent):
         newFontSize: str = event.GetString()
@@ -65,4 +65,3 @@ class AssociationAttributesControl(SizedPanel):
     def _onDiamondSizeChanged(self, event: CommandEvent):
         newDiamondSize: str = event.GetString()
         self._preferences.associationDiamondSize = int(newDiamondSize)
-
