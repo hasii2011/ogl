@@ -11,12 +11,12 @@ from miniogl.MiniOglPenStyle import MiniOglPenStyle
 from ogl.OglDimensions import OglDimensions
 from ogl.OglTextFontFamily import OglTextFontFamily
 
-from tests.DynamicConfiguration import DynamicConfiguration
-from tests.DynamicConfiguration import KeyName
-from tests.DynamicConfiguration import SectionName
-from tests.DynamicConfiguration import Sections
-from tests.DynamicConfiguration import ValueDescription
-from tests.DynamicConfiguration import ValueDescriptions
+from codeallybasic.DynamicConfiguration import DynamicConfiguration
+from codeallybasic.DynamicConfiguration import KeyName
+from codeallybasic.DynamicConfiguration import SectionName
+from codeallybasic.DynamicConfiguration import Sections
+from codeallybasic.DynamicConfiguration import ValueDescription
+from codeallybasic.DynamicConfiguration import ValueDescriptions
 
 MODULE_NAME:           str = 'ogl'
 PREFERENCES_FILE_NAME: str = f'{MODULE_NAME}.ini'
