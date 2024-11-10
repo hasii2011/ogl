@@ -8,6 +8,7 @@ from logging import getLogger
 
 import random
 
+from pyutmodelv2.PyutSDInstance import PyutSDInstance
 from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
@@ -60,6 +61,7 @@ from ogl.events.IOglEventEngine import IOglEventEngine
 from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
+from ogl.sd.OglSDInstance import OglSDInstance
 
 from tests.ProjectTestBase import ProjectTestBase
 
@@ -108,14 +110,15 @@ class DemoOglElements(App):
         self._oglEventEngine:  IOglEventEngine = cast(OglEventEngine, None)
         self._demoEventEngine: DemoEventEngine = cast(DemoEventEngine, None)
 
-        self._ID_DISPLAY_OGL_CLASS:       int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_TEXT:        int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_COMPOSITION: int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_INTERFACE:   int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_ACTOR:       int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_USE_CASE:    int = wxNewIdRef()
-        self._ID_ZOOM_IN:                 int = wxNewIdRef()
-        self._ID_ZOOM_OUT:                int = wxNewIdRef()
+        self._ID_DISPLAY_SEQUENCE_DIAGRAM: int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_CLASS:        int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_TEXT:         int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_COMPOSITION:  int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_INTERFACE:    int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_ACTOR:        int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_USE_CASE:     int = wxNewIdRef()
+        self._ID_ZOOM_IN:                  int = wxNewIdRef()
+        self._ID_ZOOM_OUT:                 int = wxNewIdRef()
 
         self._x: int = 100
         self._y: int = 100
@@ -163,12 +166,13 @@ class DemoOglElements(App):
         fileMenu.AppendSeparator()
         fileMenu.Append(ID_PREFERENCES, "P&references", "Ogl preferences")
 
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,       item='Ogl Class',       helpString='Display an Ogl Class')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,        item='Ogl Text',        helpString='Display Ogl Text')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION, item='Ogl Composition', helpString='Display an Composition Link')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,   item='Ogl Interface',   helpString='Display Lollipop Interface')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_USE_CASE,    item='Ogl Use Case',    helpString='Display Ogl Use Case')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_ACTOR,       item='Ogl Actor',       helpString='Display Ogl Actor')
+        viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM, item='Sequence Diagram', helpString='Display Sequence Diagram')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,        item='Ogl Class',        helpString='Display an Ogl Class')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,         item='Ogl Text',         helpString='Display Ogl Text')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION,  item='Ogl Composition',  helpString='Display an Composition Link')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,    item='Ogl Interface',    helpString='Display Lollipop Interface')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_USE_CASE,     item='Ogl Use Case',     helpString='Display Ogl Use Case')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_ACTOR,        item='Ogl Actor',        helpString='Display Ogl Actor')
 
         viewMenu.AppendSeparator()
         viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
@@ -180,6 +184,7 @@ class DemoOglElements(App):
 
         self.Bind(EVT_MENU, self._onOglPreferences, id=ID_PREFERENCES)
 
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_SEQUENCE_DIAGRAM)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_COMPOSITION)
@@ -193,6 +198,8 @@ class DemoOglElements(App):
     def _onDisplayElement(self, event: CommandEvent):
         menuId: int = event.GetId()
         match menuId:
+            case self._ID_DISPLAY_SEQUENCE_DIAGRAM:
+                self._displaySequenceDiagram()
             case self._ID_DISPLAY_OGL_CLASS:
                 self._displayOglClass()
             case self._ID_DISPLAY_OGL_TEXT:
@@ -310,6 +317,10 @@ class DemoOglElements(App):
 
         self._addToDiagram(oglObject=oglActor)
 
+    def _displaySequenceDiagram(self):
+        self._createNewSDInstance(x=100, y=100, instanceName='Fran')
+        self._createNewSDInstance(x=500, y=100, instanceName='Ozzee')
+
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
         y: int = self._y
@@ -352,6 +363,21 @@ class DemoOglElements(App):
     def _onSetStatusText(self, event: SetStatusTextEvent):
         msg: str = event.statusMessage
         self._frame.GetStatusBar().SetStatusText(msg)
+
+    def _createNewSDInstance(self, x, y, instanceName: str):
+        """
+        Create a new sequence diagram instance
+        """
+        # Create and add instance
+        pyutSDInstance: PyutSDInstance = PyutSDInstance()
+        pyutSDInstance.instanceName    = instanceName
+        oglSDInstance:  OglSDInstance  = OglSDInstance(pyutSDInstance)
+
+        # self.addShape(oglSDInstance, x, oglSDInstance.GetPosition()[1])
+        oglSDInstance.draggable = True
+        oglSDInstance.SetPosition(x, y)
+
+        self._addToDiagram(oglSDInstance)
 
 
 testApp: DemoOglElements = DemoOglElements(redirect=False)
