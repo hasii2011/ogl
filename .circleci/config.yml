@@ -15,7 +15,7 @@ workflows:
 jobs:
   build:
     docker:
-      - image: cimg/python:3.10-browsers
+      - image: cimg/python:3.12-browsers
     executor: python/default
     steps:
       - checkout
@@ -36,7 +36,7 @@ jobs:
             pip install pyutmodelv2==2.1.5
             pip install six==1.16.0
             pip install attrdict3
-            pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04  wxPython
+            pip install --verbose wxPython
       - run:
             name: run tests
             command: | 
