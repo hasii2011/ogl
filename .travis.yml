@@ -42,4 +42,4 @@ install:
 
 # command to run tests
 script:
-  - unittests - loud
+  - unittests -v loud
