@@ -75,10 +75,6 @@ class OglSDInstance(OglObject):
             height:
 
         """
-        """
-
-        @param double x, y : position of the sizer
-        """
         RectangleShape.Resize(self._instance, sizer, width, height)
         size = self._instance.GetSize()
         self.SetSize(size[0], self.GetSize()[1])

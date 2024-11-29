@@ -124,16 +124,16 @@ class OglObject(RectangleShape, ShapeEventHandler, EventEngineMixin):
         RectangleShape.SetPosition(self, x, y)
         self._indicateDiagramModified()
 
-    def SetSelected(self, state=True):
-
-        # from org.pyut.ui.Mediator import Mediator          # avoid circular import
-        # from org.pyut.ui.Mediator import ACTION_ZOOM_OUT   # avoid circular import
-
-        # mediator: Mediator = Mediator()
-        # if mediator.getCurrentAction() != ACTION_ZOOM_OUT:
-        # TODO:  I took this out because could never cause this to happen;  Conveniently, this removes all mediator calls
-        # RectangleShape.SetSelected(self, state)
-        self.selected = state
+    # def SetSelected(self, state=True):
+    #
+    #     # from org.pyut.ui.Mediator import Mediator          # avoid circular import
+    #     # from org.pyut.ui.Mediator import ACTION_ZOOM_OUT   # avoid circular import
+    #
+    #     # mediator: Mediator = Mediator()
+    #     # if mediator.getCurrentAction() != ACTION_ZOOM_OUT:
+    #     # TODO:  I took this out because could never cause this to happen;  Conveniently, this removes all mediator calls
+    #     # RectangleShape.SetSelected(self, state)
+    #     self.selected = state
 
     def _indicateDiagramModified(self):
         if self.eventEngine is not None:  # we might not be associated with a diagram yet

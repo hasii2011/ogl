@@ -8,8 +8,7 @@ from logging import getLogger
 
 import random
 
-from pyutmodelv2.PyutSDInstance import PyutSDInstance
-from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
+
 from wx import DEFAULT_FRAME_STYLE
 from wx import EVT_MENU
 from wx import ID_EXIT
@@ -43,6 +42,10 @@ from pyutmodelv2.PyutText import PyutText
 from pyutmodelv2.PyutType import PyutType
 from pyutmodelv2.PyutField import PyutFields
 from pyutmodelv2.PyutMethod import PyutMethods
+from pyutmodelv2.PyutSDInstance import PyutSDInstance
+from pyutmodelv2.PyutSDMessage import PyutSDMessage
+
+from pyutmodelv2.enumerations.PyutDisplayParameters import PyutDisplayParameters
 
 from miniogl.Diagram import Diagram
 
@@ -62,6 +65,8 @@ from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 from ogl.sd.OglSDInstance import OglSDInstance
+from ogl.sd.OglSDInstanceV2 import OglSDInstanceV2
+from ogl.sd.OglSDMessage import OglSDMessage
 
 from tests.ProjectTestBase import ProjectTestBase
 
@@ -110,15 +115,16 @@ class DemoOglElements(App):
         self._oglEventEngine:  IOglEventEngine = cast(OglEventEngine, None)
         self._demoEventEngine: DemoEventEngine = cast(DemoEventEngine, None)
 
-        self._ID_DISPLAY_SEQUENCE_DIAGRAM: int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_CLASS:        int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_TEXT:         int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_COMPOSITION:  int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_INTERFACE:    int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_ACTOR:        int = wxNewIdRef()
-        self._ID_DISPLAY_OGL_USE_CASE:     int = wxNewIdRef()
-        self._ID_ZOOM_IN:                  int = wxNewIdRef()
-        self._ID_ZOOM_OUT:                 int = wxNewIdRef()
+        self._ID_DISPLAY_SEQUENCE_DIAGRAM:    int = wxNewIdRef()
+        self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2: int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_CLASS:           int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_TEXT:            int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_COMPOSITION:     int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_INTERFACE:       int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_ACTOR:           int = wxNewIdRef()
+        self._ID_DISPLAY_OGL_USE_CASE:        int = wxNewIdRef()
+        self._ID_ZOOM_IN:                     int = wxNewIdRef()
+        self._ID_ZOOM_OUT:                    int = wxNewIdRef()
 
         self._x: int = 100
         self._y: int = 100
@@ -166,13 +172,14 @@ class DemoOglElements(App):
         fileMenu.AppendSeparator()
         fileMenu.Append(ID_PREFERENCES, "P&references", "Ogl preferences")
 
-        viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM, item='Sequence Diagram', helpString='Display Sequence Diagram')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,        item='Ogl Class',        helpString='Display an Ogl Class')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,         item='Ogl Text',         helpString='Display Ogl Text')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION,  item='Ogl Composition',  helpString='Display an Composition Link')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,    item='Ogl Interface',    helpString='Display Lollipop Interface')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_USE_CASE,     item='Ogl Use Case',     helpString='Display Ogl Use Case')
-        viewMenu.Append(id=self._ID_DISPLAY_OGL_ACTOR,        item='Ogl Actor',        helpString='Display Ogl Actor')
+        viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2, item='V2 Sequence Diagram', helpString='Display V2 Sequence Diagram')
+        viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM,    item='Sequence Diagram', helpString='Display Sequence Diagram')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,           item='Ogl Class',        helpString='Display an Ogl Class')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,            item='Ogl Text',         helpString='Display Ogl Text')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_COMPOSITION,     item='Ogl Composition',  helpString='Display an Composition Link')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_INTERFACE,       item='Ogl Interface',    helpString='Display Lollipop Interface')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_USE_CASE,        item='Ogl Use Case',     helpString='Display Ogl Use Case')
+        viewMenu.Append(id=self._ID_DISPLAY_OGL_ACTOR,           item='Ogl Actor',        helpString='Display Ogl Actor')
 
         viewMenu.AppendSeparator()
         viewMenu.Append(id=self._ID_ZOOM_IN,  item='Zoom In',  helpString='Zoom the frame in')
@@ -184,6 +191,7 @@ class DemoOglElements(App):
 
         self.Bind(EVT_MENU, self._onOglPreferences, id=ID_PREFERENCES)
 
+        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_SEQUENCE_DIAGRAM)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
@@ -198,6 +206,8 @@ class DemoOglElements(App):
     def _onDisplayElement(self, event: CommandEvent):
         menuId: int = event.GetId()
         match menuId:
+            case self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2:
+                self._displayV2SequenceDiagram()
             case self._ID_DISPLAY_SEQUENCE_DIAGRAM:
                 self._displaySequenceDiagram()
             case self._ID_DISPLAY_OGL_CLASS:
@@ -318,8 +328,13 @@ class DemoOglElements(App):
         self._addToDiagram(oglObject=oglActor)
 
     def _displaySequenceDiagram(self):
-        self._createNewSDInstance(x=100, y=100, instanceName='Fran')
-        self._createNewSDInstance(x=500, y=100, instanceName='Ozzee')
+        srcInstance: OglSDInstance = self._createNewSDInstance(x=100, y=100, instanceName='Fran')
+        dstInstance: OglSDInstance = self._createNewSDInstance(x=500, y=100, instanceName='Ozzee')
+
+        self._createNewLink(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
+
+    def _displayV2SequenceDiagram(self):
+        srcInstance: OglSDInstanceV2 = self._createNewV2SDInstance(x=100, y=100, instanceName='Frances')
 
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
@@ -328,18 +343,6 @@ class DemoOglElements(App):
         self._x += INCREMENT_X
         self._y += INCREMENT_Y
         return x, y
-
-    def _addToDiagram(self, oglObject: Union[OglObject, OglLink]):
-
-        oglObject.draggable = True
-
-        x, y = self._getPosition()
-        oglObject.SetPosition(x, y)
-        self._diagramFrame.Refresh()
-
-        self._diagram.AddShape(oglObject, withModelUpdate=True)
-
-        self.logger.info(f'{self._diagram.shapes=}')
 
     def _fiftyFifty(self) -> bool:
         if random.random() < .5:
@@ -364,7 +367,7 @@ class DemoOglElements(App):
         msg: str = event.statusMessage
         self._frame.GetStatusBar().SetStatusText(msg)
 
-    def _createNewSDInstance(self, x, y, instanceName: str):
+    def _createNewSDInstance(self, x, y, instanceName: str) -> OglSDInstance:
         """
         Create a new sequence diagram instance
         """
@@ -378,6 +381,91 @@ class DemoOglElements(App):
         oglSDInstance.SetPosition(x, y)
 
         self._addToDiagram(oglSDInstance)
+
+        return oglSDInstance
+
+    def _createNewV2SDInstance(self, x, y, instanceName: str) -> OglSDInstanceV2:
+        """
+        Create a new sequence diagram instance
+        """
+        # Create and add instance
+        pyutSDInstance: PyutSDInstance  = PyutSDInstance()
+        pyutSDInstance.instanceName     = instanceName
+        oglSDInstance: OglSDInstanceV2  = OglSDInstanceV2(pyutSDInstance)
+
+        # self.addShape(oglSDInstance, x, oglSDInstance.GetPosition()[1])
+        oglSDInstance.draggable = True
+        oglSDInstance.SetPosition(x, y)
+
+        self._addToDiagram(oglSDInstance)
+
+        return oglSDInstance
+
+    def _createNewLink(self, src: OglSDInstance, dst: OglSDInstance, srcPos: Tuple[int, int], dstPos: Tuple[int, int]):
+        """
+        Adds an OglSDMessage link between src and dst.
+
+        Args:
+            src:    source of the link
+            dst:    destination of the link
+            srcPos: position on source
+            dstPos: position on  destination
+
+        Returns: the created OglSDMessage link
+        """
+        srcTime = src.ConvertCoordToRelative(0, srcPos[1])[1]
+        dstTime = dst.ConvertCoordToRelative(0, dstPos[1])[1]
+        pyutLink = PyutSDMessage("msg test", src.pyutObject, srcTime, dst.pyutObject, dstTime)
+
+        oglLink = OglSDMessage(src, pyutLink, dst)
+        # pyutLink.setOglObject(oglLink)
+
+        src.addLink(oglLink)
+        dst.addLink(oglLink)
+        # self._diagram.AddShape(oglLink)
+        self._addToDiagram(oglLink)
+
+        # self.Refresh()
+
+        return oglLink
+
+        # umlFrame: UmlDiagramsFrame = frame
+        #
+        # umlFrame.diagram.AddShape(self._link, withModelUpdate=False)
+        #
+        # if isinstance(self._link, OglAssociation):
+        #     oglAssociation: OglAssociation = cast(OglAssociation, self._link)
+        #
+        #     umlFrame.diagram.AddShape(shape=oglAssociation.centerLabel)
+        #     umlFrame.diagram.AddShape(shape=oglAssociation.sourceCardinality)
+        #     umlFrame.diagram.AddShape(shape=oglAssociation.destinationCardinality)
+        #
+        # # get the view start and end position and assign it to the
+        # # model position, then the view position is updated from
+        # # the model: Legacy comment.  Not sure what that means: Humberto
+        # sourcePoint:      AnchorPoint = self._link.sourceAnchor
+        # destinationPoint: AnchorPoint = self._link.destinationAnchor
+        #
+        # srcPosX, srcPosY = sourcePoint.GetPosition()
+        # dstPosX, dstPosY = destinationPoint.GetPosition()
+        #
+        # self._link.sourceAnchor.model.SetPosition(srcPosX, srcPosY)
+        # self._link.destinationAnchor.model.SetPosition(dstPosX, dstPosY)
+        # self._link.UpdateFromModel()
+        #
+        # umlFrame.Refresh()
+
+    def _addToDiagram(self, oglObject: Union[OglObject, OglLink, OglSDInstanceV2]):
+
+        oglObject.draggable = True
+
+        x, y = self._getPosition()
+        oglObject.SetPosition(x, y)
+        self._diagramFrame.Refresh()
+
+        self._diagram.AddShape(oglObject, withModelUpdate=True)
+
+        self.logger.info(f'{self._diagram.shapes=}')
 
 
 testApp: DemoOglElements = DemoOglElements(redirect=False)

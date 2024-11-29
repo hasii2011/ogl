@@ -11,18 +11,19 @@ from miniogl.SizerShape import SizerShape
 
 class Diagram:
 
-    clsLogger: Logger = getLogger(__name__)
     """
     A diagram contains shapes and is manages them.
-    
+
     It knows every shapes that can be clicked, selected, and moved.
     """
     def __init__(self, panel):
         """
-        Constructor.
 
-        @param  panel : the panel on which to draw
+        Args:
+            panel:  the panel on which to draw
         """
+        self.logger: Logger = getLogger(__name__)
+
         self._panel = panel
         self._shapes:       Shapes = Shapes([])     # all selectable shapes
         self._parentShapes: Shapes = Shapes([])     # all first level shapes
@@ -63,12 +64,12 @@ class Diagram:
             shape:  the shape to add
             withModelUpdate:
         """
+        self.logger.debug(f'AddShape {shape}')
         if shape not in self._shapes:
             self._shapes.append(shape)
         if shape not in self._parentShapes and shape.parent is None:
             self._parentShapes.append(shape)
 
-        self.clsLogger.debug(f'.AddShape before shape.Attach()=> {shape} withModelUpdate {withModelUpdate}')
         shape.Attach(self)
 
         # makes the shape's model (MVC pattern) have the right values depending on
@@ -95,11 +96,10 @@ class Diagram:
 
         Args:
             shape:
-
         """
-        Diagram.clsLogger.debug(f'Determine what got passed in: {shape=}')
+        self.logger.debug(f'Determine what got passed in: {shape=}')
         if isinstance(shape, SizerShape):
-            self.clsLogger.warning(f'Removing SizerShape')
+            self.logger.debug(f'Removing SizerShape')
         if shape in self._shapes:
             self._shapes.remove(shape)
         if shape in self._parentShapes:

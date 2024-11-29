@@ -37,7 +37,6 @@ class Shape:
     """
 
     idGenerator: ClassVar = infiniteSequence()
-    clsLogger:   Logger   = getLogger(__name__)
 
     def __init__(self, x: int = 0, y: int = 0, parent=None):
         """
@@ -48,6 +47,8 @@ class Shape:
             y: position of the shape on the diagram
             parent:
         """
+        self._shapeLogger: Logger = getLogger(__name__)
+
         self._x: int = x    # shape position (view)
         self._y: int = y    # shape position (view)
         self._ox: int = 0   # origin position (view)
@@ -383,11 +384,16 @@ class Shape:
         When you create a new shape, you must attach it to a diagram before
         you can see it. This method is used internally by Diagram.AddShape.
 
-        @param  diagram
+        Args:
+            diagram:
         """
         self._diagram = diagram
         # add the anchors and the children
-        map(lambda x: diagram.AddShape(x), self._anchors + self._children + self._privateChildren)
+        # map(lambda x: diagram.AddShape(x), self._anchors + self._children + self._privateChildren)
+        children: List[Shape] = self._anchors + self._children + self._privateChildren
+        for child in children:
+            diagram.AddShape(child)
+            self._shapeLogger.debug(f'{child.diagram=}')
 
     def Detach(self):
         """
@@ -435,10 +441,10 @@ class Shape:
         if self._visible:
             dc.SetPen(self._pen)
             dc.SetBrush(self._brush)
-            if withChildren:
+            if withChildren is True:
                 self.DrawChildren(dc)
 
-        if self._selected:
+        if self._selected is True:
             dc.SetPen(RED_PEN)
             self.DrawHandles(dc)
 

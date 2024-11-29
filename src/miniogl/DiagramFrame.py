@@ -80,8 +80,6 @@ class DiagramFrame(ScrolledWindow):
     """
     DEFAULT_FONT_SIZE: int = 12
 
-    diagramFrameLogger: Logger = getLogger(__name__)
-
     def __init__(self, parent: Window):
         """
 
@@ -89,6 +87,8 @@ class DiagramFrame(ScrolledWindow):
             parent:  parent window
         """
         super().__init__(parent, style=SUNKEN_BORDER)
+
+        self._diagramFrameLogger: Logger = getLogger(__name__)
 
         self._diagram = Diagram(self)
 
@@ -274,8 +274,8 @@ class DiagramFrame(ScrolledWindow):
         shape = self.FindShape(x, y)
         event.m_x, event.m_y = x, y
 
-        self.diagramFrameLogger.info(f'GenericHandler - `{shape=}` `{methodName=}` x,y: {x},{y}')
-        # if the shape found is a ShapeEventHandler
+        self._diagramFrameLogger.info(f'GenericHandler - `{shape=}` `{methodName=}` x,y: {x},{y}')
+        # Is the shape found is a ShapeEventHandler ?
         if shape is not None and isinstance(shape, ShapeEventHandler):
             getattr(shape, methodName)(event)
         else:
@@ -290,13 +290,13 @@ class DiagramFrame(ScrolledWindow):
         Args:
             event:
         """
-        self.diagramFrameLogger.debug("DiagramFrame.OnLeftDown")
+        self._diagramFrameLogger.debug("DiagramFrame.OnLeftDown")
 
         # First, call the generic handler for OnLeftDown
         shape: ShapeEventHandler = self.GenericHandler(event, "OnLeftDown")
         self._clickedShape = cast(Shape, shape)  # store the last clicked shape
         if not event.GetSkipped():
-            self.diagramFrameLogger.debug(f'{event.GetSkipped()=}')
+            self._diagramFrameLogger.debug(f'{event.GetSkipped()=}')
             return
         if shape is None:
             self._BeginSelect(event)
@@ -316,7 +316,7 @@ class DiagramFrame(ScrolledWindow):
                 shapes.remove(shape.parent)
             elif isinstance(shape, ControlPoint):
                 # don't deselect the line of a control point
-                self.diagramFrameLogger.debug(f'{shape=}')
+                self._diagramFrameLogger.debug(f'{shape=}')
                 for line in shape.lines:
                     shapes.remove(line)
             # do not call DeselectAllShapes, because we must ensure that
@@ -343,7 +343,7 @@ class DiagramFrame(ScrolledWindow):
         """
         if self._selector is not None:
             self.Unbind(EVT_MOTION)
-            self.diagramFrameLogger.debug(f'{self._selector=}')
+            self._diagramFrameLogger.debug(f'{self._selector=}')
             rect = self._selector
 
             for shape in self._diagram.shapes:
@@ -357,7 +357,7 @@ class DiagramFrame(ScrolledWindow):
             rect.Detach()
             self._selector = cast(RectangleShape, None)
         if not self._moving and self._clickedShape:
-            self.diagramFrameLogger.debug(f'{self._moving} {self._clickedShape}')
+            self._diagramFrameLogger.debug(f'{self._moving} {self._clickedShape}')
             clicked = self._clickedShape
             if not event.ControlDown():
                 self.DeselectAllShapes()
@@ -494,14 +494,14 @@ class DiagramFrame(ScrolledWindow):
 
         Returns:  The shape that was found under the coordinates or None
         """
-        self.diagramFrameLogger.debug(f'FindShape: @{x},{y}')
+        self._diagramFrameLogger.debug(f'FindShape: @{x},{y}')
         found = None
         shapes = self._diagram.shapes
         # self.clsLogger.debug(f'{shapes=}')
         shapes.reverse()    # to select the one at the top
         for shape in shapes:
             if shape.Inside(x, y):
-                self.diagramFrameLogger.debug(f"Inside: {shape}")
+                self._diagramFrameLogger.debug(f"Inside: {shape}")
                 found = shape
                 break   # only select the first one
         return found
@@ -944,7 +944,7 @@ class DiagramFrame(ScrolledWindow):
 
         # perform the scrolling in the way to have the zoom area visible
         # and centred on the virtual screen.
-        self.diagramFrameLogger.info(f'{virtualWidth=} {clientWidth=} {xUnit=}')
+        self._diagramFrameLogger.info(f'{virtualWidth=} {clientWidth=} {xUnit=}')
         scrollX: int = (virtualWidth - clientWidth) / 2 / xUnit
         scrollY: int = (virtualHeight - clientHeight) / 2 / yUnit
 

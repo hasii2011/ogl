@@ -26,18 +26,20 @@
             "level": "INFO",
             "propagate": "False"
         },
-        "codeallybasic.UnitTestBase": {
-            "level":     "INFO",
+        "ogl.sd.OglSDInstanceV2": {
+            "level":     "DEBUG",
             "propagate": "False"
         },
-        "tests.demo.rotatable.DemoRotatableShapes": {
-            "level":     "INFO",
-            "handlers":  ["consoleHandler"],
+        "miniogl.DiagramFrame": {
+            "level":     "WARNING",
             "propagate": "False"
         },
-        "miniogl.rotatable.VShapes": {
-            "level":     "INFO",
-            "handlers":  ["consoleHandler"],
+        "miniogl.Diagram": {
+            "level":     "WARNING",
+            "propagate": "False"
+        },
+        "miniogl.Shape": {
+            "level":     "DEBUG",
             "propagate": "False"
         }
     }
