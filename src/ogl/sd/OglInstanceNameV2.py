@@ -10,7 +10,7 @@ from wx import FONTWEIGHT_NORMAL
 
 from wx import Font
 from wx import MouseEvent
-from wx import PENSTYLE_DOT
+
 from wx import PENSTYLE_SOLID
 from wx import Pen
 
@@ -47,6 +47,33 @@ class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
 
         self._drawFrame = True
         self._resizable = True
+
+    @property
+    def selected(self) -> bool:
+        """
+        Override TextShape
+
+        Returns: 'True' if selected 'False' otherwise
+        """
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        """
+        Force OglSDInstanceV2 to treat us as a unit
+
+        Args:
+            state:
+
+        """
+
+        self._selected = state
+
+        assert self._parent is not None, 'We should be parented by OglSDInstanceV2'
+
+        # avoid recursion problem
+        if self._selected != self._parent.selected:
+            self._parent.selected = state
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """

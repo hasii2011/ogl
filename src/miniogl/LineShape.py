@@ -118,6 +118,10 @@ class LineShape(Shape, Common):
     @selected.setter
     def selected(self, state: bool):
         self._selected = state
+        # avoid recursion problem
+        if self._selected != self._parent.selected:
+            self._parent.selected = state
+
         for cp in self._controls:
             ctrl: ControlPoint = cast(ControlPoint, cp)
             ctrl.visible = state

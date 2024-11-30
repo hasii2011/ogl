@@ -1,6 +1,7 @@
 
 from typing import NewType
 from typing import Tuple
+from typing import cast
 
 from logging import Logger
 from logging import getLogger
@@ -9,15 +10,21 @@ from wx import BLACK_PEN
 from wx import DC
 from wx import MouseEvent
 
-from pyutmodelv2.PyutSDInstance import PyutSDInstance
 from wx import PENSTYLE_LONG_DASH
 from wx import Pen
+from wx import RED
+from wx import RED_PEN
 from wx.core import LIGHT_GREY
+
+
+from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.LineShape import LineShape
+from miniogl.MiniOglUtils import sign
 from miniogl.Shape import Shape
 from miniogl.ShapeEventHandler import ShapeEventHandler
+from miniogl.SizerShape import SizerShape
 
 from ogl.EventEngineMixin import EventEngineMixin
 
@@ -50,6 +57,30 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self._size:                  InstanceSize = InstanceSize((100, 400))
         self.visible = True
 
+        #
+        # TODO:  This will move to the mixin;  When I create it !!
+        #
+        self._topLeftSizer:  SizerShape = cast(SizerShape, None)
+        self._topRightSizer: SizerShape = cast(SizerShape, None)
+        self._botLeftSizer:  SizerShape = cast(SizerShape, None)
+        self._botRightSizer: SizerShape = cast(SizerShape, None)
+
+    @property
+    def selected(self) -> bool:
+        """
+        Override Shape
+
+        Returns: 'True' if selected 'False' otherwise
+        """
+        return self._selected
+
+    @selected.setter
+    def selected(self, state: bool):
+        self._selected              = state
+        self._instanceName.selected = state
+        self._lifeLine.selected     = state
+        self.ShowSizers(state)
+
     @property
     def pyutSDInstance(self):
         return self._pyutSDInstance
@@ -69,6 +100,10 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self._v2Logger.debug(f'{self.GetSize()=}')
         super().Draw(dc=dc, withChildren=False)
         self.DrawChildren(dc)
+        if self._selected is True:
+            dc.SetPen(RED_PEN)
+            self.DrawHandles(dc)
+
         self.DrawBorder(dc)
 
     def DrawBorder(self, dc):
@@ -78,8 +113,12 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         super().DrawBorder(dc)
         savePen: Pen = dc.GetPen()
 
-        greyDashedPen: Pen = Pen(LIGHT_GREY, style=PENSTYLE_LONG_DASH)
-        dc.SetPen(greyDashedPen)
+        if self._selected is True:
+            drawPen: Pen = Pen(RED, style=PENSTYLE_LONG_DASH)
+        else:
+            drawPen = Pen(LIGHT_GREY, style=PENSTYLE_LONG_DASH)
+
+        dc.SetPen(drawPen)
 
         sx, sy = self.GetPosition()
         sx = sx - self._ox
@@ -93,6 +132,9 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         if self._instanceName.Inside(x=x, y=y) is True:
             self._clickedOnInstanceName = True
             return True
+        elif self._inside(x=x, y=y) is True:
+            return True
+
         return False
 
     # noinspection PyUnusedLocal
@@ -114,6 +156,39 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
     def GetSize(self) -> InstanceSize:
         return self._size
+
+    def ShowSizers(self, state: bool = True):
+        """
+        Show the four sizer shapes if state is True.
+
+        TODO:  This is duplicated from RectangleShape.  Create a mixin to use for
+        both.
+
+        Args:
+            state:
+
+        """
+        width, height = self.GetSize()
+        if state and not self._topLeftSizer:
+            self._topLeftSizer  = SizerShape(-self._ox, -self._oy, self)
+            self._topRightSizer = SizerShape(-self._ox + width - 1, self._oy, self)
+            self._botLeftSizer  = SizerShape(-self._ox, -self._oy + height - 1, self)
+            self._botRightSizer = SizerShape(-self._ox + width - 1, -self._oy + height - 1, self)
+
+            self._diagram.AddShape(self._topLeftSizer)
+            self._diagram.AddShape(self._topRightSizer)
+            self._diagram.AddShape(self._botLeftSizer)
+            self._diagram.AddShape(self._botRightSizer)
+        elif not state and self._topLeftSizer is not None:
+            self._topLeftSizer.Detach()
+            self._topRightSizer.Detach()
+            self._botLeftSizer.Detach()
+            self._botRightSizer.Detach()
+
+            self._topLeftSizer  = cast(SizerShape, None)
+            self._topRightSizer = cast(SizerShape, None)
+            self._botLeftSizer  = cast(SizerShape, None)
+            self._botRightSizer = cast(SizerShape, None)
 
     def addMessage(self, message):
         """
@@ -166,3 +241,34 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self.AppendChild(lifeLineShape)
 
         return lifeLineShape
+
+    def _inside(self, x, y) -> bool:
+        """
+        True if (x, y) is inside the rectangle.
+
+        TODO:  This is duplicated from RectangleShape;  Create a mixin to use for both
+
+        Args:
+            x:
+            y:
+
+        Returns:
+
+        """
+        # this also works if width and/or height is negative.
+        sx, sy = self.GetPosition()
+        # take a minimum of 4 pixels for the selection
+        width, height = self.GetSize()
+        width  = sign(width)  * max(abs(width),  4)
+        height = sign(height) * max(abs(height), 4)
+        topLeftX: int = sx - self._ox
+        topLeftY: int = sy - self._oy
+
+        topXLeftIsInside:  bool  = x >= topLeftX
+        topXRightIsInside: bool  = x <= topLeftX + width
+        topYLeftIsInside:  bool  = y >= topLeftY
+        topYRightIsInside: bool  = y <= topLeftY + height
+        if topXLeftIsInside and topXRightIsInside and topYLeftIsInside and topYRightIsInside:
+            return True
+        else:
+            return False
