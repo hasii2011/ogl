@@ -1,5 +1,6 @@
 
 from typing import NewType
+from typing import TYPE_CHECKING
 from typing import Tuple
 from typing import cast
 
@@ -31,7 +32,9 @@ from ogl.EventEngineMixin import EventEngineMixin
 from ogl.preferences.OglPreferences import OglPreferences
 
 from ogl.sd.OglInstanceNameV2 import OglInstanceNameV2
-from ogl.sd.OglSDMessageV2 import OglSDMessages
+
+if TYPE_CHECKING:
+    from ogl.sd.OglSDMessageV2 import OglSDMessagesV2
 
 InstanceSize = NewType('InstanceSize', Tuple[int, int])
 
@@ -39,6 +42,8 @@ InstanceSize = NewType('InstanceSize', Tuple[int, int])
 class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
     def __init__(self, pyutSDInstance: PyutSDInstance):
+
+        from ogl.sd.OglSDMessageV2 import OglSDMessagesV2
 
         self._v2Logger:        Logger         = getLogger(__name__)
         self._preferences:  OglPreferences = OglPreferences()
@@ -49,7 +54,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         EventEngineMixin.__init__(self)
 
         self._pyutSDInstance: PyutSDInstance    = pyutSDInstance
-        self._messages:       OglSDMessages     = OglSDMessages([])
+        self._messages:       OglSDMessagesV2   = OglSDMessagesV2([])
         self._instanceName:   OglInstanceNameV2 = self._createInstanceName(pyutSDInstance=pyutSDInstance)
         self._lifeLine:       LineShape         = self._createLifeLine()
 
@@ -90,7 +95,16 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self._pyutSDInstance = pyutSDInstance
 
     @property
-    def messages(self) -> OglSDMessages:
+    def lifeline(self) -> LineShape:
+        """
+        Parent of an OGLSDMessage instance
+
+        Returns: The lifeline object
+        """
+        return self._lifeLine
+
+    @property
+    def messages(self) -> 'OglSDMessagesV2':
         return self._messages
 
     def Draw(self, dc: DC, withChildren: bool = True):
@@ -203,7 +217,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
     def addMessage(self, message):
         """
-        Add a link to an ogl object.
+        Add a message
 
         Args:
             message:  the message to add

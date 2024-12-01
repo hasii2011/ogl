@@ -67,6 +67,7 @@ from ogl.preferences.OglPreferences import OglPreferences
 from ogl.sd.OglSDInstance import OglSDInstance
 from ogl.sd.OglSDInstanceV2 import OglSDInstanceV2
 from ogl.sd.OglSDMessage import OglSDMessage
+from ogl.sd.OglSDMessageV2 import OglSDMessageV2
 
 from tests.ProjectTestBase import ProjectTestBase
 
@@ -331,10 +332,13 @@ class DemoOglElements(App):
         srcInstance: OglSDInstance = self._createNewSDInstance(x=100, y=100, instanceName='Fran')
         dstInstance: OglSDInstance = self._createNewSDInstance(x=500, y=100, instanceName='Ozzee')
 
-        self._createNewLink(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
+        self._createNewMessage(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
 
     def _displayV2SequenceDiagram(self):
         srcInstance: OglSDInstanceV2 = self._createNewV2SDInstance(x=100, y=100, instanceName='Frances')
+        dstInstance: OglSDInstanceV2 = self._createNewV2SDInstance(x=100, y=100, instanceName='Ozzee')
+
+        self._createNewMessage(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
 
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
@@ -401,7 +405,12 @@ class DemoOglElements(App):
 
         return oglSDInstance
 
-    def _createNewLink(self, src: OglSDInstance, dst: OglSDInstance, srcPos: Tuple[int, int], dstPos: Tuple[int, int]):
+    def _createNewMessage(self,
+                          src: OglSDInstance | OglSDInstanceV2,
+                          dst: OglSDInstance | OglSDInstanceV2,
+                          srcPos: Tuple[int, int],
+                          dstPos: Tuple[int, int]
+                          ):
         """
         Adds an OglSDMessage link between src and dst.
 
@@ -415,45 +424,26 @@ class DemoOglElements(App):
         """
         srcTime = src.ConvertCoordToRelative(0, srcPos[1])[1]
         dstTime = dst.ConvertCoordToRelative(0, dstPos[1])[1]
-        pyutLink = PyutSDMessage("msg test", src.pyutObject, srcTime, dst.pyutObject, dstTime)
+        if isinstance(src, OglSDInstance) is True:
+            src1: OglSDInstance = cast(OglSDInstance, src)
+            dst1: OglSDInstance = cast(OglSDInstance, dst)
+            pyutLink = PyutSDMessage("msg test", src1.pyutObject, srcTime, dst1.pyutObject, dstTime)
+            oglLink = OglSDMessage(src1, pyutLink, dst1)
+            src1.addLink(oglLink)
+            dst1.addLink(oglLink)
+            self._addToDiagram(oglLink)
+            return oglLink
 
-        oglLink = OglSDMessage(src, pyutLink, dst)
-        # pyutLink.setOglObject(oglLink)
+        else:
+            src2: OglSDInstanceV2 = cast(OglSDInstanceV2, src)
+            dst2: OglSDInstanceV2 = cast(OglSDInstanceV2, dst)
 
-        src.addLink(oglLink)
-        dst.addLink(oglLink)
-        # self._diagram.AddShape(oglLink)
-        self._addToDiagram(oglLink)
-
-        # self.Refresh()
-
-        return oglLink
-
-        # umlFrame: UmlDiagramsFrame = frame
-        #
-        # umlFrame.diagram.AddShape(self._link, withModelUpdate=False)
-        #
-        # if isinstance(self._link, OglAssociation):
-        #     oglAssociation: OglAssociation = cast(OglAssociation, self._link)
-        #
-        #     umlFrame.diagram.AddShape(shape=oglAssociation.centerLabel)
-        #     umlFrame.diagram.AddShape(shape=oglAssociation.sourceCardinality)
-        #     umlFrame.diagram.AddShape(shape=oglAssociation.destinationCardinality)
-        #
-        # # get the view start and end position and assign it to the
-        # # model position, then the view position is updated from
-        # # the model: Legacy comment.  Not sure what that means: Humberto
-        # sourcePoint:      AnchorPoint = self._link.sourceAnchor
-        # destinationPoint: AnchorPoint = self._link.destinationAnchor
-        #
-        # srcPosX, srcPosY = sourcePoint.GetPosition()
-        # dstPosX, dstPosY = destinationPoint.GetPosition()
-        #
-        # self._link.sourceAnchor.model.SetPosition(srcPosX, srcPosY)
-        # self._link.destinationAnchor.model.SetPosition(dstPosX, dstPosY)
-        # self._link.UpdateFromModel()
-        #
-        # umlFrame.Refresh()
+            pyutLink = PyutSDMessage("msg test", src2.pyutSDInstance, srcTime, dst2.pyutSDInstance, dstTime)
+            oglLink2: OglSDMessageV2  = OglSDMessageV2(src2, pyutLink, dst2)
+            src2.addMessage(oglLink2)
+            dst2.addMessage(oglLink2)
+            self._addToDiagram(oglLink2)
+            return oglLink2
 
     def _addToDiagram(self, oglObject: Union[OglObject, OglLink, OglSDInstanceV2]):
 

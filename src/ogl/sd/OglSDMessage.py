@@ -16,6 +16,7 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.TextShape import TextShape
 
 from ogl.sd.OglSDInstance import OglSDInstance
+from ogl.sd.OglSDInstanceV2 import OglSDInstanceV2
 
 from ogl.OglPosition import OglPosition
 from ogl.OglLink import OglLink
@@ -65,8 +66,8 @@ class OglSDMessage(OglLink):
         self.updateMessage()
         self.drawArrow = True
 
-        assert isinstance(srcSDInstance, OglSDInstance), 'Developer Error, src of message should be an instance'
-        assert isinstance(dstSDInstance, OglSDInstance), 'Developer Error, dst of message should be an instance'
+        assert isinstance(srcSDInstance, OglSDInstance | OglSDInstanceV2), 'Developer Error, src of message should be an instance'
+        assert isinstance(dstSDInstance, OglSDInstance | OglSDInstanceV2), 'Developer Error, dst of message should be an instance'
         #
         # TODO:  Should I really do this?
         srcSDInstance.addLink(self)
