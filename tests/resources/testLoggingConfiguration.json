@@ -31,7 +31,7 @@
             "propagate": "False"
         },
         "miniogl.DiagramFrame": {
-            "level":     "WARNING",
+            "level":     "INFO",
             "propagate": "False"
         },
         "miniogl.Diagram": {

@@ -97,7 +97,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         """
         Draw the shape.
         """
-        self._v2Logger.debug(f'{self.GetSize()=}')
+        # self._v2Logger.debug(f'{self.GetSize()=}')
         super().Draw(dc=dc, withChildren=False)
         self.DrawChildren(dc)
         if self._selected is True:
@@ -153,9 +153,20 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self._size = InstanceSize((width, height))
 
         self._instanceName.SetSize(width=100, height=height)
+        for anchor in self._anchors:
+            ax, ay = anchor.GetPosition()
+            # Reset position to stick the border
+            anchor.SetPosition(ax, ay)
 
     def GetSize(self) -> InstanceSize:
         return self._size
+
+    def SetPosition(self, x: int, y: int):
+        """
+        Force y position
+        """
+        y = self._instanceYPosition
+        super().SetPosition(x, y)
 
     def ShowSizers(self, state: bool = True):
         """
@@ -198,6 +209,75 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
             message:  the message to add
         """
         self._messages.append(message)
+
+    def Resize(self, sizer, x, y):
+        """
+        Resize the rectangle according to the new position of the sizer.
+        Not used to programmatically resize a shape. Use `SetSize` for this.
+
+        TODO:  Copied from RectangleShape;  Needs to be part of a mixin
+        Args:
+            sizer:
+            x:      x position of the sizer
+            y:      y position of the sizer
+
+        """
+        tlx, tly = self.topLeft
+        w, h = self.GetSize()
+        sw, sh = sign(w), sign(h)
+        w, h = abs(w), abs(h)
+        if sizer is self._topLeftSizer:
+            nw = sw * (w - x + tlx)
+            nh = sh * (h - y + tly)
+            self._ox = self._ox * nw // w
+            self._oy = self._oy * nh // h
+            self.SetSize(nw, nh)
+            self.SetTopLeft(x, y)
+            self._topRightSizer.SetRelativePosition(nw - 1, 0)
+            self._botLeftSizer.SetRelativePosition(0, nh - 1)
+            self._botRightSizer.SetRelativePosition(nw - 1, nh - 1)
+        elif sizer is self._topRightSizer:
+            nw = sw * (x - tlx)
+            nh = sh * (tly + h - y)
+            self.SetTopLeft(tlx, y)
+            self.SetSize(nw + 1, nh)
+            self._topRightSizer.SetRelativePosition(nw, 0)
+            self._botRightSizer.SetRelativePosition(nw, nh - 1)
+            self._botLeftSizer.SetRelativePosition(0, nh - 1)
+        elif sizer is self._botLeftSizer:
+            nw = sw * (w - x + tlx)
+            nh = sh * (y - tly)
+            self.SetTopLeft(x, tly)
+            self.SetSize(nw, nh + 1)
+            self._botLeftSizer.SetRelativePosition(0, nh)
+            self._botRightSizer.SetRelativePosition(nw - 1, nh)
+            self._topRightSizer.SetRelativePosition(nw - 1, 0)
+        elif sizer is self._botRightSizer:
+            nw = sw * (x - tlx)
+            nh = sh * (y - tly)
+            self.SetSize(nw + 1, nh + 1)
+            self._botLeftSizer.SetRelativePosition(0, nh)
+            self._botRightSizer.SetRelativePosition(nw, nh)
+            self._topRightSizer.SetRelativePosition(nw, 0)
+
+    def SetTopLeft(self, x, y):
+        """
+        TODO: should be part of Resize mixin
+        Args:
+            x:
+            y: new position
+
+        Returns:
+
+        """
+        x += self._ox
+        y += self._oy
+        width, height = self.GetSize()
+        if width < 0:
+            x -= width
+        if height < 0:
+            y -= height
+        self._x, self._y = x, y
 
     def _createInstanceName(self, pyutSDInstance: PyutSDInstance) -> OglInstanceNameV2:
         """
@@ -272,3 +352,10 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
             return True
         else:
             return False
+
+    def __str__(self) -> str:
+        x, y = self.GetPosition()
+        return f'OglSDInstanceV2[{self.id=} position: ({x},{y}])'
+
+    def __repr__(self):
+        return self.__str__()

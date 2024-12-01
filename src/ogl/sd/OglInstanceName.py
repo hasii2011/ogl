@@ -24,4 +24,11 @@ class OglInstanceName(TextShape, ShapeEventHandler):
 
         self._defaultFont = Font(OglInstanceName.TEXT_SHAPE_FONT_SIZE, FONTFAMILY_TELETYPE, FONTSTYLE_ITALIC, FONTWEIGHT_NORMAL)
 
-        TextShape.__init__(self, x, y, text, parent=parent, font=self._defaultFont)
+        # TextShape.__init__(self, x, y, text, parent=parent, font=self._defaultFont)
+        super().__init__(x, y, text, parent=parent, font=self._defaultFont)
+
+    def __str__(self) -> str:
+        return f'OglInstanceName-{self._pyutObject.instanceName}'
+
+    def __repr__(self) -> str:
+        return self.__str__()

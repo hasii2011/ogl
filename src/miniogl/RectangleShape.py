@@ -322,3 +322,9 @@ class RectangleShape(Shape):
 
         # set the new size to the model.
         self.model.SetSize(round(width//ratio), round(height//ratio))
+
+    def __str__(self) -> str:
+        return f'RectangleShape-{self._id}'
+
+    def __repr__(self) -> str:
+        return self.__str__()

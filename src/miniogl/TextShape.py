@@ -252,6 +252,9 @@ class TextShape(RectangleShape):
 
         dc.SetFont(saveFont)
 
-    def __repr__(self):
+    def __str__(self) -> str:
         x, y = self.GetPosition()
         return f'TextShape[{self._text=} position: ({x},{y}])'
+
+    def __repr__(self):
+        return self.__str__()

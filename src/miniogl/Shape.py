@@ -390,10 +390,17 @@ class Shape:
         self._diagram = diagram
         # add the anchors and the children
         # map(lambda x: diagram.AddShape(x), self._anchors + self._children + self._privateChildren)
+
+        def hasDiagram(kid) -> bool:
+            if kid.diagram is not None:
+                return True
+            else:
+                return False
+
         children: List[Shape] = self._anchors + self._children + self._privateChildren
         for child in children:
             diagram.AddShape(child)
-            self._shapeLogger.debug(f'{child.diagram=}')
+            self._shapeLogger.debug(f'Attach: {child} has diagram {hasDiagram(child)}')
 
     def Detach(self):
         """

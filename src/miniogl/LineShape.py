@@ -118,9 +118,6 @@ class LineShape(Shape, Common):
     @selected.setter
     def selected(self, state: bool):
         self._selected = state
-        # avoid recursion problem
-        if self._selected != self._parent.selected:
-            self._parent.selected = state
 
         for cp in self._controls:
             ctrl: ControlPoint = cast(ControlPoint, cp)
@@ -398,6 +395,12 @@ class LineShape(Shape, Common):
         points.append(self._dstAnchor)
 
         return points
+
+    def __str__(self) -> str:
+        return f'LineShape-{self._id}'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 LineShapes = NewType('LineShapes', List[LineShape])
