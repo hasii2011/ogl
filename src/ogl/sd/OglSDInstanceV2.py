@@ -9,13 +9,12 @@ from logging import getLogger
 
 from wx import BLACK_PEN
 from wx import DC
-from wx import MouseEvent
 
 from wx import PENSTYLE_LONG_DASH
 from wx import Pen
 from wx import RED
 from wx import RED_PEN
-from wx.core import LIGHT_GREY
+from wx import LIGHT_GREY
 
 
 from pyutmodelv2.PyutSDInstance import PyutSDInstance
@@ -45,7 +44,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
         from ogl.sd.OglSDMessageV2 import OglSDMessagesV2
 
-        self._v2Logger:        Logger         = getLogger(__name__)
+        self._v2Logger:     Logger         = getLogger(__name__)
         self._preferences:  OglPreferences = OglPreferences()
 
         self._instanceYPosition: int = self._preferences.instanceYPosition
@@ -60,6 +59,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
         self._clickedOnInstanceName: bool = False
         self._size:                  InstanceSize = InstanceSize((100, 400))
+
         self.visible = True
 
         #
@@ -118,6 +118,9 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
             dc.SetPen(RED_PEN)
             self.DrawHandles(dc)
 
+        if self._topLeftSizer is not None:
+            self._topLeftSizer.Draw(dc, False)
+
         self.DrawBorder(dc)
 
     def DrawBorder(self, dc):
@@ -151,12 +154,6 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
         return False
 
-    # noinspection PyUnusedLocal
-    def OnLeftDown(self, event: MouseEvent):
-        if self._clickedOnInstanceName is True:
-            self._clickedOnInstanceName = False
-            self._instanceName.selected = True
-
     def SetSize(self, width: int, height: int):
         """
 
@@ -166,7 +163,8 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         """
         self._size = InstanceSize((width, height))
 
-        self._instanceName.SetSize(width=100, height=height)
+        self._instanceName.SetSize(width=width, height=20)
+
         for anchor in self._anchors:
             ax, ay = anchor.GetPosition()
             # Reset position to stick the border
@@ -236,6 +234,8 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
             y:      y position of the sizer
 
         """
+        # self._v2Logger.debug(f'Resize - {sizer=}')
+
         tlx, tly = self.topLeft
         w, h = self.GetSize()
         sw, sh = sign(w), sign(h)
@@ -293,6 +293,12 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
             y -= height
         self._x, self._y = x, y
 
+    def OnLeftUp(self, event):
+        """
+        Callback for left clicks.
+        """
+        self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
+
     def _createInstanceName(self, pyutSDInstance: PyutSDInstance) -> OglInstanceNameV2:
         """
 
@@ -300,7 +306,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         """
         text: str = self._pyutSDInstance.instanceName
 
-        oglInstanceName: OglInstanceNameV2 = OglInstanceNameV2(pyutSDInstance, 0, 20, text, parent=self)
+        oglInstanceName: OglInstanceNameV2 = OglInstanceNameV2(pyutSDInstance, 0, 0, text, parent=self)
         oglInstanceName.SetRelativePosition(0, 0)
 
         self.AppendChild(oglInstanceName)

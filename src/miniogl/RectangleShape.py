@@ -150,7 +150,6 @@ class RectangleShape(Shape):
             y:
 
         Returns:
-
         """
         # this also works if width and/or height is negative.
         sx, sy = self.GetPosition()

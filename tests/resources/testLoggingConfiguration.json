@@ -31,7 +31,7 @@
             "propagate": "False"
         },
         "miniogl.DiagramFrame": {
-            "level":     "WARNING",
+            "level":     "DEBUG",
             "propagate": "False"
         },
         "miniogl.Diagram": {
@@ -39,6 +39,10 @@
             "propagate": "False"
         },
         "miniogl.Shape": {
+            "level":     "WARNING",
+            "propagate": "False"
+        },
+        "miniogl.SizerShape": {
             "level":     "WARNING",
             "propagate": "False"
         }

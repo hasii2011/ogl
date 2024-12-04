@@ -25,8 +25,8 @@ class SizerShape(PointShape):
         #  TODO : Remove this. This is for debugging purpose.
 
         Note : This functions seems to be needed to display anchors
-                on rectangle when moving them, but not for lines,
-            single anchors, ...
+               only on a rectangle when moving it, but not for lines,
+               single anchors, ...
 
         Args:
             dc:
@@ -35,7 +35,6 @@ class SizerShape(PointShape):
         Returns:
 
         """
-        # PointShape.Draw(self, dc, withChildren)
         super().Draw(dc, withChildren)
 
     def SetPosition(self, x: int, y: int):
@@ -58,7 +57,12 @@ class SizerShape(PointShape):
         Args:
             state:
         """
-        # PointShape.SetMoving(self, True)
         self.moving = True
         # a sizer is always moving
         self._parent.moving = state
+
+    def __str__(self) -> str:
+        return f'SizerShape-{self._id}'
+
+    def __repr__(self) -> str:
+        return self.__str__()

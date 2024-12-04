@@ -47,6 +47,7 @@ class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
 
         self._drawFrame = True
         self._resizable = True
+        self.draggable  = False
 
     @property
     def selected(self) -> bool:
@@ -66,14 +67,7 @@ class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
             state:
 
         """
-
         self._selected = state
-
-        assert self._parent is not None, 'We should be parented by OglSDInstanceV2'
-
-        # avoid recursion problem
-        if self._selected != self._parent.selected:
-            self._parent.selected = state
 
     def Draw(self, dc: DC, withChildren: bool = True):
         """

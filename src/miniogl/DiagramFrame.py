@@ -274,7 +274,7 @@ class DiagramFrame(ScrolledWindow):
         shape = self.FindShape(x, y)
         event.m_x, event.m_y = x, y
 
-        # Is the shape found is a ShapeEventHandler ?
+        # Is the shape found a ShapeEventHandler ?
         if shape is not None and isinstance(shape, ShapeEventHandler):
             self._dfLogger.info(f'GenericHandler - `{shape=}` `{methodName=}` x,y: {x},{y}')
             getattr(shape, methodName)(event)
@@ -292,8 +292,11 @@ class DiagramFrame(ScrolledWindow):
         """
         self._dfLogger.debug("DiagramFrame.OnLeftDown")
 
+        #
         # First, call the generic handler for OnLeftDown
+        #
         shape: ShapeEventHandler = self.GenericHandler(event, "OnLeftDown")
+
         self._clickedShape = cast(Shape, shape)  # store the last clicked shape
         if not event.GetSkipped():
             self._dfLogger.debug(f'{event.GetSkipped()=}')
@@ -308,11 +311,13 @@ class DiagramFrame(ScrolledWindow):
 
         realShape: Shape = cast(Shape, shape)
         if not event.ControlDown() and not realShape.selected:
-            shapes = self._diagram.shapes
+            shapes = self._diagram.shapes       # Get a copy
             shapes.remove(shape)
+
             if isinstance(shape, SizerShape):
                 # don't deselect the parent of a sizer
                 # or the parent sizer is detached
+                self._dfLogger.debug(f'Remove parent from copy of shapes')
                 shapes.remove(shape.parent)
             elif isinstance(shape, ControlPoint):
                 # don't deselect the line of a control point
@@ -329,6 +334,7 @@ class DiagramFrame(ScrolledWindow):
             self._selectedShapes = [cast(Shape, shape)]
             cast(Shape, shape).selected = True
             cast(Shape, shape).moving   = True
+            self._dfLogger.debug(f'{shape} selected')
             self._clickedShape = cast(Shape, None)
             self.Refresh()
 
@@ -392,6 +398,8 @@ class DiagramFrame(ScrolledWindow):
             event:
         """
         x, y = event.GetX(), event.GetY()
+        self._dfLogger.debug(f'dragging: ({x},{y})')
+
         if not self._moving:
             self.PrepareBackground()
         self._moving = True
@@ -501,14 +509,14 @@ class DiagramFrame(ScrolledWindow):
 
         Returns:  The shape that was found under the coordinates or None
         """
-        self._dfLogger.debug(f'FindShape: @{x},{y}')
+        self._dfLogger.debug(f'Find Shape: @ ({x},{y})')
         found = None
         shapes = self._diagram.shapes
         # self.clsLogger.debug(f'{shapes=}')
         shapes.reverse()    # to select the one at the top
         for shape in shapes:
             if shape.Inside(x, y):
-                self._dfLogger.debug(f"Inside: {shape}")
+                self._dfLogger.debug(f"Found: {shape}")
                 found = shape
                 break   # only select the first one
         return found

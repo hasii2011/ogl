@@ -1,6 +1,4 @@
 
-from typing import cast
-
 from logging import Logger
 from logging import getLogger
 
@@ -106,14 +104,14 @@ class OglSDInstance(OglObject):
         lineSrc.draggable = False
         lineDst.draggable = False
 
-        from ogl.sd.OglSDMessage import OglSDMessage
+        # from ogl.sd.OglSDMessage import OglSDMessage
         # Update all OglSDMessage positions
-        for link in self._oglLinks:
-            try:
-                oglSDMessage: OglSDMessage = cast(OglSDMessage, link)
-                oglSDMessage.updatePositions()
-            except (ValueError, Exception) as e:
-                self.logger.error(f'Link update position error: {e}')
+        # for link in self._oglLinks:
+        #     try:
+        #         oglSDMessage: OglSDMessage = cast(OglSDMessage, link)
+        #         oglSDMessage.updatePositions()
+        #     except (ValueError, Exception) as e:
+        #         self.logger.error(f'Link update position error: {e}')
         # Set TextBox
         RectangleShape.SetSize(self._instance, width, self._instance.GetSize()[1])
 
