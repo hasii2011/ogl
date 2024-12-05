@@ -14,6 +14,7 @@ from wx import Pen
 from wx import RED
 from wx import RED_PEN
 from wx import LIGHT_GREY
+from wx import MouseEvent
 
 from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
@@ -25,17 +26,17 @@ from miniogl.SizerShape import SizerShape
 from miniogl.ShapeEventHandler import ShapeEventHandler
 
 from ogl.EventEngineMixin import EventEngineMixin
+from ogl.events.OglEvents import OglEventType
 
 from ogl.preferences.OglPreferences import OglPreferences
 
+from ogl.sd.OglInstanceNameV2 import INSTANCE_NAME_HEIGHT
 from ogl.sd.OglInstanceNameV2 import OglInstanceNameV2
 
 if TYPE_CHECKING:
     from ogl.sd.OglSDMessageV2 import OglSDMessagesV2
 
 InstanceSize = NewType('InstanceSize', Tuple[int, int])
-
-INSTANCE_NAME_HEIGHT: int = 20      # This should be in settings when we allow instance name font size to be configurable
 
 
 class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
@@ -93,6 +94,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
     @pyutSDInstance.setter
     def pyutSDInstance(self, pyutSDInstance: PyutSDInstance):
         self._pyutSDInstance = pyutSDInstance
+        self._instanceName.instanceName = pyutSDInstance.instanceName
 
     @property
     def lifeline(self) -> LineShape:
@@ -319,14 +321,26 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         """
         self.SetPosition(self.GetPosition()[0], self._instanceYPosition)
 
+    def OnLeftDown(self, event: MouseEvent):
+        """
+        Handle event on left click.
+        Note to self.  This method used to call only call event.Skip() if there was an action waiting
+        Now I do it regardless;  Seem to be no ill effects
+
+        Args:
+            event:  The mouse event
+        """
+        self._v2Logger.debug(f'OglSDInstanceV2.OnLeftDown  - {event.GetEventObject()=}')
+
+        self.eventEngine.sendEvent(OglEventType.ShapeSelected, selectedShape=self, selectedShapePosition=event.GetPosition())
+        event.Skip()
+
     def _createInstanceName(self, pyutSDInstance: PyutSDInstance) -> OglInstanceNameV2:
         """
 
         Returns:  An OglInstanceName
         """
-        text: str = self._pyutSDInstance.instanceName
-
-        oglInstanceName: OglInstanceNameV2 = OglInstanceNameV2(pyutSDInstance, 0, 0, text, parent=self)
+        oglInstanceName: OglInstanceNameV2 = OglInstanceNameV2(instanceName=pyutSDInstance.instanceName, x=0, y=0, parent=self)
         oglInstanceName.SetRelativePosition(0, 0)
 
         self.AppendChild(oglInstanceName)

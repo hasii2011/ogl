@@ -50,7 +50,7 @@ class TextShape(RectangleShape):
         """
         super().__init__(x, y, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT, parent=parent)
 
-        self.text: str = text
+        self._text: str = text
 
         self._drawFrame: bool = False
         self._resizable: bool = False

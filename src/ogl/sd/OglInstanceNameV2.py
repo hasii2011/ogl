@@ -17,10 +17,11 @@ from wx import Pen
 from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.TextShape import TextShape
 
-from pyutmodelv2.PyutSDInstance import PyutSDInstance
-
 from ogl.EventEngineMixin import EventEngineMixin
 from ogl.events.OglEvents import OglEventType
+
+INSTANCE_NAME_WIDTH:  int = 100     # This should be in settings when we allow instance name font size to be configurable
+INSTANCE_NAME_HEIGHT: int = 50      # This should be in settings when we allow instance name font size to be configurable
 
 
 class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
@@ -28,26 +29,37 @@ class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
     TEXT_SHAPE_FONT_SIZE: int = 12
     """
     """
-    def __init__(self, pyutSDInstance: PyutSDInstance, x: int, y: int, text: str, parent=None):
+    def __init__(self, instanceName: str, x: int, y: int,  parent=None):
         """
 
         Args:
-            pyutSDInstance:
+            instanceName:
             x:
             y:
-            text:
             parent:
         """
-        self.logger:       Logger          = getLogger(__name__)
-        self._pyutObject:  PyutSDInstance = pyutSDInstance
-        self._defaultFont: Font           = Font(OglInstanceNameV2.TEXT_SHAPE_FONT_SIZE, FONTFAMILY_TELETYPE, FONTSTYLE_ITALIC, FONTWEIGHT_NORMAL)
+        self.logger:        Logger = getLogger(__name__)
+        self._defaultFont:  Font   = Font(OglInstanceNameV2.TEXT_SHAPE_FONT_SIZE, FONTFAMILY_TELETYPE, FONTSTYLE_ITALIC, FONTWEIGHT_NORMAL)
 
-        super().__init__(x, y, text, parent=parent, font=self._defaultFont)
+        super().__init__(x, y, instanceName, parent=parent, font=self._defaultFont)
         EventEngineMixin.__init__(self)
 
         self.drawFrame = True
         self.resizable = True
         self.draggable = False
+
+        #
+        # These should be preferences
+        #
+        self.SetSize(width=INSTANCE_NAME_WIDTH, height=INSTANCE_NAME_HEIGHT)
+
+    @property
+    def instanceName(self) -> str:
+        return self.text
+
+    @instanceName.setter
+    def instanceName(self, newName: str):
+        self.text = newName
 
     @property
     def selected(self) -> bool:
