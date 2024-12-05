@@ -287,8 +287,8 @@ class DemoOglElements(App):
         self._addToDiagram(oglObject=oglClass)
 
     def _displayOglComposition(self):
-        pyutComposerClass: PyutClass = PyutClass('ComposerClass')
-        pyutComposedClass: PyutClass = PyutClass('ComposedClass')
+        pyutComposerClass: PyutClass = PyutClass(name='ComposerClass')
+        pyutComposedClass: PyutClass = PyutClass(name='ComposedClass')
 
         classDimensions: OglDimensions = self._oglPreferences.classDimensions
 
@@ -455,7 +455,7 @@ class DemoOglElements(App):
 
         self._diagram.AddShape(oglObject, withModelUpdate=True)
 
-        self.logger.info(f'{self._diagram.shapes=}')
+        self.logger.debug(f'{self._diagram.shapes=}')
 
 
 testApp: DemoOglElements = DemoOglElements(redirect=False)

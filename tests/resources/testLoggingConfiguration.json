@@ -27,11 +27,11 @@
             "propagate": "False"
         },
         "ogl.sd.OglSDInstanceV2": {
-            "level":     "DEBUG",
+            "level":     "WARNING",
             "propagate": "False"
         },
         "miniogl.DiagramFrame": {
-            "level":     "DEBUG",
+            "level":     "WARNING",
             "propagate": "False"
         },
         "miniogl.Diagram": {

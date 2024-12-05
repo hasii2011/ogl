@@ -45,9 +45,9 @@ class OglInstanceNameV2(TextShape, ShapeEventHandler, EventEngineMixin):
         super().__init__(x, y, text, parent=parent, font=self._defaultFont)
         EventEngineMixin.__init__(self)
 
-        self._drawFrame = True
-        self._resizable = True
-        self.draggable  = False
+        self.drawFrame = True
+        self.resizable = True
+        self.draggable = False
 
     @property
     def selected(self) -> bool:

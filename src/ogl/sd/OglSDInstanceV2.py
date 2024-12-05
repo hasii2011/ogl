@@ -9,22 +9,20 @@ from logging import getLogger
 
 from wx import BLACK_PEN
 from wx import DC
-
 from wx import PENSTYLE_LONG_DASH
 from wx import Pen
 from wx import RED
 from wx import RED_PEN
 from wx import LIGHT_GREY
 
-
 from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
+from miniogl.Shape import Shape
+from miniogl.MiniOglUtils import sign
 from miniogl.AnchorPoint import AnchorPoint
 from miniogl.LineShape import LineShape
-from miniogl.MiniOglUtils import sign
-from miniogl.Shape import Shape
-from miniogl.ShapeEventHandler import ShapeEventHandler
 from miniogl.SizerShape import SizerShape
+from miniogl.ShapeEventHandler import ShapeEventHandler
 
 from ogl.EventEngineMixin import EventEngineMixin
 
@@ -36,6 +34,8 @@ if TYPE_CHECKING:
     from ogl.sd.OglSDMessageV2 import OglSDMessagesV2
 
 InstanceSize = NewType('InstanceSize', Tuple[int, int])
+
+INSTANCE_NAME_HEIGHT: int = 20      # This should be in settings when we allow instance name font size to be configurable
 
 
 class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
@@ -57,7 +57,7 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         self._instanceName:   OglInstanceNameV2 = self._createInstanceName(pyutSDInstance=pyutSDInstance)
         self._lifeLine:       LineShape         = self._createLifeLine()
 
-        self._clickedOnInstanceName: bool = False
+        self._clickedOnInstanceName: bool         = False
         self._size:                  InstanceSize = InstanceSize((100, 400))
 
         self.visible = True
@@ -110,8 +110,12 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
     def Draw(self, dc: DC, withChildren: bool = True):
         """
         Draw the shape.
+
+        Args:
+            dc:             The device context
+            withChildren:
+
         """
-        # self._v2Logger.debug(f'{self.GetSize()=}')
         super().Draw(dc=dc, withChildren=False)
         self.DrawChildren(dc)
         if self._selected is True:
@@ -158,17 +162,33 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
         """
 
         Args:
-            width:
-            height:
+            width:  The new width
+            height: The new height
         """
         self._size = InstanceSize((width, height))
+        self._instanceName.SetSize(width=width, height=INSTANCE_NAME_HEIGHT)
 
-        self._instanceName.SetSize(width=width, height=20)
+        # Set lifeline
+        (myX, myY) = self.GetPosition()
+        (w, h) = self.GetSize()
 
-        for anchor in self._anchors:
-            ax, ay = anchor.GetPosition()
-            # Reset position to stick the border
-            anchor.SetPosition(ax, ay)
+        self._v2Logger.debug(f'{self._size=} myX,myY: ({myX},{myY}) w,h: ({w},{h})')
+
+        lineSrc: AnchorPoint = self._lifeLine.sourceAnchor
+        lineDst: AnchorPoint = self._lifeLine.destinationAnchor
+
+        lineSrc.draggable = True
+        lineDst.draggable = True
+        lineSrc.SetPosition(w // 2 + myX, 0 + myY + INSTANCE_NAME_HEIGHT)
+        self._v2Logger.debug(f'{lineSrc.GetPosition()=}')
+        lineDst.SetPosition(w // 2 + myX, height + myY)
+        lineSrc.draggable = False
+        lineDst.draggable = False
+
+        # for anchor in self._anchors:
+        #     ax, ay = anchor.GetPosition()
+        #     # Reset position to stick the border
+        #     anchor.SetPosition(ax, ay)
 
     def GetSize(self) -> InstanceSize:
         return self._size
@@ -315,21 +335,28 @@ class OglSDInstanceV2(Shape, ShapeEventHandler, EventEngineMixin):
 
     def _createLifeLine(self) -> LineShape:
         """
-
         Returns:  The lifeline
         """
-        width:   int = self._preferences.instanceDimensions.width
-        height: int  = self._preferences.instanceDimensions.height
-        (srcX, srcY, dstX, dstY) = (width // 2, 0,
-                                    width // 2, height
-                                    )
+        width:  int = self._preferences.instanceDimensions.width
+        height: int = self._preferences.instanceDimensions.height
+        # (srcX, srcY, dstX, dstY) = (width // 2, 0,
+        #                             width // 2, height
+        #                             )
+        srcX: int = width // 2
+        srcY: int = 0
+        dstX: int = width // 2
+        dstY: int = height
 
-        srcY = srcY + self._instanceName.GetHeight()
-        (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
-        for el in [src, dst]:
-            el.visible   = False
-            el.draggable = False
+        srcY = srcY + self._instanceName.GetHeight()        # position at bottom
+        # (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
+        src: AnchorPoint = AnchorPoint(x=srcX, y=srcY, parent=self)
+        dst: AnchorPoint = AnchorPoint(x=dstX, y=dstY, parent=self)
 
+        for anchorPoint in [src, dst]:
+            anchorPoint.visible   = True
+            anchorPoint.draggable = False
+
+        src.SetStayOnBorder(state=False)
         lifeLineShape: LineShape = LineShape(src, dst)
 
         lifeLineShape.parent    = self._instanceName
