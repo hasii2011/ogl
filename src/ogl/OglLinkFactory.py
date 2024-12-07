@@ -15,7 +15,7 @@ from ogl.OglInheritance import OglInheritance
 from ogl.OglInterface import OglInterface
 from ogl.OglNoteLink import OglNoteLink
 
-from ogl.sd.OglSDMessageV2 import OglSDMessageV2
+from ogl.sd.OglSDMessage import OglSDMessage
 
 
 def getOglLinkFactory():
@@ -100,7 +100,7 @@ class OglLinkFactory(metaclass=SingletonV3):
                 return OglNoteLink(srcShape, pyutLink, destShape)
 
             case PyutLinkType.SD_MESSAGE:
-                return OglSDMessageV2(srcSDInstance=srcShape, pyutSDMessage=pyutLink, dstSDInstance=destShape)
+                return OglSDMessage(srcSDInstance=srcShape, pyutSDMessage=pyutLink, dstSDInstance=destShape)
             case _:
                 self.logger.error(f"Unknown PyutLinkType: {linkType}")
                 return None

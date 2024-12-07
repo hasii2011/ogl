@@ -1,5 +1,6 @@
 
 from typing import List
+from typing import NewType
 from typing import Tuple
 
 from logging import Logger
@@ -16,7 +17,6 @@ from miniogl.AnchorPoint import AnchorPoint
 from miniogl.TextShape import TextShape
 
 from ogl.sd.OglSDInstance import OglSDInstance
-from ogl.sd.OglSDInstanceV2 import OglSDInstanceV2
 
 from ogl.OglPosition import OglPosition
 from ogl.OglLink import OglLink
@@ -66,12 +66,12 @@ class OglSDMessage(OglLink):
         self.updateMessage()
         self.drawArrow = True
 
-        assert isinstance(srcSDInstance, OglSDInstance | OglSDInstanceV2), 'Developer Error, src of message should be an instance'
-        assert isinstance(dstSDInstance, OglSDInstance | OglSDInstanceV2), 'Developer Error, dst of message should be an instance'
+        assert isinstance(srcSDInstance, OglSDInstance), 'Developer Error, src of message should be an instance'
+        assert isinstance(dstSDInstance, OglSDInstance), 'Developer Error, dst of message should be an instance'
         #
         # TODO:  Should I really do this?
-        srcSDInstance.addLink(self)
-        dstSDInstance.addLink(self)
+        srcSDInstance.addMessage(self)
+        dstSDInstance.addMessage(self)
 
     @property
     def pyutSDMessage(self) -> PyutSDMessage:
@@ -158,10 +158,10 @@ class OglSDMessage(OglLink):
         assert isinstance(src, OglSDInstance), 'Developer Error, src of message should be an instance'
         assert isinstance(dst, OglSDInstance), 'Developer Error, dst of message should be an instance'
 
-        links: List[OglSDMessage] = src.links
+        links: List[OglSDMessage] = src.messages
         links.remove(self)
 
-        links = dst.links
+        links = dst.messages
         links.remove(self)
 
     def _createAnchorPoints(self, srcShape: OglSDInstance, dstShape: OglSDInstance,
@@ -195,3 +195,6 @@ class OglSDMessage(OglLink):
     def __repr__(self) -> str:
         msg: str = self._pyutSDMessage.message
         return f'OglSDMessage[id: {self._id} {msg=}]'
+
+
+OglSDMessages = NewType('OglSDMessages', List[OglSDMessage])

@@ -22,16 +22,16 @@ class TestOglSDMessage(UnitTestBaseW):
     def testBasicCreation(self):
 
         srcPyutSDInstance: PyutSDInstance = PyutSDInstance()
-        srcSDInstance:  OglSDInstance  = OglSDInstance(pyutObject=srcPyutSDInstance)
+        srcSDInstance:  OglSDInstance  = OglSDInstance(pyutSDInstance=srcPyutSDInstance)
 
         dstPyutSDInstance: PyutSDInstance = PyutSDInstance()
-        dstSDInstance:  OglSDInstance  = OglSDInstance(pyutObject=dstPyutSDInstance)
+        dstSDInstance:  OglSDInstance  = OglSDInstance(pyutSDInstance=dstPyutSDInstance)
 
         pyutSDMessage: PyutSDMessage = PyutSDMessage()
         sdMessage:     OglSDMessage  = OglSDMessage(srcSDInstance=srcSDInstance, dstSDInstance=dstSDInstance, pyutSDMessage=pyutSDMessage)
 
-        self.assertIn(sdMessage, srcSDInstance.links, 'Message not in source Ogl instance')
-        self.assertIn(sdMessage, dstSDInstance.links, 'Message not in destination Ogl instance')
+        self.assertIn(sdMessage, srcSDInstance.messages, 'Message not in source Ogl instance')
+        self.assertIn(sdMessage, dstSDInstance.messages, 'Message not in destination Ogl instance')
 
 
 def suite() -> TestSuite:

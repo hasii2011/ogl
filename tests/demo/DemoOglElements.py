@@ -65,9 +65,8 @@ from ogl.events.OglEventEngine import OglEventEngine
 
 from ogl.preferences.OglPreferences import OglPreferences
 from ogl.sd.OglSDInstance import OglSDInstance
-from ogl.sd.OglSDInstanceV2 import OglSDInstanceV2
+
 from ogl.sd.OglSDMessage import OglSDMessage
-from ogl.sd.OglSDMessageV2 import OglSDMessageV2
 
 from tests.ProjectTestBase import ProjectTestBase
 
@@ -117,7 +116,6 @@ class DemoOglElements(App):
         self._demoEventEngine: DemoEventEngine = cast(DemoEventEngine, None)
 
         self._ID_DISPLAY_SEQUENCE_DIAGRAM:    int = wxNewIdRef()
-        self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2: int = wxNewIdRef()
         self._ID_DISPLAY_OGL_CLASS:           int = wxNewIdRef()
         self._ID_DISPLAY_OGL_TEXT:            int = wxNewIdRef()
         self._ID_DISPLAY_OGL_COMPOSITION:     int = wxNewIdRef()
@@ -173,7 +171,6 @@ class DemoOglElements(App):
         fileMenu.AppendSeparator()
         fileMenu.Append(ID_PREFERENCES, "P&references", "Ogl preferences")
 
-        viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2, item='V2 Sequence Diagram', helpString='Display V2 Sequence Diagram')
         viewMenu.Append(id=self._ID_DISPLAY_SEQUENCE_DIAGRAM,    item='Sequence Diagram', helpString='Display Sequence Diagram')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_CLASS,           item='Ogl Class',        helpString='Display an Ogl Class')
         viewMenu.Append(id=self._ID_DISPLAY_OGL_TEXT,            item='Ogl Text',         helpString='Display Ogl Text')
@@ -192,7 +189,6 @@ class DemoOglElements(App):
 
         self.Bind(EVT_MENU, self._onOglPreferences, id=ID_PREFERENCES)
 
-        self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_SEQUENCE_DIAGRAM)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_CLASS)
         self.Bind(EVT_MENU, self._onDisplayElement, id=self._ID_DISPLAY_OGL_TEXT)
@@ -207,8 +203,6 @@ class DemoOglElements(App):
     def _onDisplayElement(self, event: CommandEvent):
         menuId: int = event.GetId()
         match menuId:
-            case self._ID_DISPLAY_SEQUENCE_DIAGRAM_V2:
-                self._displayV2SequenceDiagram()
             case self._ID_DISPLAY_SEQUENCE_DIAGRAM:
                 self._displaySequenceDiagram()
             case self._ID_DISPLAY_OGL_CLASS:
@@ -334,12 +328,6 @@ class DemoOglElements(App):
 
         self._createNewMessage(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
 
-    def _displayV2SequenceDiagram(self):
-        srcInstance: OglSDInstanceV2 = self._createNewV2SDInstance(x=100, y=100, instanceName='Frances')
-        dstInstance: OglSDInstanceV2 = self._createNewV2SDInstance(x=100, y=100, instanceName='Ozzee')
-
-        self._createNewMessage(src=srcInstance, dst=dstInstance, srcPos=(100, 200), dstPos=(500, 200))
-
     def _getPosition(self) -> Tuple[int, int]:
         x: int = self._x
         y: int = self._y
@@ -388,26 +376,9 @@ class DemoOglElements(App):
 
         return oglSDInstance
 
-    def _createNewV2SDInstance(self, x, y, instanceName: str) -> OglSDInstanceV2:
-        """
-        Create a new sequence diagram instance
-        """
-        # Create and add instance
-        pyutSDInstance: PyutSDInstance  = PyutSDInstance()
-        pyutSDInstance.instanceName     = instanceName
-        oglSDInstance: OglSDInstanceV2  = OglSDInstanceV2(pyutSDInstance)
-
-        # self.addShape(oglSDInstance, x, oglSDInstance.GetPosition()[1])
-        oglSDInstance.draggable = True
-        oglSDInstance.SetPosition(x, y)
-
-        self._addToDiagram(oglSDInstance)
-
-        return oglSDInstance
-
     def _createNewMessage(self,
-                          src: OglSDInstance | OglSDInstanceV2,
-                          dst: OglSDInstance | OglSDInstanceV2,
+                          src: OglSDInstance,
+                          dst: OglSDInstance,
                           srcPos: Tuple[int, int],
                           dstPos: Tuple[int, int]
                           ):
@@ -424,28 +395,16 @@ class DemoOglElements(App):
         """
         srcTime = src.ConvertCoordToRelative(0, srcPos[1])[1]
         dstTime = dst.ConvertCoordToRelative(0, dstPos[1])[1]
-        if isinstance(src, OglSDInstance) is True:
-            src1: OglSDInstance = cast(OglSDInstance, src)
-            dst1: OglSDInstance = cast(OglSDInstance, dst)
-            pyutLink = PyutSDMessage("msg test", src1.pyutObject, srcTime, dst1.pyutObject, dstTime)
-            oglLink = OglSDMessage(src1, pyutLink, dst1)
-            src1.addLink(oglLink)
-            dst1.addLink(oglLink)
-            self._addToDiagram(oglLink)
-            return oglLink
 
-        else:
-            src2: OglSDInstanceV2 = cast(OglSDInstanceV2, src)
-            dst2: OglSDInstanceV2 = cast(OglSDInstanceV2, dst)
+        pyutLink = PyutSDMessage("msg test", src.pyutSDInstance, srcTime, dst.pyutSDInstance, dstTime)
+        oglLink = OglSDMessage(src, pyutLink, dst)
+        src.addMessage(oglLink)
+        dst.addMessage(oglLink)
+        self._addToDiagram(oglLink)
 
-            pyutLink = PyutSDMessage("msg test", src2.pyutSDInstance, srcTime, dst2.pyutSDInstance, dstTime)
-            oglLink2: OglSDMessageV2  = OglSDMessageV2(src2, pyutLink, dst2)
-            src2.addMessage(oglLink2)
-            dst2.addMessage(oglLink2)
-            self._addToDiagram(oglLink2)
-            return oglLink2
+        return oglLink
 
-    def _addToDiagram(self, oglObject: Union[OglObject, OglLink, OglSDInstanceV2]):
+    def _addToDiagram(self, oglObject: Union[OglObject, OglLink, OglSDInstance]):
 
         oglObject.draggable = True
 
