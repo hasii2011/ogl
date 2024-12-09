@@ -11,7 +11,7 @@ mypy==1.13.0
 
 Deprecated>=1.2.15
 codeallybasic==1.7.0
-codeallyadvanced == 1.3.2
+codeallyadvanced==1.3.2
 pyutmodelv2 == 2.2.0
 
 wxPython~=4.2.2
