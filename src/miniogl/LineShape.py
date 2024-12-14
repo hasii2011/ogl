@@ -9,9 +9,11 @@ from typing import TYPE_CHECKING
 from logging import Logger
 from logging import getLogger
 
+from wx import BLACK_BRUSH
 from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
+from wx import WHITE_BRUSH
 
 from miniogl.Common import Common
 from miniogl.Common import CommonLine
@@ -52,6 +54,7 @@ class LineShape(Shape, Common):
         self._drawArrow: bool = True
         self._arrowSize: int = 8
         self._spline:    bool = False
+        self._fillArrow: bool = False
         if srcAnchor:
             srcAnchor.AddLine(self)
         if dstAnchor:
@@ -158,6 +161,14 @@ class LineShape(Shape, Common):
         """
         self._arrowSize = size
 
+    @property
+    def fillArrow(self) -> bool:
+        return self._fillArrow
+
+    @fillArrow.setter
+    def fillArrow(self, newValue: bool):
+        self._fillArrow = newValue
+
     def GetPosition(self):
         """
         Return the absolute position of the shape.
@@ -233,8 +244,10 @@ class LineShape(Shape, Common):
             if self._selected:
                 dc.SetPen(RED_PEN)
             if self._spline:
+                dc.SetPen(self.pen)
                 dc.DrawSpline(line)
             else:
+                dc.SetPen(self.pen)
                 dc.DrawLines(line)
             for control in self._controls:
                 control.Draw(dc)
@@ -293,7 +306,14 @@ class LineShape(Shape, Common):
             (x2 + round(size * cos(alpha2)), y2 + round(size * sin(alpha2)))
                                          ]
 
+        if self.fillArrow is True:
+            dc.SetBrush(BLACK_BRUSH)
+        else:
+            dc.SetBrush(WHITE_BRUSH)
+
         dc.DrawPolygon(points)
+
+        dc.SetBrush(WHITE_BRUSH)
 
     def Detach(self):
         """

@@ -26,7 +26,11 @@
             "level": "INFO",
             "propagate": "False"
         },
-        "ogl.sd.OglSDInstanceV2": {
+        "ogl.sd.OglSDInstance": {
+            "level":     "WARNING",
+            "propagate": "False"
+        },
+        "ogl.sd.OglSDAnchorPoint": {
             "level":     "WARNING",
             "propagate": "False"
         },

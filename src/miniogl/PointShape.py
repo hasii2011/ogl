@@ -7,12 +7,12 @@ from wx import Pen
 
 from miniogl.Shape import Shape
 
-POINT_SHAPE_WIDTH: int = 3
+DEFAULT_POINT_SHAPE_WIDTH: int = 3
+SELECTION_ZONE:            int = 8  # Make it bigger than in legacy;  It was 5 then
 
 
 class PointShape(Shape):
 
-    SELECTION_ZONE: int = 8     # Make it bigger than in legacy;  It was 5 then
     """
     A point, which is drawn as a little square (3 pixels wide).
 
@@ -27,10 +27,10 @@ class PointShape(Shape):
         """
         super().__init__(x, y, parent)
 
-        self._selectionZone:       int  = PointShape.SELECTION_ZONE
+        self._selectionZone:       int  = SELECTION_ZONE
         self._visibleWhenSelected: bool = True
 
-        self.__penSaveColor: Colour = cast(Colour, None)
+        self._penSaveColor: Colour = cast(Colour, None)
 
     def Draw(self, dc: DC, withChildren=True):
         """
@@ -42,16 +42,16 @@ class PointShape(Shape):
         """
         if self._visible or (self._visibleWhenSelected and self._selected):
 
-            self.__penSaveColor = dc.GetPen().GetColour()
+            self._penSaveColor = dc.GetPen().GetColour()
             Shape.Draw(self, dc, False)
 
-            self.__resetPenColor(dc)
+            self._resetPenColor(dc)
 
             x, y = self.GetPosition()
             if not self._selected:
-                dc.DrawRectangle(x - 1, y - 1, POINT_SHAPE_WIDTH, POINT_SHAPE_WIDTH)
+                dc.DrawRectangle(x - 1, y - 1, DEFAULT_POINT_SHAPE_WIDTH, DEFAULT_POINT_SHAPE_WIDTH)
             else:
-                dc.DrawRectangle(x - POINT_SHAPE_WIDTH, y - POINT_SHAPE_WIDTH, 7, 7)
+                dc.DrawRectangle(x - DEFAULT_POINT_SHAPE_WIDTH, y - DEFAULT_POINT_SHAPE_WIDTH, 7, 7)
             if withChildren:
                 self.DrawChildren(dc)
 
@@ -106,8 +106,8 @@ class PointShape(Shape):
         zone = self._selectionZone
         return (ax - zone < x < ax + zone) and (ay - zone < y < ay + zone)
 
-    def __resetPenColor(self, dc: DC):
+    def _resetPenColor(self, dc: DC):
 
         pen: Pen = dc.GetPen()
-        pen.SetColour(self.__penSaveColor)
+        pen.SetColour(self._penSaveColor)
         dc.SetPen(pen)

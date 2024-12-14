@@ -20,8 +20,6 @@ from pyutmodelv2.PyutSDInstance import PyutSDInstance
 
 from miniogl.Shape import Shape
 from miniogl.MiniOglUtils import sign
-from miniogl.AnchorPoint import AnchorPoint
-from miniogl.LineShape import LineShape
 from miniogl.SizerShape import SizerShape
 from miniogl.ShapeEventHandler import ShapeEventHandler
 
@@ -32,6 +30,8 @@ from ogl.preferences.OglPreferences import OglPreferences
 
 from ogl.sd.OglInstanceName import INSTANCE_NAME_HEIGHT
 from ogl.sd.OglInstanceName import OglInstanceName
+from ogl.sd.OglSDAnchorPoint import OglSDAnchorPoint
+from ogl.sd.OglSDLifeLine import OglSDLifeLine
 
 if TYPE_CHECKING:
     from ogl.sd.OglSDMessage import OglSDMessages
@@ -56,7 +56,7 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
         self._pyutSDInstance: PyutSDInstance  = pyutSDInstance
         self._messages:       OglSDMessages   = OglSDMessages([])
         self._instanceName:   OglInstanceName = self._createInstanceName(pyutSDInstance=pyutSDInstance)
-        self._lifeLine:       LineShape         = self._createLifeLine()
+        self._lifeLine:       OglSDLifeLine   = self._createLifeLine()
 
         self._clickedOnInstanceName: bool         = False
         self._size:                  InstanceSize = InstanceSize((100, 400))
@@ -97,7 +97,7 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
         self._instanceName.instanceName = pyutSDInstance.instanceName
 
     @property
-    def lifeline(self) -> LineShape:
+    def lifeline(self) -> OglSDLifeLine:
         """
         Parent of an OGLSDMessage instance
 
@@ -176,8 +176,8 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
 
         self._v2Logger.debug(f'{self._size=} myX,myY: ({myX},{myY}) w,h: ({w},{h})')
 
-        lineSrc: AnchorPoint = self._lifeLine.sourceAnchor
-        lineDst: AnchorPoint = self._lifeLine.destinationAnchor
+        lineSrc: OglSDAnchorPoint = self._lifeLine.sourceAnchor
+        lineDst: OglSDAnchorPoint = self._lifeLine.destinationAnchor
 
         lineSrc.draggable = True
         lineDst.draggable = True
@@ -347,7 +347,7 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
 
         return oglInstanceName
 
-    def _createLifeLine(self) -> LineShape:
+    def _createLifeLine(self) -> OglSDLifeLine:
         """
         Returns:  The lifeline
         """
@@ -362,16 +362,16 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
         dstY: int = height
 
         srcY = srcY + self._instanceName.GetHeight()        # position at bottom
-        # (src, dst) = (AnchorPoint(srcX, srcY, self), AnchorPoint(dstX, dstY, self))
-        src: AnchorPoint = AnchorPoint(x=srcX, y=srcY, parent=self)
-        dst: AnchorPoint = AnchorPoint(x=dstX, y=dstY, parent=self)
+
+        src: OglSDAnchorPoint = OglSDAnchorPoint(x=srcX, y=srcY, parent=self)
+        dst: OglSDAnchorPoint = OglSDAnchorPoint(x=dstX, y=dstY, parent=self)
 
         for anchorPoint in [src, dst]:
             anchorPoint.visible   = True
             anchorPoint.draggable = False
 
         src.SetStayOnBorder(state=False)
-        lifeLineShape: LineShape = LineShape(src, dst)
+        lifeLineShape: OglSDLifeLine = OglSDLifeLine(src, dst)
 
         lifeLineShape.parent    = self._instanceName
         lifeLineShape.drawArrow = False
@@ -416,7 +416,7 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
 
     def __str__(self) -> str:
         x, y = self.GetPosition()
-        return f'OglSDInstanceV2[{self.id=} position: ({x},{y}])'
+        return f'OglSDInstance[{self.id=} position: ({x},{y}])'
 
     def __repr__(self):
         return self.__str__()

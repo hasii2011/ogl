@@ -417,7 +417,7 @@ class DiagramFrame(ScrolledWindow):
             dx, dy = x - ox, y - oy
             sx, sy = shape.GetPosition()
 
-            self._dfLogger.debug(f'{sx=} {dx=} {sy=} {dy=}')
+            self._dfLogger.debug(f'{self._lastMousePosition=} {sx=} {dx=} {sy=} {dy=}')
 
             shape.SetPosition(sx + dx, sy + dy)
 

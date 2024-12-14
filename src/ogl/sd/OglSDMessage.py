@@ -6,6 +6,8 @@ from typing import Tuple
 from logging import Logger
 from logging import getLogger
 
+from deprecated import deprecated
+
 from wx import BLACK_PEN
 from wx import DC
 from wx import RED_PEN
@@ -13,24 +15,20 @@ from wx import RED_PEN
 from pyutmodelv2.PyutSDMessage import PyutSDMessage
 
 from miniogl.LineShape import LineShape
-from miniogl.AnchorPoint import AnchorPoint
 from miniogl.TextShape import TextShape
 
+from ogl.sd.OglSDAnchorPoint import OglSDAnchorPoint
+from ogl.sd.OglSDAnchorType import OglSDAnchorType
 from ogl.sd.OglSDInstance import OglSDInstance
 
 from ogl.OglPosition import OglPosition
 from ogl.OglLink import OglLink
 
 
-# TODO : Find a way to report moves from AnchorPoints to PyutSDMessage
-
-
 class OglSDMessage(OglLink):
     """
     Class for a graphical message
     """
-    clsLogger: Logger = getLogger(__name__)
-
     def __init__(self, srcSDInstance: OglSDInstance, pyutSDMessage: PyutSDMessage, dstSDInstance: OglSDInstance):
         """
         For this class use the .pyutSDMessage property to retrieve the data model
@@ -41,7 +39,8 @@ class OglSDMessage(OglLink):
             dstSDInstance:   Destination shape OglSDInstance
 
         """
-        self._pyutSDMessage = pyutSDMessage
+        self._msgLogger:     Logger        = getLogger(__name__)
+        self._pyutSDMessage: PyutSDMessage = pyutSDMessage
 
         super().__init__(srcShape=srcSDInstance, pyutLink=pyutSDMessage, dstShape=dstSDInstance)
         #
@@ -51,8 +50,8 @@ class OglSDMessage(OglLink):
         srcAnchorPosition = srcAnchor.GetPosition()
         dstAnchorPosition = dstAnchor.GetPosition()
 
-        self._srcAnchor: AnchorPoint = srcAnchor
-        self._dstAnchor: AnchorPoint = dstAnchor
+        self._srcAnchor: OglSDAnchorPoint = srcAnchor
+        self._dstAnchor: OglSDAnchorPoint = dstAnchor
 
         oglSource:      OglPosition = OglPosition.tupleToOglPosition(srcAnchorPosition)
         oglDestination: OglPosition = OglPosition.tupleToOglPosition(dstAnchorPosition)
@@ -65,11 +64,11 @@ class OglSDMessage(OglLink):
         self._messageLabel: TextShape = self.AddText(centerMessageX, centerMessageY, pyutSDMessage.message)  # font=self._defaultFont
         self.updateMessage()
         self.drawArrow = True
+        self.fillArrow = True
 
         assert isinstance(srcSDInstance, OglSDInstance), 'Developer Error, src of message should be an instance'
         assert isinstance(dstSDInstance, OglSDInstance), 'Developer Error, dst of message should be an instance'
-        #
-        # TODO:  Should I really do this?
+
         srcSDInstance.addMessage(self)
         dstSDInstance.addMessage(self)
 
@@ -81,6 +80,18 @@ class OglSDMessage(OglLink):
         """
         return self._pyutSDMessage
 
+    def updateMessageTime(self, anchorType: OglSDAnchorType, newTime: int):
+
+        self._msgLogger.debug(f'{anchorType=} {newTime=}')
+
+        if anchorType == OglSDAnchorType.SourceTime:
+            self.pyutSDMessage.sourceY = newTime
+        else:
+            self._pyutSDMessage.destinationY = newTime
+
+        self._msgLogger.debug(f'{self.pyutSDMessage=}')
+
+    @deprecated(reason='Unused')
     def updatePositions(self):
         """
         Define the positions on lifeline (y)
@@ -118,7 +129,7 @@ class OglSDMessage(OglLink):
         """
         self.updateMessage()
 
-        srcAnchor, dstAnchor = self.getAnchors()
+        srcAnchor, dstAnchor = self._getAnchors()
 
         srcX, srcY = srcAnchor.GetPosition()
         dstX, dstY = dstAnchor.GetPosition()
@@ -131,6 +142,9 @@ class OglSDMessage(OglLink):
         self.DrawChildren(dc=dc)
 
         dc.SetPen(BLACK_PEN)
+
+    def _getAnchors(self) -> Tuple[OglSDAnchorPoint, OglSDAnchorPoint]:
+        return self._srcAnchor, self._dstAnchor
 
     def Detach(self):
         """
@@ -165,7 +179,7 @@ class OglSDMessage(OglLink):
         links.remove(self)
 
     def _createAnchorPoints(self, srcShape: OglSDInstance, dstShape: OglSDInstance,
-                            pyutSDMessage: PyutSDMessage) -> Tuple[AnchorPoint, AnchorPoint]:
+                            pyutSDMessage: PyutSDMessage) -> Tuple[OglSDAnchorPoint, OglSDAnchorPoint]:
         """
         Royal ready to heat rice
 
@@ -179,22 +193,33 @@ class OglSDMessage(OglLink):
         srcY: int = pyutSDMessage.sourceY      - srcShape.lifeline.GetPosition()[1]
         dstY: int = pyutSDMessage.destinationY - dstShape.lifeline.GetPosition()[1]
 
-        srcAnchor: AnchorPoint = srcShape.lifeline.AddAnchor(0, srcY)
-        dstAnchor: AnchorPoint = dstShape.lifeline.AddAnchor(0, dstY)
+        srcAnchor: OglSDAnchorPoint = srcShape.lifeline.AddAnchor(0, srcY)
+        dstAnchor: OglSDAnchorPoint = dstShape.lifeline.AddAnchor(0, dstY)
         srcAnchor.SetStayOnBorder(False)
         dstAnchor.SetStayOnBorder(False)
         srcAnchor.SetStayInside(True)
         dstAnchor.SetStayInside(True)
-        srcAnchor.visible = True
-        dstAnchor.visible = True
+        srcAnchor.visible   = True
+        dstAnchor.visible   = True
         srcAnchor.draggable = True
         dstAnchor.draggable = True
+        #
+        # Set the OGL Attributes
+        #
+        srcAnchor.oglSDAnchorType = OglSDAnchorType.SourceTime
+        dstAnchor.oglSDAnchorType = OglSDAnchorType.DestinationTime
+
+        srcAnchor.associatedMessage = self
+        dstAnchor.associatedMessage = self
 
         return srcAnchor, dstAnchor
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         msg: str = self._pyutSDMessage.message
         return f'OglSDMessage[id: {self._id} {msg=}]'
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 OglSDMessages = NewType('OglSDMessages', List[OglSDMessage])
