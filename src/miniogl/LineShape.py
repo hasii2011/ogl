@@ -10,10 +10,12 @@ from logging import Logger
 from logging import getLogger
 
 from wx import BLACK_BRUSH
-from wx import BLACK_PEN
-from wx import DC
-from wx import RED_PEN
+from wx import RED_BRUSH
 from wx import WHITE_BRUSH
+from wx import BLACK_PEN
+from wx import RED_PEN
+
+from wx import DC
 
 from miniogl.Common import Common
 from miniogl.Common import CommonLine
@@ -244,23 +246,24 @@ class LineShape(Shape, Common):
             if self._selected:
                 dc.SetPen(RED_PEN)
             if self._spline:
-                dc.SetPen(self.pen)
                 dc.DrawSpline(line)
             else:
-                dc.SetPen(self.pen)
                 dc.DrawLines(line)
+
             for control in self._controls:
                 control.Draw(dc)
             if self._selected:
                 self._srcAnchor.Draw(dc)
                 self._dstAnchor.Draw(dc)
-            dc.SetPen(BLACK_PEN)
+
             if self._drawArrow:
                 u, v = line[-2], line[-1]
                 self.DrawArrow(dc, u, v)
             if withChildren:
                 # LineShape.clsLogger.debug(f'Call DrawChildren()')
                 self.DrawChildren(dc)
+
+            dc.SetPen(BLACK_PEN)
 
     def DrawBorder(self, dc):
         """
@@ -307,10 +310,17 @@ class LineShape(Shape, Common):
                                          ]
 
         if self.fillArrow is True:
-            dc.SetBrush(BLACK_BRUSH)
+            if self._selected is True:
+                dc.SetBrush(RED_BRUSH)
+            else:
+                dc.SetBrush(BLACK_BRUSH)
         else:
             dc.SetBrush(WHITE_BRUSH)
 
+        if self._selected is True:
+            dc.SetPen(RED_PEN)
+        else:
+            dc.SetPen(BLACK_PEN)
         dc.DrawPolygon(points)
 
         dc.SetBrush(WHITE_BRUSH)

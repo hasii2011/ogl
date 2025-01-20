@@ -81,6 +81,7 @@ class OglInterface(OglLink):
         """
         self.updateLabels()
         if self._visible:
+
             line = self.segments
             if self._selected:
                 dc.SetPen(RED_PEN)
@@ -99,7 +100,6 @@ class OglInterface(OglLink):
             if self._selected:
                 self._srcAnchor.Draw(dc)
                 self._dstAnchor.Draw(dc)
-            dc.SetPen(BLACK_PEN)
 
             if self._drawArrow:
                 u, v = line[-2], line[-1]
@@ -107,6 +107,8 @@ class OglInterface(OglLink):
 
             if withChildren is True:
                 self.DrawChildren(dc)
+
+            dc.SetPen(BLACK_PEN)
 
     def __repr__(self):
         return f'OglInterface - {super().__repr__()}'

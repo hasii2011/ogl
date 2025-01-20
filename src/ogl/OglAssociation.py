@@ -14,13 +14,15 @@ from math import atan
 from math import cos
 from math import sin
 
-from wx import BLACK_BRUSH
 from wx import BLACK_PEN
+from wx import RED_PEN
+from wx import BLACK_BRUSH
+from wx import RED_BRUSH
+from wx import WHITE_BRUSH
 from wx import DC
 from wx import FONTFAMILY_DEFAULT
 from wx import FONTSTYLE_NORMAL
 from wx import FONTWEIGHT_NORMAL
-from wx import WHITE_BRUSH
 
 from wx import Font
 
@@ -172,9 +174,17 @@ class OglAssociation(OglLink):
         points: DiamondPoints = OglAssociation.calculateDiamondPoints(lineSegments=line)
         # self.oglAssociationLogger.debug(f'{points:}')
 
-        dc.SetPen(BLACK_PEN)
+        if self._selected is True:
+            dc.SetPen(RED_PEN)
+        else:
+            dc.SetPen(BLACK_PEN)
+
         if filled:
-            dc.SetBrush(BLACK_BRUSH)
+            if self._selected is True:
+                dc.SetBrush(RED_BRUSH)
+            else:
+                dc.SetBrush(BLACK_BRUSH)
+
         else:
             dc.SetBrush(WHITE_BRUSH)
         dc.DrawPolygon(points)
