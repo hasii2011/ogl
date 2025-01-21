@@ -8,7 +8,8 @@ from logging import getLogger
 
 from wx import Colour
 from wx import Rect
-from wx import WHITE
+from wx import SystemAppearance
+from wx import SystemSettings
 
 from wx import EVT_LEFT_DCLICK
 from wx import EVT_LEFT_DOWN
@@ -125,12 +126,17 @@ class DiagramFrame(ScrolledWindow):
         w, h = self.GetSize()
         self.__workingBitmap    = Bitmap(w, h)   # double buffering
         self.__backgroundBitmap = Bitmap(w, h)
-
-        self._defaultFont = Font(DiagramFrame.DEFAULT_FONT_SIZE, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
-        self.SetBackgroundColour(WHITE)
+        self._defaultFont       = Font(DiagramFrame.DEFAULT_FONT_SIZE, FONTFAMILY_DEFAULT, FONTSTYLE_NORMAL, FONTWEIGHT_NORMAL)
 
         self._prefs:          OglPreferences  = OglPreferences()
         self._oglEventEngine: IOglEventEngine = OglEventEngine(listeningWindow=self)
+
+        systemAppearance: SystemAppearance = SystemSettings.GetAppearance()
+        self._darkMode:   bool             = systemAppearance.IsDark()
+
+        self._dfLogger.info(f'{self._darkMode=}')
+
+        self._setAppropriateSetBackground()
 
         # Mouse events
         self.Bind(EVT_LEFT_DOWN,     self.OnLeftDown)
@@ -1062,7 +1068,11 @@ class DiagramFrame(ScrolledWindow):
 
     def _getGridPen(self) -> Pen:
 
-        gridLineColor: Colour   = MiniOglColorEnum.toWxColor(self._prefs.gridLineColor)
+        if self._darkMode is True:
+            gridLineColor: Colour = MiniOglColorEnum.toWxColor(self._prefs.darkModeGridLineColor)
+        else:
+            gridLineColor = MiniOglColorEnum.toWxColor(self._prefs.gridLineColor)
+
         gridLineStyle: PenStyle = MiniOglPenStyle.toWxPenStyle(self._prefs.gridLineStyle)
 
         pen:           Pen    = Pen(PenInfo(gridLineColor).Style(gridLineStyle).Width(1))
@@ -1076,3 +1086,12 @@ class DiagramFrame(ScrolledWindow):
             ans = True
 
         return ans
+
+    def _setAppropriateSetBackground(self):
+
+        if self._darkMode is True:
+            color: Colour = MiniOglColorEnum.toWxColor(self._prefs.darkModeBackGroundColor)
+            self.SetBackgroundColour(color)
+        else:
+            color = MiniOglColorEnum.toWxColor(self._prefs.backGroundColor)
+            self.SetBackgroundColour(color)

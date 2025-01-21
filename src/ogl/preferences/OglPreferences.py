@@ -21,10 +21,16 @@ from codeallybasic.DynamicConfiguration import ValueDescriptions
 MODULE_NAME:           str = 'ogl'
 PREFERENCES_FILE_NAME: str = f'{MODULE_NAME}.ini'
 
+DEFAULT_BACKGROUND_COLOR:           str = MiniOglColorEnum.WHITE.value
+DEFAULT_DARK_MODE_BACKGROUND_COLOR: str = MiniOglColorEnum.DIM_GREY.value
+
+DEFAULT_GRID_LINE_COLOR:           str = MiniOglColorEnum.AF_BLUE.value
+DEFAULT_DARK_MODE_GRID_LINE_COLOR: str = MiniOglColorEnum.WHITE.value
+
 DEFAULT_CLASS_BACKGROUND_COLOR: str = MiniOglColorEnum.MINT_CREAM.value
 DEFAULT_CLASS_TEXT_COLOR:       str = MiniOglColorEnum.BLACK.value
-DEFAULT_GRID_LINE_COLOR:        str = MiniOglColorEnum.LIGHT_GREY.value
 DEFAULT_GRID_LINE_STYLE:        str = MiniOglPenStyle.DOT.value
+
 
 oglProperties: ValueDescriptions = ValueDescriptions(
     {
@@ -45,13 +51,18 @@ oglProperties: ValueDescriptions = ValueDescriptions(
 )
 diagramProperties: ValueDescriptions = ValueDescriptions(
     {
-        KeyName('centerDiagram'):          ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
-        KeyName('backGroundGridEnabled'):  ValueDescription(defaultValue='True',  deserializer=SecureConversions.secureBoolean),
-        KeyName('snapToGrid'):             ValueDescription(defaultValue='True',  deserializer=SecureConversions.secureBoolean),
-        KeyName('showParameters'):         ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
-        KeyName('backgroundGridInterval'): ValueDescription(defaultValue='25',    deserializer=SecureConversions.secureInteger),
-        KeyName('gridLineColor'):          ValueDescription(defaultValue=DEFAULT_GRID_LINE_COLOR, enumUseValue=True, deserializer=MiniOglColorEnum),
-        KeyName('gridLineStyle'):          ValueDescription(defaultValue=DEFAULT_GRID_LINE_STYLE, enumUseValue=True, deserializer=MiniOglPenStyle),
+        KeyName('centerDiagram'):           ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
+        KeyName('backGroundGridEnabled'):   ValueDescription(defaultValue='True',  deserializer=SecureConversions.secureBoolean),
+        KeyName('snapToGrid'):              ValueDescription(defaultValue='True',  deserializer=SecureConversions.secureBoolean),
+        KeyName('showParameters'):          ValueDescription(defaultValue='False', deserializer=SecureConversions.secureBoolean),
+        KeyName('backgroundGridInterval'):  ValueDescription(defaultValue='25',    deserializer=SecureConversions.secureInteger),
+
+        KeyName('gridLineStyle'):           ValueDescription(defaultValue=DEFAULT_GRID_LINE_STYLE,   enumUseValue=True, deserializer=MiniOglPenStyle),
+
+        KeyName('backGroundColor'):         ValueDescription(defaultValue=DEFAULT_BACKGROUND_COLOR,           enumUseValue=True, deserializer=MiniOglColorEnum),
+        KeyName('darkModeBackGroundColor'): ValueDescription(defaultValue=DEFAULT_DARK_MODE_BACKGROUND_COLOR, enumUseValue=True, deserializer=MiniOglColorEnum),
+        KeyName('gridLineColor'):           ValueDescription(defaultValue=DEFAULT_GRID_LINE_COLOR,            enumUseValue=True, deserializer=MiniOglColorEnum),
+        KeyName('darkModeGridLineColor'):   ValueDescription(defaultValue=DEFAULT_DARK_MODE_GRID_LINE_COLOR,  enumUseValue=True, deserializer=MiniOglColorEnum),
     }
 )
 

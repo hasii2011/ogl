@@ -33,6 +33,9 @@ class MiniOglColorEnum(Enum):
     GAINSBORO         = 'Gainsboro'
     LIGHT_YELLOW      = 'Light Yellow'
     MINT_CREAM        = 'Mint Cream'
+    GREY              = 'Grey'
+    CADET_BLUE        = 'Cadet Blue'
+    AF_BLUE           = 'Air Force Blue'
 
     @staticmethod
     def toWxColor(colorEnum: 'MiniOglColorEnum') -> Colour:
@@ -42,6 +45,7 @@ class MiniOglColorEnum(Enum):
         cdb.AddColour(MiniOglColorEnum.GAINSBORO.value,    Colour(218, 218, 218))
         cdb.AddColour(MiniOglColorEnum.LIGHT_YELLOW.value, Colour(255, 255, 224))
         cdb.AddColour(MiniOglColorEnum.MINT_CREAM.value,   Colour(245, 255, 250))
+        cdb.AddColour(MiniOglColorEnum.AF_BLUE.value,      Colour(0, 48, 143))
 
         c: Colour = cdb.Find(colorEnum.value)
         if c.IsOk() is False:
