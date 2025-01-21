@@ -6,7 +6,6 @@ __pycache__/
 build/
 dist/
 ogl.egg-info
-/pyenv-3.11.5/
-/pyenv-3.12.7/
+/pyenv-3.12.8/
 .envrc
 .python-version
