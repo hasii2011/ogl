@@ -35,6 +35,9 @@ class OglInheritance(OglLink):
         self.brush = WHITE_BRUSH
         self.drawArrow = True
 
+    def __str__(self) -> str:
+        return self.__repr__()
+
     def __repr__(self):
         srcShape:  Shape = self.sourceShape
         dstShape:  Shape = self.destinationShape

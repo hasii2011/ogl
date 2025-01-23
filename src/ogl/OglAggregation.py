@@ -41,6 +41,9 @@ class OglAggregation(OglAssociation):
         # Draw diamond
         self.drawDiamond(dc, False)
 
-    def __repr__(self):
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
         from ogl.OglLink import OglLink
         return f'OglAggregation - {OglLink.__repr__(self)}'

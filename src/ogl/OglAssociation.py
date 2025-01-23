@@ -346,5 +346,8 @@ class OglAssociation(OglLink):
 
         return DiamondPoint((round(dpx3), round(dpy3)))
 
-    def __repr__(self):
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
         return f'OglAssociation - {super().__repr__()}'

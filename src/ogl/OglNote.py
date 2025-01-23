@@ -91,6 +91,9 @@ class OglNote(OglObject):
 
         dc.DestroyClippingRegion()
 
+    def __str__(self) -> str:
+        return f'OglNote -  modelId: {self._pyutObject.id}'
+
     def __repr__(self):
         pyutNote: PyutNote = cast(PyutNote, self.pyutObject)
         if pyutNote is None:

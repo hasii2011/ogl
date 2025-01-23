@@ -284,7 +284,10 @@ class OglText(OglObject):
         self._textFont.SetPointSize(self.textSize)
         self._textFont.SetFamily(OglUtils.oglFontFamilyToWxFontFamily(self.textFontFamily))
 
+    def __str__(self) -> str:
+        return f'OglText - modelId: `{self._pyutObject.id}`'
+
     def __repr__(self):
 
-        strMe: str = f"[OglText - name: '{self._pyutObject.name}' id: '{self._pyutObject.id}']"
+        strMe: str = f"[OglText  modelId: '{self._pyutObject.id}']"
         return strMe

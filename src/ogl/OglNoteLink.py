@@ -31,7 +31,10 @@ class OglNoteLink(OglLink):
         self.drawArrow = False
         self.pen = Pen("BLACK", 1, PENSTYLE_LONG_DASH)
 
-    def __repr__(self):
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
 
         srcShape:  Shape = self.sourceShape
         destShape: Shape = self.destinationShape

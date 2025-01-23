@@ -38,6 +38,9 @@ class OglComposition(OglAssociation):
         super().Draw(dc, withChildren=withChildren)
         self.drawDiamond(dc, True)
 
-    def __repr__(self):
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
         from ogl.OglLink import OglLink
         return f'OglComposition - {OglLink.__repr__(self)}'
