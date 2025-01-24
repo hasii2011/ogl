@@ -1,4 +1,6 @@
 
+from ogl.OglUseCase import OglUseCase
+
 from typing import Tuple
 
 from wx import DC
@@ -152,3 +154,11 @@ class OglActor(OglObject):
 
         dc.DrawLine(x, y, x - round(0.25 * actorWidth), y + actorFeetPercentage)
         dc.DrawLine(x, y, x + round(0.25 * actorWidth), y + actorFeetPercentage)
+
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        selfName: str = self.pyutObject.name
+        modelId:  int = self.pyutObject.id
+        return f'OglActor.{selfName} modelId: {modelId}'

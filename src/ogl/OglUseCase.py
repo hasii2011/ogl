@@ -77,3 +77,11 @@ class OglUseCase(OglObject):
             y += space
 
         dc.DestroyClippingRegion()
+
+    def __str__(self) -> str:
+        return self.__repr__()
+
+    def __repr__(self) -> str:
+        selfName: str = self.pyutObject.name
+        modelId:  int = self.pyutObject.id
+        return f'OglUseCase.{selfName} modelId: {modelId}'
