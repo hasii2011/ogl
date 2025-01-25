@@ -335,6 +335,15 @@ class OglSDInstance(Shape, ShapeEventHandler, EventEngineMixin):
         self.eventEngine.sendEvent(OglEventType.ShapeSelected, selectedShape=self, selectedShapePosition=event.GetPosition())
         event.Skip()
 
+    def Detach(self):
+        super().Detach()
+        if self._topLeftSizer is not None:
+            self._topLeftSizer.Detach()
+            self._topRightSizer.Detach()
+            self._botLeftSizer.Detach()
+            self._botRightSizer.Detach()
+
+
     def _createInstanceName(self, pyutSDInstance: PyutSDInstance) -> OglInstanceName:
         """
 
