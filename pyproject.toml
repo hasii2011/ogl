@@ -8,8 +8,8 @@ dynamic     = ["version"]
 description = 'External Pyut Graphical Shapes'
 readme      = "README.md"
 license     = {text = 'GNU AFFERO GENERAL PUBLIC LICENSE'}
-authors     = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
-maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humbert.A.Sanchez.II@gmail.com'}]
+authors     = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
+maintainers = [{name = 'Humberto A. Sanchez II', email = 'Humberto.A.Sanchez.II@gmail.com'}]
 keywords    = ['pyut', 'graphical shapes', 'python',]
 
 classifiers = [
