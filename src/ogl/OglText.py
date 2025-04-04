@@ -174,6 +174,9 @@ class OglText(OglObject):
 
         dc.SetClippingRegion(baseX, baseY, w, h)
 
+        if self.selected is True:
+            self.DrawBorder(dc=dc)
+
         textContent: str       = self.pyutObject.content
         lines:       List[str] = OglUtils.lineSplitter(textContent, dc, w - 2 * OglText.MARGIN)
 
